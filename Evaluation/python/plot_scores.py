@@ -13,6 +13,7 @@ red = (203/255, 68/255, 10/255)
 
 plt.rcParams.update({"font.size": 14})
 
+# TODO: Make this a class
 
 # histogram the categories for different scores
 
@@ -36,12 +37,14 @@ bin_size = 0.1
 bins = np.arange(0, 1 + bin_size, bin_size)
 bin_centre = bins[:-1]+ np.diff(bins)/2
 step_edges = np.append(bins,2*bins[-1]-bins[-2])
+print(bins)
+print(step_edges)
 
 # TODO: Plot with no weights for now 
 # Weighting
 weight = "weight" # lumi*XS/Neff
 # weight = "NN_weight" # class balanced weight
-weight = "unit_weight" # no weight
+# weight = "unit_weight" # no weight
 
 cat_dict = {'pred_0': 'Tau', 'pred_1': 'Higgs', 'pred_2': 'Fake'}
 
