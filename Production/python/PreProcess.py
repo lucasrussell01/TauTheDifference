@@ -4,7 +4,6 @@ from glob import glob
 import os
 import json
 from tqdm import tqdm
-from run_info import concat_json
 
 # Select same sign of opposite sign pairs from parquet files
 
@@ -37,9 +36,17 @@ features = ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt', '
             'dphi', 'm_vis', 'pt_vis', 'n_jets', 'n_bjets', 'mjj', 'jdeta', 'sjdphi', 'dijetpt', 
             'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', 'jphi_1', 'jphi_2', 
             'weight', 'class_label']
-print("Features to store:", features)
+print("Features to store:", features, "\n")
 
-            
+
+vsjet1 = 5 # medium
+vsjet2 = 5 # medium
+
+print("-------------------------------------------------------")
+print("Applying cuts:")
+print(f"Working point vs Jet - Tau 1 >= {vsjet1}, Tau 2 >= {vsjet2}")
+print("-------------------------------------------------------")
+
 
 for sample, options in samples.items():
     # Open merged parquet file from HiggsDNA output
@@ -56,7 +63,10 @@ for sample, options in samples.items():
         proc_factor = proc_weight(options['x_sec'], options['n_eff'])
         print(f"Luminosity and Cross Section scaling applied: {proc_factor}")
         df['weight'] *= proc_factor # update central weight
-        # df['w_process'] = proc_factor # store process factor separately
+    # Apply cuts
+    df = df[df['idDeepTau2018v2p5VSjet_1'] >= vsjet1]
+    df = df[df['idDeepTau2018v2p5VSjet_2'] >= vsjet2]
+    num_events_after_cuts = len(df)
     # Select sign of the pair
     df = df[df['os'] == opposite_sign]
     # Set a class label
@@ -64,8 +74,10 @@ for sample, options in samples.items():
     # Discard unwanted features
     df = df[features]
     # Print summary of selection
-    num_events_after = len(df)
-    print(f"Number of events before: {n_before}\nNumber of events after [os = {opposite_sign}]: {num_events_after} ({(num_events_after / n_before) * 100:.2f}% kept)\n")
+    num_events_after_os = len(df)
+    print(f"Number of events before: {n_before}")
+    print(f"Number of events after selection: {num_events_after_cuts}: ({(num_events_after_cuts / n_before) * 100:.2f}% kept)")
+    print(f"Number of events after [os = {opposite_sign}]: {num_events_after_os} ({(num_events_after_os / n_before) * 100:.2f}% kept)\n")
     # Save processed dataframe
     out_path = os.path.join(out_dir, sample)
     if not os.path.exists(out_path):
