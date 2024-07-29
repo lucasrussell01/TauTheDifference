@@ -37,7 +37,11 @@ bins = np.arange(0, 1 + bin_size, bin_size)
 bin_centre = bins[:-1]+ np.diff(bins)/2
 step_edges = np.append(bins,2*bins[-1]-bins[-2])
 
-# TODO: Plot with no weights (eg lumi/XS) for now -> because then Higgs become  tiny?
+# TODO: Plot with no weights for now 
+# Weighting
+weight = "weight" # lumi*XS/Neff
+# weight = "NN_weight" # class balanced weight
+weight = "unit_weight" # no weight
 
 cat_dict = {'pred_0': 'Tau', 'pred_1': 'Higgs', 'pred_2': 'Fake'}
 
@@ -46,8 +50,8 @@ for cat, cat_label in cat_dict.items():
     fig, ax = plt.subplots(figsize = (6,6))
     
     # Histograms of Tau and Background Classes
-    tau_hist = np.histogram(taus[cat], bins=bins)[0]#, weights=taus['weight'])[0]
-    fake_hist = np.histogram(fake[cat], bins=bins)[0]#, weights=fake['weight'])[0]
+    tau_hist = np.histogram(taus[cat], bins=bins, weights=taus[weight])[0]
+    fake_hist = np.histogram(fake[cat], bins=bins, weights=fake[weight])[0]
     ax.bar(bin_centre, tau_hist, width = bin_size, color = yellow, label = r"$Z\to\tau_h\tau_h$")
     ax.bar(bin_centre, fake_hist, width = bin_size, color = green, bottom = tau_hist, label = r"jet $\to \tau_h$ [QCD]")
     taus_step = np.append(np.insert(tau_hist,0,0.0),0.0)
@@ -56,13 +60,13 @@ for cat, cat_label in cat_dict.items():
     ax.step(step_edges, fake_step, color='black', linewidth = 0.5)
     
     # Outline histos of Higgs processes and Total Bkg
-    ax.hist(ggH[cat], bins=bins, histtype="step", color = red, linewidth = 2, label = r"ggH$\to\tau_h\tau_h$")#, weights=ggH['weight']
-    ax.hist(VBF[cat], bins=bins, histtype="step", color = blue, linewidth = 2, label = r"qqH$\to\tau_h\tau_h$")#, weights=VBF['weight']
-    ax.hist(total_bkg[cat], bins=bins, histtype="step", color = 'black', linewidth = 2, label = r"Total Background")#, weights=total_bkg['weight']
+    ax.hist(ggH[cat], bins=bins, histtype="step", color = red, linewidth = 2, label = r"ggH$\to\tau_h\tau_h$", weights=ggH[weight])
+    ax.hist(VBF[cat], bins=bins, histtype="step", color = blue, linewidth = 2, label = r"qqH$\to\tau_h\tau_h$", weights=VBF[weight])
+    ax.hist(total_bkg[cat], bins=bins, histtype="step", color = 'black', linewidth = 2, label = r"Total Background", weights=total_bkg[weight])
 
     # Labels etc
     ax.set_xlabel(rf"{cat_label} BDT Score")
-    ax.set_ylabel(f"Events/{bin_size}  (Unweighted)")
+    ax.set_ylabel(f"Events/{bin_size}  [{weight}]")
     ax.set_xlim(0, 1)
     ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
     ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')

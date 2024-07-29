@@ -30,8 +30,10 @@ df_res['class_label'] = y_eval_raw
 df_res['pred_0'] = y_pred_eval[:, 0]
 df_res['pred_1'] = y_pred_eval[:, 1]
 df_res['pred_2'] = y_pred_eval[:, 2]
+df_res['pred_label'] = y_pred_eval_labels # max proba label
 df_res['weight'] = w_plot
 df_res['NN_weight'] = w_eval
+df_res['unit_weight'] = 1 # unit weight
 df_res.to_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 
 print(f"Evaluation of {model_dir.split('/')[-1]} complete!")
