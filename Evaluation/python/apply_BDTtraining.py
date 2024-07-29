@@ -14,7 +14,7 @@ w_eval = eval_df['NN_weight'] #  NN weight
 w_plot = eval_df['weight'] # NOT the NN weight (normalisation removed)
 
 # Load trained model
-model_dir = "../Training/python/XGB_Models/BDTClassifier/model_2307"
+model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_2907"
 model = XGBClassifier()
 model.load_model(os.path.join(model_dir, 'model.json'))
 

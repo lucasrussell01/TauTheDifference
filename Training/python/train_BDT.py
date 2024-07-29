@@ -12,7 +12,7 @@ y_train = train_df['class_label'].replace({11: 1, 12: 1})
 w_train = train_df['NN_weight'] # use class balanced weight
 del train_df
 
-save_dir = 'XGB_Models/BDTClassifier/model_2307/'
+save_dir = 'XGB_Models/BDTClassifier/model_2907/'
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 save_path = os.path.join(save_dir, 'model.json')
@@ -23,11 +23,11 @@ save_path = os.path.join(save_dir, 'model.json')
 print("Training model")
                
 
-model = XGBClassifier(objective='multi:softmax', num_class=3)
+# model = XGBClassifier(objective='multi:softmax', num_class=3)
 
          
-# model = XGBClassifier(objective='multi:softmax', num_class=3, learning_rate=0.1,
-                        # n_estimators=200, max_depth=3, min_child_weight=1, reg_lambda=1)
+model = XGBClassifier(objective='multi:softmax', num_class=3, learning_rate=0.1,
+                        n_estimators=200, max_depth=3, min_child_weight=1, reg_lambda=1)
 
 model.fit(x_train, y_train, sample_weight=w_train)
 

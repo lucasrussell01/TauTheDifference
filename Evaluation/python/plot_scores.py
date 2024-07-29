@@ -16,7 +16,7 @@ plt.rcParams.update({"font.size": 14})
 
 # histogram the categories for different scores
 
-model_dir = "../Training/python/XGB_Models/BDTClassifier/model_2307"
+model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_2907"
 
 # TODO: would be ideal to have separaete NN and other weights stored + maybe lumi scalings
 
