@@ -14,14 +14,19 @@ red = (203/255, 68/255, 10/255)
 plt.rcParams.update({"font.size": 14})
 
 
+def SrootSB(S,B):
+    # signal over root signal + background
+    return S/np.sqrt(S+B)
+
 # histogram the categories for different scores
 
 model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_2907"
 
-# TODO: would be ideal to have separaete NN and other weights stored + maybe lumi scalings
-
 pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 class_label_counts = pred_df['class_label'].value_counts()
+
+# only events classified as Higgs
+pred_df = pred_df[pred_df['pred_label'] == 1]
 
 # extract categories
 taus = pred_df.loc[pred_df['class_label'] == 0]
@@ -34,28 +39,34 @@ total_bkg = pred_df[(pred_df['class_label'] == 0) | (pred_df['class_label'] == 2
 # decide bins with flat regions in signal
 signal_scores = higgs['pred_1']
 
-# find number of signal to have per bin
+# find number of signal (weighted) to have per bin
 n_sig = len(signal_scores)
 n_bins = 5
-n_sig_per_bin = int(n_sig/n_bins)
-print(f"Splitting into {n_bins} bins, corresponding to {n_sig_per_bin} signal events per bin")
+sum_w = np.sum(higgs['weight'])
+target_per_bin = sum_w/n_bins
 
-bins = [0] # start at 0
-# find cuts on signal scores than lead to n_sig_per_bin
-signal_scores = np.sort(signal_scores)
-for n in range(1, n_bins): # don't start at first bin (should be zero)
-    index = n*n_sig_per_bin
-    # print(f"At index {index}/{n_sig} the score is {signal_scores[index]}")
-    bins.append(signal_scores[index])
-bins.append(1) # end at 1
+# scan bins until get to target amount of signal weight
+higgs = higgs.sort_values(by='pred_1').reset_index(drop=True)
+
+sum_w_bin = 0 # track sum of weights in a bin
+
+# ugly, but iterate through the signal df, and check if the cumulative weight
+# is > thresh to make a new bin
+bins = [0.33]
+for i in range(n_sig-1):
+    sum_w_bin += higgs['weight'][i]
+    if sum_w_bin > target_per_bin:
+        bin_edge = (higgs['pred_1'][i] + higgs['pred_1'][i+1])/2
+        bins.append(bin_edge)
+        sum_w_bin = 0
+bins.append(1)
+
 
 print(f"Optimised bining is: {bins}")
 
 
 bin_centre = bins[:-1]+ np.diff(bins)/2
-print(bin_centre)
 step_edges = np.append(bins,2*bins[-1]-bins[-2])
-print(step_edges)
 
 weight = "weight" # lumi*XS/Neff
 
@@ -74,9 +85,9 @@ ax.step(step_edges, taus_step, color='black', linewidth = 0.5)
 ax.step(step_edges, fake_step, color='black', linewidth = 0.5)
 
 # Outline histos of Higgs processes and Total Bkg
-ax.hist(ggH['pred_1'], bins=bins, histtype="step", color = red, linewidth = 2, label = r"ggH$\to\tau_h\tau_h$", weights=ggH[weight])
-ax.hist(VBF['pred_1'], bins=bins, histtype="step", color = blue, linewidth = 2, label = r"qqH$\to\tau_h\tau_h$", weights=VBF[weight])
-ax.hist(total_bkg['pred_1'], bins=bins, histtype="step", color = 'black', linewidth = 2, label = r"Total Background", weights=total_bkg[weight])
+ggH_counts, _, _ = ax.hist(ggH['pred_1'], bins=bins, histtype="step", color = red, linewidth = 2, label = r"ggH$\to\tau_h\tau_h$", weights=ggH[weight])
+VBF_counts, _, _ = ax.hist(VBF['pred_1'], bins=bins, histtype="step", color = blue, linewidth = 2, label = r"qqH$\to\tau_h\tau_h$", weights=VBF[weight])
+bkg_counts, _, _ = ax.hist(total_bkg['pred_1'], bins=bins, histtype="step", color = 'black', linewidth = 2, label = r"Total Background", weights=total_bkg[weight])
 
 # plot bin boundaries
 for i in range(1, n_bins):
@@ -85,12 +96,24 @@ for i in range(1, n_bins):
 # Labels etc
 ax.set_xlabel(rf"Higgs BDT Score")
 ax.set_ylabel(f"Events (weighted)")
-ax.set_xlim(0, 1)
+ax.set_xlim(0.33, 1)
 ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
 ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
 ax.text(0.16, 1.02, 'Work in Progress', fontsize=16, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
 ax.legend()
 ax.set_yscale('log')
-ax.set_ylim(1, 1e6)
+ax.set_ylim(1, 1e5)
 plt.savefig(os.path.join(model_dir, f"Optimised_Higgs_score.pdf"))
 
+
+sig_counts = ggH_counts + VBF_counts
+sigs = np.zeros(n_bins)
+for b in range(n_bins):
+    sig = SrootSB(sig_counts[b], bkg_counts[b])
+    sigs[b] = sig
+
+print("--------------------------------------------------------")
+print(f"Significance of the bins is: {sigs}")
+
+overall_sig = np.sqrt(np.sum(sigs**2))
+print(f"Overall (sum in quad): {overall_sig}")
