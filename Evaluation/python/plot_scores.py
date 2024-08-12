@@ -47,7 +47,7 @@ for cat_name, cat in cat_dict.items():
 
     # pick only events predicted to be the given category
     pred_cat_df = pred_df.loc[pred_df['pred_label'] == cat['label']]
-    print(pred_cat_df)
+    # print(pred_cat_df)
 
     # extract categories
     taus = pred_cat_df.loc[pred_cat_df['class_label'] == 0]
@@ -71,9 +71,9 @@ for cat_name, cat in cat_dict.items():
     ax.step(step_edges, fake_step, color='black', linewidth = 0.5)
     
     # Outline histos of Higgs processes and Total Bkg
-    ggH_counts, _ = ax.hist(ggH[cat["pred_name"]], bins=bins, histtype="step", color = red, linewidth = 2, label = r"ggH$\to\tau_h\tau_h$", weights=ggH[weight])
-    VBF_counts, _ = ax.hist(VBF[cat["pred_name"]], bins=bins, histtype="step", color = blue, linewidth = 2, label = r"qqH$\to\tau_h\tau_h$", weights=VBF[weight])
-    bkg_counts, _ = ax.hist(total_bkg[cat["pred_name"]], bins=bins, histtype="step", color = 'black', linewidth = 2, label = r"Total Background", weights=total_bkg[weight])
+    ggH_counts, _, _ = ax.hist(ggH[cat["pred_name"]], bins=bins, histtype="step", color = red, linewidth = 2, label = r"ggH$\to\tau_h\tau_h$", weights=ggH[weight])
+    VBF_counts, _, _ = ax.hist(VBF[cat["pred_name"]], bins=bins, histtype="step", color = blue, linewidth = 2, label = r"qqH$\to\tau_h\tau_h$", weights=VBF[weight])
+    bkg_counts, _, _ = ax.hist(total_bkg[cat["pred_name"]], bins=bins, histtype="step", color = 'black', linewidth = 2, label = r"Total Background", weights=total_bkg[weight])
 
     # Labels etc
     ax.set_xlabel(rf"{cat_name} BDT Score")

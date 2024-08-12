@@ -100,7 +100,7 @@ ax.set_xlim(0.33, 1)
 ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
 ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
 ax.text(0.16, 1.02, 'Work in Progress', fontsize=16, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
-ax.legend()
+ax.legend(frameon=1, framealpha=1)
 ax.set_yscale('log')
 ax.set_ylim(1, 1e5)
 plt.savefig(os.path.join(model_dir, f"Optimised_Higgs_score.pdf"))
@@ -113,7 +113,7 @@ for b in range(n_bins):
     sigs[b] = sig
 
 print("--------------------------------------------------------")
-print(f"Significance of the bins is: {sigs}")
+print(f"S/root(S+B) for the individual bins is: {sigs}")
 
 overall_sig = np.sqrt(np.sum(sigs**2))
 print(f"Overall (sum in quad): {overall_sig}")
