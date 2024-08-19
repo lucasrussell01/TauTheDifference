@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 # Select same sign of opposite sign pairs from parquet files
 
-base_dir = '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/testxx/Run3_2022/tt'
+base_dir = '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/Run3_2022/tt'
 
 samples = {
     'DYto2L_M-50_madgraphMLM': {'data': False, 'label': 0, 'x_sec': 6282.6, 'n_eff': 145286646, 'process': 'DY'},
@@ -22,7 +22,7 @@ samples = {
     'Tau_Run2022D': {'data': True, 'label': 2, 'x_sec': -1, 'n_eff': -1, 'process': 'QCD'}
           }
 
-out_dir = '/vols/cms/lcr119/offline/HiggsCP/data/processed/2022/tt'
+out_dir = '/vols/cms/lcr119/offline/HiggsCP/data/1708/processed/2022/tt'
 
 
 def proc_weight(x_sec, n_eff, lumi = 8077):
@@ -34,7 +34,7 @@ def proc_weight(x_sec, n_eff, lumi = 8077):
 features = ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt', 'pt_tt_met',
             'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt', 'met_phi', 'met_dphi_1', 'met_dphi_2',
             'dphi', 'm_vis', 'pt_vis', 'n_jets', 'n_bjets', 'mjj', 'jdeta', 'sjdphi', 'dijetpt', 
-            'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', 'jphi_1', 'jphi_2', 
+            'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', 'jphi_1', 'jphi_2', 'FastMTT_Mass',
             'weight', 'class_label']
 print("Features to store:", features, "\n")
 
@@ -51,8 +51,13 @@ print("-------------------------------------------------------")
 for sample, options in samples.items():
     # Open merged parquet file from HiggsDNA output
     file_path = os.path.join(base_dir, sample, 'nominal/merged.parquet')
+    # Open fastmtt/svfit file from director
+    mass_path = os.path.join(base_dir, sample, 'nominal/fastmtt.parquet')
     print(f"Processing [{sample}], label: {options['label']}")
     df = pd.read_parquet(file_path)
+    dfmass = pd.read_parquet(mass_path)
+    # Merge mass column from massdf to main df
+    df = pd.merge(df, dfmass[['run', 'lumi', 'event', 'FastMTT_Mass']], on=['run', 'lumi', 'event'], how='left')
     n_before = len(df)
     if options['data']:
         opposite_sign = False # same sign data-driven QCD

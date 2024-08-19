@@ -44,9 +44,9 @@ def split_data(path, train_fraction, val_fraction, eval_fraction):
     return train_df, val_df, eval_df
 
 # Separate the shards:
-input_dir = '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt/shards/'
+input_dir = '/vols/cms/lcr119/offline/HiggsCP/data/1708/ShuffleMerge/2022/tt/shards/'
 train_eval_split_shards(input_dir, 0.7)
 
 # Split the main df
-input_dir = '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt/'
+input_dir = '/vols/cms/lcr119/offline/HiggsCP/data/1708/ShuffleMerge/2022/tt/'
 split_data(input_dir, 0.60, 0.15, 0.25)

@@ -6,13 +6,13 @@ import os
 
 
 # Load training dataset
-train_df = pd.read_parquet('/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt/ShuffleMerge_TRAIN.parquet')
+train_df = pd.read_parquet('/vols/cms/lcr119/offline/HiggsCP/data/1708/ShuffleMerge/2022/tt/ShuffleMerge_TRAIN.parquet')
 x_train = train_df.drop(columns=['class_label', 'weight', 'NN_weight'])
 y_train = train_df['class_label'].replace({11: 1, 12: 1})
 w_train = train_df['NN_weight'] # use class balanced weight
 del train_df
 
-save_dir = 'XGB_Models/BDTClassifier/model_2907/'
+save_dir = 'XGB_Models/BDTClassifier/model_1708/'
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 save_path = os.path.join(save_dir, 'model.json')
@@ -46,7 +46,7 @@ print("Training Accuracy:", accuracy_train)
 del x_train, y_train, w_train
 
 # Load validation dataset
-val_df = pd.read_parquet('/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt/ShuffleMerge_VAL.parquet')
+val_df = pd.read_parquet('/vols/cms/lcr119/offline/HiggsCP/data/1708/ShuffleMerge/2022/tt/ShuffleMerge_VAL.parquet')
 x_val = val_df.drop(columns=['class_label', 'weight', 'NN_weight'])
 y_val = val_df['class_label'].replace({11: 1, 12: 1})
 w_val = val_df['NN_weight']

@@ -59,7 +59,7 @@ fpr_hf, tpr_hf, thresholds_hf = metrics.roc_curve(y_true, y_pred, sample_weight=
 # Higgs VS All
 fix, ax = plt.subplots(figsize = (6,6))
 ax.grid()
-ax.plot(tpr_hall, fpr_hall, label = "XGBClassifier vs Background", color=red)
+ax.plot(tpr_hall, fpr_hall, label = "XGBClassifier vs Background", color='green')
 ax.set_xlim(0,1)
 ax.set_ylim(1e-4,1)
 ax.set_yscale('log')

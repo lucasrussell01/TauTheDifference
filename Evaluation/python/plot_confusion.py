@@ -20,7 +20,7 @@ plt.rcParams.update({"font.size": 14})
 
 
 
-model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_2907"
+model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_1708"
 
 pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 

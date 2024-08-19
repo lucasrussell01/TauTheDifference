@@ -18,9 +18,14 @@ def SrootSB(S,B):
     # signal over root signal + background
     return S/np.sqrt(S+B)
 
+def AMS(S, B, b0=0):
+    ams = np.sqrt(2*((S+B+b0)*np.log(1+S/(B+b0))-S))
+    return ams
+
+
 # histogram the categories for different scores
 
-model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_2907"
+model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_1708"
 
 pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 class_label_counts = pred_df['class_label'].value_counts()
@@ -107,13 +112,19 @@ plt.savefig(os.path.join(model_dir, f"Optimised_Higgs_score.pdf"))
 
 
 sig_counts = ggH_counts + VBF_counts
-sigs = np.zeros(n_bins)
+sigs_SSB = np.zeros(n_bins)
+sigs_AMS = np.zeros(n_bins)
 for b in range(n_bins):
-    sig = SrootSB(sig_counts[b], bkg_counts[b])
-    sigs[b] = sig
+    sig_SSB = SrootSB(sig_counts[b], bkg_counts[b])
+    sig_AMS = AMS(sig_counts[b], bkg_counts[b])
+    sigs_SSB[b] = sig_SSB
+    sigs_AMS[b] = sig_AMS
 
 print("--------------------------------------------------------")
-print(f"S/root(S+B) for the individual bins is: {sigs}")
+print(f"S/root(S+B) for the individual bins is: {sigs_SSB}")
+print(f"AMS for the individual bins is: {sigs_AMS}")
 
-overall_sig = np.sqrt(np.sum(sigs**2))
-print(f"Overall (sum in quad): {overall_sig}")
+overall_sig_SSB = np.sqrt(np.sum(sigs_SSB**2))
+overall_sig_AMS = np.sqrt(np.sum(sigs_AMS**2))
+print(f"Overall S/root(S+B) (sum in quad): {overall_sig_SSB}")
+print(f"Overall AMS (sum in quad): {overall_sig_AMS}")
