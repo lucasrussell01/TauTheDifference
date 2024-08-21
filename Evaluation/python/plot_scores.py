@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import os
 import mplhep as hep
 import numpy as np
+import yaml
+
+cfg = yaml.safe_load(open("../config/config.yaml"))
 
 plt.style.use(hep.style.ROOT)
 purple = (152/255, 152/255, 201/255)
@@ -17,7 +20,7 @@ plt.rcParams.update({"font.size": 14})
 
 # histogram the categories for different scores
 
-model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_1708"
+model_dir = os.path.join(cfg['model_path'], cfg['model_name'])
 
 pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 class_label_counts = pred_df['class_label'].value_counts()

@@ -25,7 +25,7 @@ def AMS(S, B, b0=0):
 
 # histogram the categories for different scores
 
-model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_1708"
+model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_2907"
 
 pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 class_label_counts = pred_df['class_label'].value_counts()

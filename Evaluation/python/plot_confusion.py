@@ -6,6 +6,9 @@ import numpy as np
 import sklearn.metrics as metrics
 from sklearn.metrics import confusion_matrix
 import seaborn as sn
+import yaml
+
+cfg = yaml.safe_load(open("../config/config.yaml"))
 
 sn.set(font_scale=1.4)
 
@@ -20,7 +23,7 @@ plt.rcParams.update({"font.size": 14})
 
 
 
-model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_1708"
+model_dir = os.path.join(cfg['model_path'], cfg['model_name'])
 
 pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 

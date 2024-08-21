@@ -1,0 +1,10 @@
+model_name: "model_svfit"
+model_path: "../../Training/python/XGB_Models/BDTClassifier"
+input_path: "/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt/ShuffleMerge_EVAL.parquet"
+train_features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt', 'pt_tt_met',
+            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt', 'met_dphi_1', 'met_dphi_2',
+            'dphi', 'm_vis', 'pt_vis', 'n_jets', 'n_bjets', 'mjj', 'jdeta', 'dijetpt',
+            'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2',
+            'svfitMass']
+            # 'FastMTT_Mass']#,
+            # 'svfitMass_err']
