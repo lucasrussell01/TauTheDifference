@@ -24,7 +24,6 @@ model_dir = os.path.join(cfg['model_path'], cfg['model_name'])
 
 pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 class_label_counts = pred_df['class_label'].value_counts()
-print(class_label_counts)
 
 
 # Set Bins
@@ -32,8 +31,6 @@ bin_size = 0.1
 bins = np.arange(0, 1 + bin_size, bin_size)
 bin_centre = bins[:-1]+ np.diff(bins)/2
 step_edges = np.append(bins,2*bins[-1]-bins[-2])
-print(bins)
-print(step_edges)
 
 # TODO: Plot with no weights for now 
 # Weighting

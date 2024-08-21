@@ -66,3 +66,6 @@ ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold
 ax.text(0.15, 1.02, 'Work in Progress', fontsize=16, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
 ax.text(0.68, 1.02, "2022 (13.6 TeV)", fontsize=16, transform=ax.transAxes)
 plt.savefig(os.path.join(model_dir, 'Purity_CM.pdf'))
+
+
+print("Confusion matrices produced")

@@ -15,6 +15,8 @@ y_eval = y_eval_raw.replace({11: 1, 12: 1})
 w_eval = eval_df['NN_weight'] #  NN weight
 w_plot = eval_df['weight'] # NOT the NN weight (normalisation removed)
 
+print("\n Applying Training")
+
 # Load trained model
 model_dir = os.path.join(cfg['model_path'], cfg['model_name'])
 model = XGBClassifier()

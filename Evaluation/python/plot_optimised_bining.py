@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import os
 import mplhep as hep
 import numpy as np
+import yaml
+
+cfg = yaml.safe_load(open("../config/config.yaml"))
 
 plt.style.use(hep.style.ROOT)
 purple = (152/255, 152/255, 201/255)
@@ -25,7 +28,7 @@ def AMS(S, B, b0=0):
 
 # histogram the categories for different scores
 
-model_dir = "../../Training/python/XGB_Models/BDTClassifier/model_2907"
+model_dir = os.path.join(cfg['model_path'], cfg['model_name'])
 
 pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 class_label_counts = pred_df['class_label'].value_counts()
@@ -67,7 +70,7 @@ for i in range(n_sig-1):
 bins.append(1)
 
 
-print(f"Optimised bining is: {bins}")
+# print(f"Optimised bining is: {bins}")
 
 
 bin_centre = bins[:-1]+ np.diff(bins)/2
@@ -121,10 +124,10 @@ for b in range(n_bins):
     sigs_AMS[b] = sig_AMS
 
 print("--------------------------------------------------------")
-print(f"S/root(S+B) for the individual bins is: {sigs_SSB}")
+# print(f"S/root(S+B) for the individual bins is: {sigs_SSB}")
 print(f"AMS for the individual bins is: {sigs_AMS}")
 
 overall_sig_SSB = np.sqrt(np.sum(sigs_SSB**2))
 overall_sig_AMS = np.sqrt(np.sum(sigs_AMS**2))
-print(f"Overall S/root(S+B) (sum in quad): {overall_sig_SSB}")
+# print(f"Overall S/root(S+B) (sum in quad): {overall_sig_SSB}")
 print(f"Overall AMS (sum in quad): {overall_sig_AMS}")
