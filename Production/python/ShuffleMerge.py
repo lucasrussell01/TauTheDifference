@@ -4,13 +4,16 @@ import numpy as np
 
 # Shuffle and merge files that have been processed by SkimFiles.py
 
-base_dir = '/vols/cms/lcr119/offline/HiggsCP/data/1708/processed/2022/tt'
+base_dir = '/vols/cms/lcr119/offline/HiggsCP/data/processed/2022/tt'
 
 samples = ['DYto2L_M-50_madgraphMLM', 'DYto2L_M-50_madgraphMLM_ext1', 'DYto2L_M-50_1J_madgraphMLM',
            'DYto2L_M-50_2J_madgraphMLM', 'DYto2L_M-50_3J_madgraphMLM', 'DYto2L_M-50_4J_madgraphMLM',
-           'GluGluHToTauTau_M125', 'VBFHToTauTau_M125', 'Tau_Run2022C', 'Tau_Run2022D']
+           'Tau_Run2022C', 'Tau_Run2022D', 'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay',
+           'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay', 'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay',
+           'VBFHToTauTau_UncorrelatedDecay_Filtered']
+            # 'GluGluHToTauTau_M125', 'VBFHToTauTau_M125',
 
-out_dir = '/vols/cms/lcr119/offline/HiggsCP/data/1708/ShuffleMerge/2022/tt'
+out_dir = '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt'
 
 # Merge all files into one dataframe
 merged_df = pd.DataFrame()
