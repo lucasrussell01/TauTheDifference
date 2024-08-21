@@ -21,8 +21,8 @@ def get_args():
     parser = argparse.ArgumentParser(description="Plot histogram for a variable of choice")
     parser.add_argument('--var', type=str, help="Variable to plot in df")
     parser.add_argument('--xmin', type=float, help="Min x to plot", required=False, default=0)
-    parser.add_argument('--xmax', type=float, help="Max x to plot", required=False, default=300)
-    parser.add_argument('--nbins', type=int, help="Number of bins", required=False, default=60)
+    parser.add_argument('--xmax', type=float, help="Max x to plot", required=False, default=350)
+    parser.add_argument('--nbins', type=int, help="Number of bins", required=False, default=70)
     parser.add_argument('--label', type=str, help="Label name for the variable", required=False)
     return parser.parse_args()
 
@@ -69,6 +69,7 @@ ax.set_xlim(args.xmin, args.xmax)
 ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
 ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
 ax.text(0.16, 1.02, 'Work in Progress', fontsize=16, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
+# ax.set_yscale('log')
 ax.legend()
 plt.savefig(f"{args.var}.pdf")
 
