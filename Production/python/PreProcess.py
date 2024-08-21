@@ -26,10 +26,6 @@ samples = {
     # 'VBFHToTauTau_M125': {'data': False, 'label': 12, 'x_sec': 0.2558, 'n_eff': 298955, 'process': 'Higgs'},
           }
 
-GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay: 7185840
-GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay: 6424278
-GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay: 6703604
-
 
 out_dir = '/vols/cms/lcr119/offline/HiggsCP/data/processed/2022/tt'
 
@@ -41,7 +37,9 @@ def proc_weight(x_sec, n_eff, lumi = 8077):
 def cp_weight(df):
     cp_weight = 0.5*(df['LHEReweightingWeight_SM'] + df['LHEReweightingWeight_PS'])
     df['weight'] *= cp_weight
-    print("CP reweighting applied")
+    # drop negative weights - combi can be negative (rarely)
+    df = df[df['weight'] > 0]
+    print("CP reweighting applied (-ve weights dropped)")
     return df
 
 
