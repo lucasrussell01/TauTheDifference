@@ -4,15 +4,31 @@ from sklearn.metrics import accuracy_score
 import pandas as pd
 import os
 
+# SHUFFLE MERGE DIRECTORY
+sample_path = '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt'
+train_path = os.path.join(sample_path, 'ShuffleMerge_TRAIN.parquet')
+val_path = os.path.join(sample_path, 'ShuffleMerge_VAL.parquet')
+
+# MODEL SAVE DIRECTORY
+save_dir = 'XGB_Models/BDTClassifier/model_svfit/'
+
+# FEATURES TO USEA FOR TRAINING
+train_features = ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt', 'pt_tt_met',
+            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt', 'met_dphi_1', 'met_dphi_2',
+            'dphi', 'm_vis', 'pt_vis', 'n_jets', 'n_bjets', 'mjj', 'jdeta', 'dijetpt',
+            'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2',
+            'svfitMass']#,
+            # 'FastMTT_Mass']#,
+            # 'svfitMass_err']
 
 # Load training dataset
-train_df = pd.read_parquet('/vols/cms/lcr119/offline/HiggsCP/data/1708/ShuffleMerge/2022/tt/ShuffleMerge_TRAIN.parquet')
-x_train = train_df.drop(columns=['class_label', 'weight', 'NN_weight'])
+train_df = pd.read_parquet(train_path)
+x_train = train_df[train_features]
 y_train = train_df['class_label'].replace({11: 1, 12: 1})
 w_train = train_df['NN_weight'] # use class balanced weight
 del train_df
 
-save_dir = 'XGB_Models/BDTClassifier/model_1708/'
+
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 save_path = os.path.join(save_dir, 'model.json')
@@ -46,8 +62,8 @@ print("Training Accuracy:", accuracy_train)
 del x_train, y_train, w_train
 
 # Load validation dataset
-val_df = pd.read_parquet('/vols/cms/lcr119/offline/HiggsCP/data/1708/ShuffleMerge/2022/tt/ShuffleMerge_VAL.parquet')
-x_val = val_df.drop(columns=['class_label', 'weight', 'NN_weight'])
+val_df = pd.read_parquet(val_path)
+x_val = val_df[train_features]
 y_val = val_df['class_label'].replace({11: 1, 12: 1})
 w_val = val_df['NN_weight']
 del val_df
