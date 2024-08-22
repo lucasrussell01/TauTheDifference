@@ -39,8 +39,8 @@ def train_model(cfg):
     accuracy = predict_acc(model, x_train, y_train, w_train)
     print("Training Accuracy:", accuracy)
     # Save features used:
-    with open(os.path.join(save_dir, 'features.yaml'), 'w') as f:
-        yaml.dump(cfg['Features'], f)
+    with open(os.path.join(save_dir, 'train_cfg.yaml'), 'w') as f:
+        yaml.dump(cfg, f)
     del x_train, y_train, w_train
 
     return model

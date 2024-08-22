@@ -6,16 +6,19 @@ import os
 import yaml
 
 cfg = yaml.safe_load(open("../config/config.yaml"))
+train_cfg = yaml.safe_load(open(os.path.join(cfg['model_path'],  cfg['model_name'], 'train_cfg.yaml')))
+feature_cfg = train_cfg['Features']
+input_path = os.path.join(train_cfg['Setup']['input_path'], "ShuffleMerge_EVAL.parquet")
 
 # Load evaluation dataset
-eval_df = pd.read_parquet(cfg['input_path'])
-x_eval = eval_df[cfg['train_features']]
-y_eval_raw = eval_df['class_label'] # keep separate higgs labels
+eval_df = pd.read_parquet(input_path)
+x_eval = eval_df[feature_cfg['train']]
+y_eval_raw = eval_df[feature_cfg['truth']] # keep separate higgs labels
 y_eval = y_eval_raw.replace({11: 1, 12: 1})
-w_eval = eval_df['NN_weight'] #  NN weight
+w_eval = eval_df[feature_cfg['weight']] #  NN weight
 w_plot = eval_df['weight'] # NOT the NN weight (normalisation removed)
 
-print(f"\n Applying Training for model: {cfg['model_name']}")
+print(f"\nApplying Training for model: {cfg['model_name']}")
 
 # Load trained model
 model_dir = os.path.join(cfg['model_path'], cfg['model_name'])
