@@ -22,6 +22,7 @@ def get_args():
     parser.add_argument('--var', type=str, help="Variable to plot in df")
     parser.add_argument('--xmin', type=float, help="Min x to plot", required=False, default=0)
     parser.add_argument('--xmax', type=float, help="Max x to plot", required=False, default=350)
+    parser.add_argument('--ymax', type=float, help="Max y to plot", required=False)
     parser.add_argument('--nbins', type=int, help="Number of bins", required=False, default=70)
     parser.add_argument('--label', type=str, help="Label name for the variable", required=False)
     return parser.parse_args()
@@ -66,6 +67,8 @@ ax.hist(VBF[args.var], bins=bins, weights=VBF['weight'], histtype="step", color 
 ax.set_xlabel(rf"{args.label}")
 ax.set_ylabel(f"Weighted Events/{bin_size} GeV")
 ax.set_xlim(args.xmin, args.xmax)
+if args.ymax is not None:
+    ax.set_ylim(0, args.ymax)
 ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
 ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
 ax.text(0.16, 1.02, 'Work in Progress', fontsize=16, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
