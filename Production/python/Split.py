@@ -43,10 +43,3 @@ def split_data(path, train_fraction, val_fraction, eval_fraction):
     eval_df.to_parquet(os.path.join(path, 'ShuffleMerge_EVAL.parquet'))
     return train_df, val_df, eval_df
 
-# Separate the shards:
-input_dir = '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt/shards/'
-train_eval_split_shards(input_dir, 0.7)
-
-# Split the main df
-input_dir = '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt/'
-split_data(input_dir, 0.60, 0.15, 0.25)
