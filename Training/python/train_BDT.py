@@ -10,16 +10,16 @@ train_path = os.path.join(sample_path, 'ShuffleMerge_TRAIN.parquet')
 val_path = os.path.join(sample_path, 'ShuffleMerge_VAL.parquet')
 
 # MODEL SAVE DIRECTORY
-save_dir = 'XGB_Models/BDTClassifier/model_svfit/'
+save_dir = 'XGB_Models/BDTClassifier/model_fastmtt_opt/'
 
 # FEATURES TO USEA FOR TRAINING
 train_features = ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt', 'pt_tt_met',
             'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt', 'met_dphi_1', 'met_dphi_2',
             'dphi', 'm_vis', 'pt_vis', 'n_jets', 'n_bjets', 'mjj', 'jdeta', 'dijetpt',
             'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2',
-            'svfitMass']#,
-            # 'FastMTT_Mass']#,
+            # 'svfitMass',
             # 'svfitMass_err']
+            'FastMTT_Mass']
 
 # Load training dataset
 train_df = pd.read_parquet(train_path)
@@ -42,8 +42,11 @@ print("Training model")
 # model = XGBClassifier(objective='multi:softmax', num_class=3)
 
          
-model = XGBClassifier(objective='multi:softmax', num_class=3, learning_rate=0.1,
-                        n_estimators=200, max_depth=3, min_child_weight=1, reg_lambda=1)
+# model = XGBClassifier(objective='multi:softmax', num_class=3, learning_rate=0.1,
+#                         n_estimators=200, max_depth=3, min_child_weight=1, reg_lambda=1)
+model = XGBClassifier(objective='multi:softmax', num_class=3, learning_rate=0.05,
+                        n_estimators=750, max_depth=3, min_child_weight=1, reg_lambda=1)
+
 
 model.fit(x_train, y_train, sample_weight=w_train)
 
