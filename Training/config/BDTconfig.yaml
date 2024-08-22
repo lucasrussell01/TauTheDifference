@@ -1,0 +1,20 @@
+Setup:
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt'
+  model_outputs: 'XGB_Models/DeepTauVSjet/'
+  model_name: 'model_opt'
+  
+BDT_config:
+  learning_rate: 0.05
+  n_estimators: 750
+  max_depth: 3
+  min_child_weight: 1
+  reg_lambda: 1
+
+Features:
+  train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
+            'pt_tt_met', 'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt',
+            'met_dphi_1', 'met_dphi_2', 'dphi', 'm_vis', 'pt_vis', 'n_jets',
+            'n_bjets', 'mjj', 'jdeta', 'dijetpt', 'jpt_1', 'jpt_2', 'jeta_1',
+            'jeta_2', 'FastMTT_Mass']
+  weight: 'NN_weight'
+  truth: 'class_label'

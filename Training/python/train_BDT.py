@@ -3,76 +3,68 @@ from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
 import pandas as pd
 import os
-
-# SHUFFLE MERGE DIRECTORY
-sample_path = '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt'
-train_path = os.path.join(sample_path, 'ShuffleMerge_TRAIN.parquet')
-val_path = os.path.join(sample_path, 'ShuffleMerge_VAL.parquet')
-
-# MODEL SAVE DIRECTORY
-save_dir = 'XGB_Models/BDTClassifier/model_fastmtt_opt/'
-
-# FEATURES TO USEA FOR TRAINING
-train_features = ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt', 'pt_tt_met',
-            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt', 'met_dphi_1', 'met_dphi_2',
-            'dphi', 'm_vis', 'pt_vis', 'n_jets', 'n_bjets', 'mjj', 'jdeta', 'dijetpt',
-            'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2',
-            # 'svfitMass',
-            # 'svfitMass_err']
-            'FastMTT_Mass']
-
-# Load training dataset
-train_df = pd.read_parquet(train_path)
-x_train = train_df[train_features]
-y_train = train_df['class_label'].replace({11: 1, 12: 1})
-w_train = train_df['NN_weight'] # use class balanced weight
-del train_df
+import yaml
 
 
-if not os.path.exists(save_dir):
-    os.makedirs(save_dir)
-save_path = os.path.join(save_dir, 'model.json')
-
-# Model training 
-# TODO: Add hyperparams to config or similar
-
-print("Training model")
-               
-
-# model = XGBClassifier(objective='multi:softmax', num_class=3)
-
-         
-# model = XGBClassifier(objective='multi:softmax', num_class=3, learning_rate=0.1,
-#                         n_estimators=200, max_depth=3, min_child_weight=1, reg_lambda=1)
-model = XGBClassifier(objective='multi:softmax', num_class=3, learning_rate=0.05,
-                        n_estimators=750, max_depth=3, min_child_weight=1, reg_lambda=1)
+def load_ds(path, feat_names, y_name, w_name):
+    df = pd.read_parquet(path)
+    x = df[feat_names]
+    y = df[y_name].replace({11: 1, 12: 1})
+    w = df[w_name]
+    return x, y, w
 
 
-model.fit(x_train, y_train, sample_weight=w_train)
+def train_model(cfg):
+    # Input path
+    train_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_TRAIN.parquet')
 
-model.save_model(save_path) # TODO: Add a run hash or similar
+    # Load training dataset
+    x_train, y_train, w_train = load_ds(train_path, cfg['Features']['train'],
+                                        cfg['Features']['truth'], cfg['Features']['weight'])
 
-print(f"Training Complete! Model saved to: {save_path}")
+    # Model training
+    print("Training model")
+    model = XGBClassifier(objective='multi:softmax', num_class=3, learning_rate=0.05,
+                            n_estimators=750, max_depth=3, min_child_weight=1, reg_lambda=1)
+    model.fit(x_train, y_train, sample_weight=w_train)
+
+    # Save model
+    save_dir = os.path.join(cfg['Setup']['model_outputs'], cfg['Setup']['model_name'])
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    save_path = os.path.join(save_dir, 'model.json')
+    model.save_model(save_path)
+    print(f"Training Complete! Model saved to: {save_path} \n")
+    # Get Training accuracy
+    accuracy = predict_acc(model, x_train, y_train, w_train)
+    print("Training Accuracy:", accuracy)
+    # Save features used:
+    with open(os.path.join(save_dir, 'features.yaml'), 'w') as f:
+        yaml.dump(cfg['Features'], f)
+    del x_train, y_train, w_train
+
+    return model
+
+def predict_acc(model, x, y, w):
+    y_pred = model.predict_proba(x)
+    y_pred_labels = y_pred.argmax(axis=1)
+    accuracy = accuracy_score(y, y_pred_labels, sample_weight=w)
+    return accuracy
+
+def val_acc(model, cfg):
+    val_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_VAL.parquet')
+    x_val, y_val, w_val = load_ds(val_path, cfg['Features']['train'],
+                                        cfg['Features']['truth'], cfg['Features']['weight'])
+    accuracy_val = predict_acc(model, x_val, y_val, w_val)
+    print("Validation Accuracy:", accuracy_val)
+    del x_val, y_val, w_val
 
 
-# Training predictions:
-y_pred_train = model.predict_proba(x_train)
-y_pred_train_labels = y_pred_train.argmax(axis=1)
-accuracy_train = accuracy_score(y_train, y_pred_train_labels, sample_weight=w_train)
-print("Training Accuracy:", accuracy_train)
 
-# clear memory
-del x_train, y_train, w_train
+def main():
+    cfg = yaml.safe_load(open("../config/BDTconfig.yaml"))
+    model = train_model(cfg)
+    val_acc(model, cfg)
 
-# Load validation dataset
-val_df = pd.read_parquet(val_path)
-x_val = val_df[train_features]
-y_val = val_df['class_label'].replace({11: 1, 12: 1})
-w_val = val_df['NN_weight']
-del val_df
-
-# Validation predictions:
-y_pred_val = model.predict_proba(x_val)
-y_pred_val_labels = y_pred_val.argmax(axis=1)
-accuracy_val = accuracy_score(y_val, y_pred_val_labels, sample_weight=w_val)
-print("Validation Accuracy:", accuracy_val)
+if __name__ == "__main__":
+    main()
