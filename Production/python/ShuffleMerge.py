@@ -19,6 +19,7 @@ def shuffle_merge(cfg, save_shards=False):
     # Save merged dataframe
     if not os.path.exists(cfg['Paths']['merge_output']):
         os.makedirs(cfg['Paths']['merge_output'])
+    print(f"Saving outputs to: {cfg['Paths']['merge_output']}")
     merged_df.to_parquet(os.path.join(cfg['Paths']['merge_output'], "ShuffleMerge_ALL.parquet"), engine = "pyarrow")
     split_data(cfg['Paths']['merge_output'], 0.60, 0.15, 0.25) # split into train, val, eval
     if save_shards:
