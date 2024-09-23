@@ -4,6 +4,7 @@ import os
 import mplhep as hep
 import numpy as np
 import yaml
+from statsmodels.stats.weightstats import DescrStatsW
 
 cfg = yaml.safe_load(open("../config/config.yaml"))
 
@@ -16,10 +17,6 @@ red = (203/255, 68/255, 10/255)
 
 plt.rcParams.update({"font.size": 14})
 
-
-def SrootSB(S,B):
-    # signal over root signal + background
-    return S/np.sqrt(S+B)
 
 def AMS(S, B, b0=0):
     ams = np.sqrt(2*((S+B+b0)*np.log(1+S/(B+b0))-S))
@@ -44,33 +41,11 @@ ggH = pred_df[pred_df['class_label'] == 11]
 VBF = pred_df[pred_df['class_label'] == 12]
 total_bkg = pred_df[(pred_df['class_label'] == 0) | (pred_df['class_label'] == 2)]
 
-# decide bins with flat regions in signal
-signal_scores = higgs['pred_1']
-
-# find number of signal (weighted) to have per bin
-n_sig = len(signal_scores)
+# Split into n bins with equal number of weighted signal
 n_bins = 5
-sum_w = np.sum(higgs['weight'])
-target_per_bin = sum_w/n_bins
-
-# scan bins until get to target amount of signal weight
-higgs = higgs.sort_values(by='pred_1').reset_index(drop=True)
-
-sum_w_bin = 0 # track sum of weights in a bin
-
-# ugly, but iterate through the signal df, and check if the cumulative weight
-# is > thresh to make a new bin
-bins = [0.33]
-for i in range(n_sig-1):
-    sum_w_bin += higgs['weight'][i]
-    if sum_w_bin > target_per_bin:
-        bin_edge = (higgs['pred_1'][i] + higgs['pred_1'][i+1])/2
-        bins.append(bin_edge)
-        sum_w_bin = 0
-bins.append(1)
-
-
-# print(f"Optimised bining is: {bins}")
+w_perc = DescrStatsW(higgs['pred_1'], weights=higgs['weight']).quantile(np.linspace(0, 1, n_bins+1)[1:-1]) # percentiles
+bins = np.concatenate([[0.33], np.array(w_perc), [1]])
+print(f"Optimised bin edges: {bins}")
 
 
 bin_centre = bins[:-1]+ np.diff(bins)/2
@@ -115,19 +90,12 @@ plt.savefig(os.path.join(model_dir, f"Optimised_Higgs_score.pdf"))
 
 
 sig_counts = ggH_counts + VBF_counts
-sigs_SSB = np.zeros(n_bins)
-sigs_AMS = np.zeros(n_bins)
-for b in range(n_bins):
-    sig_SSB = SrootSB(sig_counts[b], bkg_counts[b])
-    sig_AMS = AMS(sig_counts[b], bkg_counts[b])
-    sigs_SSB[b] = sig_SSB
-    sigs_AMS[b] = sig_AMS
+
+
+sig_AMS = AMS(sig_counts, bkg_counts)
+
 
 print("--------------------------------------------------------")
 # print(f"S/root(S+B) for the individual bins is: {sigs_SSB}")
-print(f"AMS for the individual bins is: {sigs_AMS}")
-
-overall_sig_SSB = np.sqrt(np.sum(sigs_SSB**2))
-overall_sig_AMS = np.sqrt(np.sum(sigs_AMS**2))
-# print(f"Overall S/root(S+B) (sum in quad): {overall_sig_SSB}")
-print(f"Overall AMS (sum in quad): {overall_sig_AMS}")
+print(f"AMS for the individual bins is: {sig_AMS}")
+print(f"Overall AMS: {np.sqrt(np.sum(sig_AMS**2))}")
