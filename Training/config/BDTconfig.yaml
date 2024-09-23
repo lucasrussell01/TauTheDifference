@@ -3,12 +3,16 @@ Setup:
   model_outputs: 'XGB_Models/DeepTauVSjet/'
   model_name: 'model_opt'
   
-BDT_config:
-  learning_rate: 0.05
-  n_estimators: 750
-  max_depth: 3
-  min_child_weight: 1
-  reg_lambda: 1
+
+param: {
+        'objective': 'multi:softmax',
+        'n_estimators': 750,
+        'max_depth': 3,
+        'learning_rate': 0.05,
+        'reg_lambda': 1,
+        'min_child_weight': 1
+      }
+
 
 Features:
   train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
