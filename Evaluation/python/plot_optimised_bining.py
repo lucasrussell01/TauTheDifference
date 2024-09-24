@@ -77,7 +77,7 @@ for i in range(1, n_bins):
     ax.axvline(x=bins[i], color='black', linestyle='--', linewidth = 1.3)
 
 # Labels etc
-ax.set_xlabel(rf"Higgs BDT Score")
+ax.set_xlabel(rf"Higgs {cfg['model_type']} Score")
 ax.set_ylabel(f"Events (weighted)")
 ax.set_xlim(0.33, 1)
 ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
