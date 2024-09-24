@@ -50,7 +50,7 @@ def process_samples(cfg):
         # Determine relevant weights
         if not options['data']:
             opposite_sign = True # same sign data-driven QCD
-            process_factor = process_weight(options['x_sec'], options['n_eff'])
+            process_factor = process_weight(options['x_sec'], options['n_eff'], options['lumi'])
             print(f"Luminosity and Cross Section weighting: {process_factor}")
             if 'Filtered' in sample: # apply filter efficiency if requires
                 df['weight'] *= options['filter_eff']
@@ -59,7 +59,7 @@ def process_samples(cfg):
                 df = cp_weight(df) # LHE reweighting
         elif options['data']:
             opposite_sign = False # same_sign for qcd (data-driven)
-            process_factor = 1 # take extrapolation factor to be 1 for now
+            process_factor = options['extrapolation_factor'] # 1 for now
             print(f"Extrapolation factor weighting: {process_factor}")
         # Apply weights
         df['weight'] *= process_factor # update central weight

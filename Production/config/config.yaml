@@ -20,54 +20,64 @@ Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
  # Features to store in output tuples
 
 Datasets: # Datasets to be processed
+  'Tau_Run2022C':
+    data: true
+    extrapolation_factor: 1.0
+    label: 2
+    x_sec: -1
+    n_eff: -1
+    process: 'QCD'
+    lumi: 8077.0
+  'Tau_Run2022D':
+    data: true
+    extrapolation_factor: 1.0
+    label: 2
+    x_sec: -1
+    n_eff: -1
+    process: 'QCD'
+    lumi: 8077.0
   'DYto2L_M-50_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
     n_eff: 145286646
     process: 'DY'
+    lumi: 8077.0
   'DYto2L_M-50_madgraphMLM_ext1':
     data: false
     label: 0
     x_sec: 6282.6
     n_eff: 145286646
     process: 'DY'
+    lumi: 8077.0
   'DYto2L_M-50_1J_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
     n_eff: 145286646
     process: 'DY'
+    lumi: 8077.0
   'DYto2L_M-50_2J_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
     n_eff: 145286646
     process: 'DY'
+    lumi: 8077.0
   'DYto2L_M-50_3J_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
     n_eff: 145286646
     process: 'DY'
+    lumi: 8077.0
   'DYto2L_M-50_4J_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
     n_eff: 145286646
     process: 'DY'
-  'Tau_Run2022C':
-    data: true
-    label: 2
-    x_sec: -1
-    n_eff: -1
-    process: 'QCD'
-  'Tau_Run2022D':
-    data: true
-    label: 2
-    x_sec: -1
-    n_eff: -1
-    process: 'QCD'
+    lumi: 8077.0
   'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay':
     data: false
     label: 11
@@ -75,6 +85,7 @@ Datasets: # Datasets to be processed
     n_eff: 20313722
     process: 'Higgs'
     filter_eff: 0.3847
+    lumi: 8077.0
   'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay':
     data: false
     label: 11
@@ -82,6 +93,7 @@ Datasets: # Datasets to be processed
     n_eff: 20313722
     process: 'Higgs'
     filter_eff: 0.3848
+    lumi: 8077.0
   'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay':
     data: false
     label: 11
@@ -89,6 +101,7 @@ Datasets: # Datasets to be processed
     n_eff: 20313722
     process: 'Higgs'
     filter_eff: 0.3848
+    lumi: 8077.0
   'VBFHToTauTau_UncorrelatedDecay_Filtered':
     data: false
     label: 12
@@ -96,3 +109,4 @@ Datasets: # Datasets to be processed
     n_eff: 5082505
     process: 'Higgs'
     filter_eff: 0.4091
+    lumi: 8077.0
