@@ -1,16 +1,17 @@
 Setup:
   input_path: '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt'
-  model_outputs: 'XGB_Models/DeepTauVSjet/'
-  model_name: 'model_opt'
-  
+  model_outputs: 'XGB_Models/HyperOpt/'
+  model_name: 'model_best100LR'
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 750,
-        'max_depth': 3,
-        'learning_rate': 0.05,
-        'reg_lambda': 1,
-        'min_child_weight': 1
+        'n_estimators': 837,
+        'max_depth': 5,
+        'learning_rate': 0.0504790888140139,
+        'lambda': 4.3322006949756574e-08,
+        'min_child_weight': 5,
+        'subsample': 0.6641249000584662,
+        'colsample_bytree': 0.325022661012661
       }
 
 
