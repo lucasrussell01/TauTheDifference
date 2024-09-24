@@ -11,10 +11,9 @@ import argparse
 
 def get_args():
     parser = argparse.ArgumentParser(description="Hyperparameter optimization for XGBoost")
-    parser.add_argument('--n_trials', type=int, help="Variable to plot in df")
+    parser.add_argument('--n_trials', type=int, help="Number of trials to attempt")
+    parser.add_argument('--study_name', type=str, help="Name of study (can use to resume)")
     return parser.parse_args()
-
-args = get_args()
 
 
 def val_eval(y_pred_proba, x, y, w_phys):
@@ -52,15 +51,9 @@ def objective(trial):
         "subsample": trial.suggest_float("subsample", 0.2, 1.0), # sampling
         "colsample_bytree": trial.suggest_float("colsample_bytree", 0.2, 1.0),
         "learning_rate": trial.suggest_float("learning_rate", 0.03, 0.7),
+        "max_depth": trial.suggest_int("max_depth", 3, 9),
+        "min_child_weight": trial.suggest_int("min_child_weight", 2, 10)
     }
-
-    # if param["booster"] in ["gbtree", "dart"]: # tree based methods
-    param["max_depth"] = trial.suggest_int("max_depth", 3, 9)
-    param["min_child_weight"] = trial.suggest_int("min_child_weight", 2, 10)
-    # param["eta"] = trial.suggest_float("eta", 1e-8, 1.0, log=True)
-    # # defines how selective algorithm is.
-    # param["gamma"] = trial.suggest_float("gamma", 1e-8, 1.0, log=True)
-    # param["grow_policy"] = trial.suggest_categorical("grow_policy", ["depthwise", "lossguide"])
 
     model = XGBClassifier(**param)
     model.fit(x_train, y_train, sample_weight=w_train)
@@ -73,12 +66,15 @@ def objective(trial):
 
 
 def main():
+
     print(f"Optimizing hyperparameters for XGBoost model with {args.n_trials} trials")
 
     if args.n_trials is not None:
 
         # Optuna study to optimize hyperparameters
-        study = optuna.create_study(direction="maximize")
+        study = optuna.create_study(direction="maximize", study_name=args.study_name,
+                                storage=f"sqlite:///{args.study_name}.db", load_if_exists=True)
+        # Begin search
         study.optimize(objective, n_trials=args.n_trials, n_jobs=-1)
 
         # Summary
@@ -94,6 +90,7 @@ def main():
 
 
 if __name__ == "__main__":
+    args = get_args()
     # Load training and validation datasets
     cfg = yaml.safe_load(open("../config/BDTconfig.yaml"))
     train_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_TRAIN.parquet')

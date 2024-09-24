@@ -1,0 +1,9 @@
+executable = opt_hyp_long.sh
+output = ./logs/out/opt_500trials_run1.$(ClusterId).$(ProcId).out
+error = ./logs/err/opt_500trials_run1.$(ClusterId).$(ProcId).err
+log = ./logs/log/opt_500trials_run1.$(ClusterId).log
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT
++MaxRuntime = 60000
+request_cpus = 8
+queue

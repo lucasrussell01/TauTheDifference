@@ -7,12 +7,10 @@ training_setup:
   epochs: 15
   batch_size: 256
 
-
 param: {
         'dropout_rate': 0.2,
         'learning_rate': 0.001,
       }
-
 
 Features:
   train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
