@@ -28,6 +28,7 @@ Datasets: # Datasets to be processed
     n_eff: -1
     process: 'QCD'
     lumi: 8077.0
+    era: '2022'
   'Tau_Run2022D':
     data: true
     extrapolation_factor: 1.0
@@ -36,6 +37,7 @@ Datasets: # Datasets to be processed
     n_eff: -1
     process: 'QCD'
     lumi: 8077.0
+    era: '2022'
   'DYto2L_M-50_madgraphMLM':
     data: false
     label: 0
@@ -43,6 +45,7 @@ Datasets: # Datasets to be processed
     n_eff: 145286646
     process: 'DY'
     lumi: 8077.0
+    era: '2022'
   'DYto2L_M-50_madgraphMLM_ext1':
     data: false
     label: 0
@@ -50,6 +53,7 @@ Datasets: # Datasets to be processed
     n_eff: 145286646
     process: 'DY'
     lumi: 8077.0
+    era: '2022'
   'DYto2L_M-50_1J_madgraphMLM':
     data: false
     label: 0
@@ -57,6 +61,7 @@ Datasets: # Datasets to be processed
     n_eff: 145286646
     process: 'DY'
     lumi: 8077.0
+    era: '2022'
   'DYto2L_M-50_2J_madgraphMLM':
     data: false
     label: 0
@@ -64,6 +69,7 @@ Datasets: # Datasets to be processed
     n_eff: 145286646
     process: 'DY'
     lumi: 8077.0
+    era: '2022'
   'DYto2L_M-50_3J_madgraphMLM':
     data: false
     label: 0
@@ -71,6 +77,7 @@ Datasets: # Datasets to be processed
     n_eff: 145286646
     process: 'DY'
     lumi: 8077.0
+    era: '2022'
   'DYto2L_M-50_4J_madgraphMLM':
     data: false
     label: 0
@@ -78,6 +85,7 @@ Datasets: # Datasets to be processed
     n_eff: 145286646
     process: 'DY'
     lumi: 8077.0
+    era: '2022'
   'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay':
     data: false
     label: 11
@@ -86,6 +94,7 @@ Datasets: # Datasets to be processed
     process: 'Higgs'
     filter_eff: 0.3847
     lumi: 8077.0
+    era: '2022'
   'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay':
     data: false
     label: 11
@@ -94,6 +103,7 @@ Datasets: # Datasets to be processed
     process: 'Higgs'
     filter_eff: 0.3848
     lumi: 8077.0
+    era: '2022'
   'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay':
     data: false
     label: 11
@@ -102,6 +112,7 @@ Datasets: # Datasets to be processed
     process: 'Higgs'
     filter_eff: 0.3848
     lumi: 8077.0
+    era: '2022'
   'VBFHToTauTau_UncorrelatedDecay_Filtered':
     data: false
     label: 12
@@ -110,3 +121,4 @@ Datasets: # Datasets to be processed
     process: 'Higgs'
     filter_eff: 0.4091
     lumi: 8077.0
+    era: '2022'

@@ -17,18 +17,18 @@ def load_ds(path, feat_names, y_name, w_name, eval = False):
         return x, y, w
 
 
-def create_model(features, dropout_rate=0.2):
+def create_model(cfg):
 
     # TODO: Architecture could be defined in a config file
     # Architecture
-    input_flat = Input(name="input_flat", shape=(len(features)))
-    dense_1 = dense_block(input_flat, 50, dropout=dropout_rate, n="_dense_1")
-    dense_2 = dense_block(dense_1, 100, dropout=dropout_rate, n="_dense_2")
-    dense_3 = dense_block(dense_2, 250, dropout=dropout_rate, n="_dense_3")
-    dense_4 = dense_block(dense_3, 250, dropout=dropout_rate, n="_dense_4")
-    dense_5 = dense_block(dense_4, 100, dropout=dropout_rate, n="_dense_5")
-    dense_6 = dense_block(dense_5, 50, dropout=dropout_rate, n="_dense_6")
-    dense_final = dense_block(dense_6, 3, dropout=dropout_rate, n="_dense_final")
+    input_flat = Input(name="input_flat", shape=(len(cfg['Features']['train'])))
+    dense_1 = dense_block(input_flat, 50, dropout=cfg['param']['dropout_rate'], n="_dense_1")
+    dense_2 = dense_block(dense_1, 100, dropout=cfg['param']['dropout_rate'], n="_dense_2")
+    dense_3 = dense_block(dense_2, 250, dropout=cfg['param']['dropout_rate'], n="_dense_3")
+    dense_4 = dense_block(dense_3, 250, dropout=cfg['param']['dropout_rate'], n="_dense_4")
+    dense_5 = dense_block(dense_4, 100, dropout=cfg['param']['dropout_rate'], n="_dense_5")
+    dense_6 = dense_block(dense_5, 50, dropout=cfg['param']['dropout_rate'], n="_dense_6")
+    dense_final = dense_block(dense_6, 3, dropout=cfg['param']['dropout_rate'], n="_dense_final")
     output = Activation("softmax", name="output")(dense_final)
 
     # Create model
@@ -36,10 +36,10 @@ def create_model(features, dropout_rate=0.2):
 
     return model
 
-def compile_model(model):
+def compile_model(model, cfg):
 
     # TODO: Specify Optimiser via config
-    opt = tf.keras.optimizers.Nadam(learning_rate=1e-3)
+    opt = tf.keras.optimizers.Nadam(learning_rate=cfg['param']['learning_rate'])
 
     # model here
     model.compile(loss=NNLosses.classification_loss, optimizer=opt, metrics=["accuracy"])
@@ -59,17 +59,18 @@ def main():
     x_val, y_val, w_NN_val, w_phys_val = load_ds(val_path, cfg['Features']['train'],
                                  cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
     y_val_onehot = tf.one_hot(y_val, 3)
-    model = create_model(cfg['Features']['train'])
-    compile_model(model)
+    model = create_model(cfg)
+    compile_model(model, cfg)
 
-    model.fit(x_train, y_train_onehot, sample_weight=w_train, validation_data=(x_val, y_val_onehot, w_NN_val), epochs=10, batch_size=256)
+    model.fit(x_train, y_train_onehot, sample_weight=w_train, validation_data=(x_val, y_val_onehot, w_NN_val),
+              epochs=cfg['training_setup']['epochs'], batch_size=cfg['training_setup']['batch_size'])
 
     # Save model
     save_dir = os.path.join(cfg['Setup']['model_outputs'], cfg['Setup']['model_name'])
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     model.save(f'{save_dir}/model.h5')
-    print(f"Training Complete! Model saved to: {save_path} \n")
+    print(f"Training Complete! Model saved to: {save_dir} \n")
     # Save features used:
     with open(os.path.join(save_dir, 'train_cfg.yaml'), 'w') as f:
         yaml.dump(cfg, f)

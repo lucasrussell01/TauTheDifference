@@ -3,9 +3,14 @@ Setup:
   model_outputs: 'DNN_Models/Testing/'
   model_name: 'model_test'
 
+training_setup:
+  epochs: 15
+  batch_size: 256
+
 
 param: {
         'dropout_rate': 0.2,
+        'learning_rate': 0.001,
       }
 
 
