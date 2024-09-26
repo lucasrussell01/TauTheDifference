@@ -73,7 +73,7 @@ def main():
 
         # Optuna study to optimize hyperparameters
         study = optuna.create_study(direction="maximize", study_name=args.study_name,
-                                storage=f"sqlite:///{args.study_name}.db", load_if_exists=True)
+                                storage=f"sqlite:///{args.study_name}.db?timeout=10000", load_if_exists=True)
         # Begin search
         study.optimize(objective, n_trials=args.n_trials, n_jobs=-1)
 
