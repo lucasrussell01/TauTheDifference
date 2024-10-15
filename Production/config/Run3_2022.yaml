@@ -1,0 +1,106 @@
+# ************* Run 3 2022 *************
+
+# Samples to use for tau-tau channel
+samples_tt: 
+  'Tau_Run2022C':
+    data: true
+    extrapolation_factor: 1.0
+    label: 2
+    x_sec: -1
+    n_eff: -1
+    process: 'QCD'
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'Tau_Run2022D':
+    data: true
+    extrapolation_factor: 1.0
+    label: 2
+    x_sec: -1
+    n_eff: -1
+    process: 'QCD'
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'DYto2L_M-50_madgraphMLM':
+    data: false
+    label: 0
+    x_sec: 6282.6
+    n_eff: 145286646
+    process: 'DY'
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'DYto2L_M-50_madgraphMLM_ext1':
+    data: false
+    label: 0
+    x_sec: 6282.6
+    n_eff: 145286646
+    process: 'DY'
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'DYto2L_M-50_1J_madgraphMLM':
+    data: false
+    label: 0
+    x_sec: 6282.6
+    n_eff: 145286646
+    process: 'DY'
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'DYto2L_M-50_2J_madgraphMLM':
+    data: false
+    label: 0
+    x_sec: 6282.6
+    n_eff: 145286646
+    process: 'DY'
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'DYto2L_M-50_3J_madgraphMLM':
+    data: false
+    label: 0
+    x_sec: 6282.6
+    n_eff: 145286646
+    process: 'DY'
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'DYto2L_M-50_4J_madgraphMLM':
+    data: false
+    label: 0
+    x_sec: 6282.6
+    n_eff: 145286646
+    process: 'DY'
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay':
+    data: false
+    label: 11
+    x_sec: 3.276
+    n_eff: 20313722
+    process: 'Higgs'
+    filter_eff: 0.3847
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay':
+    data: false
+    label: 11
+    x_sec: 3.276
+    n_eff: 20313722
+    process: 'Higgs'
+    filter_eff: 0.3848
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay':
+    data: false
+    label: 11
+    x_sec: 3.276
+    n_eff: 20313722
+    process: 'Higgs'
+    filter_eff: 0.3848
+    lumi: 7980.4
+    era: 'Run3_2022'
+  'VBFHToTauTau_UncorrelatedDecay_Filtered':
+    data: false
+    label: 12
+    x_sec: 0.2558
+    n_eff: 5082505
+    process: 'Higgs'
+    filter_eff: 0.4091
+    lumi: 7980.4
+    era: 'Run3_2022'

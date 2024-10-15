@@ -39,16 +39,20 @@ def cuts(df, os, sel_cfg):
     df = df[df['os'] == os]
     return df
 
-def process_samples(cfg):
-    # Preprocessing for NN training, for all samples specified
-    for sample, options in cfg['Datasets'].items():
-        # Open merged parquet file from HiggsDNA output
-        file_path = os.path.join(cfg['Paths']['input'], sample, 'nominal/merged.parquet')
-        print(f"Processing [{sample}]")
-        df = pd.read_parquet(file_path)
+def process_samples(cfg, era):
+    # Preprocessing for signal background samples (skimming step)
 
+    print('Beginning processing for era:', era)
+    era_cfg = yaml.safe_load(open(f"../config/{era}.yaml"))
+    datasets = era_cfg[f'samples_{cfg["Setup"]["channel"]}']
+
+    for sample, options in datasets.items():
+        # Open merged parquet file from HiggsDNA output
+        file_path = os.path.join(cfg['Setup']['input'], era, cfg['Setup']['channel'], sample, 'nominal/merged.parquet')
+        print(f"Processing [{sample}] from {era}")
+        df = pd.read_parquet(file_path)
         # Determine relevant weights
-        if not options['data']:
+        if not options['data']:]
             opposite_sign = True # same sign data-driven QCD
             process_factor = process_weight(options['x_sec'], options['n_eff'], options['lumi'])
             print(f"Luminosity and Cross Section weighting: {process_factor}")
@@ -74,23 +78,32 @@ def process_samples(cfg):
         # Set class labels
         df["class_label"] = options['label']
         print(f"Assigned label {options['label']}")
-        df["NN_weight"] = df["weight"] # initialise column that will store weight for NN
+        df["class_weight"] = df["weight"] # initialise column that will store weight for NN
+
+        # Set an era label
+        if era == 'Run3_2022':
+            df['era'] = 1
+        elif era == 'Run3_2022EE':
+            df['era'] = 2
+        else:
+            df['era'] = -1
+
 
         # Select features
         df = df[cfg['Features']]
 
         # Save processed dataframe
-        out_path = os.path.join(cfg['Paths']['proc_output'], sample)
+        out_path = os.path.join(cfg['Setup']['skim_output'], sample, era)
         if not os.path.exists(out_path):
             os.makedirs(out_path)
         df.to_parquet(os.path.join(out_path, "merged_filtered.parquet"), engine="pyarrow")
         print("\n ------------------------------------------------- \n")
 
-
-
 def main():
     cfg = yaml.safe_load(open("../config/config.yaml"))
-    process_samples(cfg)
+    for era in cfg['Setup']['eras']:
+        process_samples(cfg, era)
+        print('----------------------------------')
 
 if __name__ == "__main__":
     main()

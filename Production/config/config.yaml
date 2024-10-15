@@ -1,7 +1,9 @@
-Paths: # Location of samples
-  input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/Run3_2022/tt' # HiggsDNA output
-  proc_output: '/vols/cms/lcr119/offline/HiggsCP/data/processed/2022/tt'
-  merge_output: '/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt'
+Setup:
+  eras: ['Run3_2022', 'Run3_2022EE']
+  channel: 'tt'
+  input: '/vols/cms/ks1021/offline/HiggsDNA/IC/output/production_fixPU' #'/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/production' # HiggsDNA output
+  output: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/tt' # ShuffleMerge output
+  skim_output: '/vols/cms/lcr119/offline/HiggsCP/data/skims/temp/tt' # Temporary output for skims
 
 Selection: # Selection to be applied
   vsjet_1: 5 # Medium
@@ -10,115 +12,14 @@ Selection: # Selection to be applied
   vse_2: 2 # VVLoose
   vsmu_1: 1 # VLoose
   vsmu_2: 1 # VLoose
+  triggers: ['trg_doubletau', 'trg_doubletau']
 
+# Variables that will be kept in dataframes
 Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
-            'pt_tt_met', 'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt',
+            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt',
             'met_dphi_1', 'met_dphi_2', 'dphi', 'm_vis', 'pt_vis', 'n_jets',
             'n_bjets', 'mjj', 'jdeta', 'dijetpt', 'jpt_1', 'jpt_2', 'jeta_1',
-            'jeta_2', 'FastMTT_Mass', 'svfitMass', 'svfitMass_err', 'weight',
-            'NN_weight', 'class_label']
- # Features to store in output tuples
-
-Datasets: # Datasets to be processed
-  'Tau_Run2022C':
-    data: true
-    extrapolation_factor: 1.0
-    label: 2
-    x_sec: -1
-    n_eff: -1
-    process: 'QCD'
-    lumi: 8077.0
-    era: '2022'
-  'Tau_Run2022D':
-    data: true
-    extrapolation_factor: 1.0
-    label: 2
-    x_sec: -1
-    n_eff: -1
-    process: 'QCD'
-    lumi: 8077.0
-    era: '2022'
-  'DYto2L_M-50_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 145286646
-    process: 'DY'
-    lumi: 8077.0
-    era: '2022'
-  'DYto2L_M-50_madgraphMLM_ext1':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 145286646
-    process: 'DY'
-    lumi: 8077.0
-    era: '2022'
-  'DYto2L_M-50_1J_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 145286646
-    process: 'DY'
-    lumi: 8077.0
-    era: '2022'
-  'DYto2L_M-50_2J_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 145286646
-    process: 'DY'
-    lumi: 8077.0
-    era: '2022'
-  'DYto2L_M-50_3J_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 145286646
-    process: 'DY'
-    lumi: 8077.0
-    era: '2022'
-  'DYto2L_M-50_4J_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 145286646
-    process: 'DY'
-    lumi: 8077.0
-    era: '2022'
-  'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay':
-    data: false
-    label: 11
-    x_sec: 3.276
-    n_eff: 20313722
-    process: 'Higgs'
-    filter_eff: 0.3847
-    lumi: 8077.0
-    era: '2022'
-  'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay':
-    data: false
-    label: 11
-    x_sec: 3.276
-    n_eff: 20313722
-    process: 'Higgs'
-    filter_eff: 0.3848
-    lumi: 8077.0
-    era: '2022'
-  'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay':
-    data: false
-    label: 11
-    x_sec: 3.276
-    n_eff: 20313722
-    process: 'Higgs'
-    filter_eff: 0.3848
-    lumi: 8077.0
-    era: '2022'
-  'VBFHToTauTau_UncorrelatedDecay_Filtered':
-    data: false
-    label: 12
-    x_sec: 0.2558
-    n_eff: 5082505
-    process: 'Higgs'
-    filter_eff: 0.4091
-    lumi: 8077.0
-    era: '2022'
+            'jeta_2', 'rawDeepTau2018v2p5VSjet_1', rawDeepTau2018v2p5VSjet_2,
+            'FastMTT_Mass', #'svfitMass', 'svfitMass_err', # Mass info
+            'weight','class_weight', 'class_label', # Classifier info
+            'run', 'lumi', 'event', 'era'] # Run info
