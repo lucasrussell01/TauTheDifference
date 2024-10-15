@@ -14,12 +14,15 @@ red = (203/255, 68/255, 10/255)
 
 plt.rcParams.update({"font.size": 14})
 
+# example usage: python plot_histo.py --var='m_vis' --label='m$_{vis}$ (GeV)'
 
-
+lumi_22 = 7.98
+lumi_22EE = 26.67
 
 def get_args():
     parser = argparse.ArgumentParser(description="Plot histogram for a variable of choice")
     parser.add_argument('--var', type=str, help="Variable to plot in df")
+    parser.add_argument('--era', type=str, help="Era to plot", required=False, default='run3')
     parser.add_argument('--xmin', type=float, help="Min x to plot", required=False, default=0)
     parser.add_argument('--xmax', type=float, help="Max x to plot", required=False, default=350)
     parser.add_argument('--ymax', type=float, help="Max y to plot", required=False)
@@ -31,8 +34,25 @@ args = get_args()
 if args.label is None:
     args.label = args.var
 
+
+# File to draw from
+file = '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge_trg/tt/ShuffleMerge_ALL.parquet'
+
+
 # import merged SM file
-merged_df = pd.read_parquet('/vols/cms/lcr119/offline/HiggsCP/data/ShuffleMerge/2022/tt/ShuffleMerge_ALL.parquet')
+df = pd.read_parquet(file)#
+if args.era == '2022':
+    merged_df = df[df['era']==1]
+    lumi = lumi_22
+elif args.era == '2022EE':
+    merged_df = df[df['era']==2]
+    lumi = lumi_22EE
+else:
+    merged_df = df
+    lumi = lumi_22 + lumi_22EE
+    print(f"Using all available eras (full 2022)")
+
+
 
 # extract categories
 taus = merged_df.loc[merged_df['class_label'] == 0]
@@ -69,10 +89,15 @@ ax.set_ylabel(f"Weighted Events/{bin_size} GeV")
 ax.set_xlim(args.xmin, args.xmax)
 if args.ymax is not None:
     ax.set_ylim(0, args.ymax)
-ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
-ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
-ax.text(0.16, 1.02, 'Work in Progress', fontsize=16, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
+else:
+    ax.set_ylim(0, 1.1*max(tau_hist+bkg_hist))
+ax.text(0.6, 1.02, fr"{(lumi):.2f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=ax.transAxes)
+ax.text(0.01, 1.02, 'CMS', fontsize=18, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
+ax.text(0.14, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
 # ax.set_yscale('log')
 ax.legend()
-plt.savefig(f"{args.var}.pdf")
 
+fname = f"figs/trg_{args.var}_{args.era}.pdf"
+plt.savefig(fname)
+
+print(f"Plotted {args.var} to {fname}")
