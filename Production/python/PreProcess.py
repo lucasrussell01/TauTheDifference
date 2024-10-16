@@ -37,6 +37,20 @@ def cuts(df, os, sel_cfg):
     # Opposite sign cut
     print(f"Opposite sign requirement: {os}")
     df = df[df['os'] == os]
+    if sel_cfg['triggers']:
+        print(f'Applying trigger matching: {sel_cfg["triggers"]}')
+        df = trigger_match(df, sel_cfg['triggers'])
+    return df
+
+def trigger_match(df, triggers):
+    n_bef = len(df)
+    if ('trg_doubletau' and 'trg_doubletauandjet') in triggers:
+        df = df[((df['trg_doubletau'] == 1) & (df['pt_1'] > 40) & (df['pt_2'] > 40)) |
+                ((df['trg_doubletauandjet'] == 1) & (df['pt_1'] > 35) & (df['pt_2'] > 35) & (df['jpt_1'] > 60))]
+        # n_aft = len(df)
+        # print(f"Number of events after trigger matching: {n_aft} - {(n_aft / n_bef) * 100:.2f}% kept")
+    else:
+        print("Trigger matching not implemented")
     return df
 
 def process_samples(cfg, era):
@@ -52,7 +66,7 @@ def process_samples(cfg, era):
         print(f"Processing [{sample}] from {era}")
         df = pd.read_parquet(file_path)
         # Determine relevant weights
-        if not options['data']:]
+        if not options['data']:
             opposite_sign = True # same sign data-driven QCD
             process_factor = process_weight(options['x_sec'], options['n_eff'], options['lumi'])
             print(f"Luminosity and Cross Section weighting: {process_factor}")
@@ -73,7 +87,7 @@ def process_samples(cfg, era):
         df = cuts(df, opposite_sign, cfg['Selection'])
         n_after_cuts = len(df)
         print(f"Number of events initially: {n_before_cuts}")
-        print(f"Number of events after selections: {n_after_cuts}: ({(n_after_cuts / n_before_cuts) * 100:.2f}% kept)")
+        print(f"Number of events after all selections: {n_after_cuts}: ({(n_after_cuts / n_before_cuts) * 100:.2f}% kept)")
 
         # Set class labels
         df["class_label"] = options['label']

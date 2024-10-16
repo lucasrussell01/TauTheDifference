@@ -12,7 +12,7 @@ Selection: # Selection to be applied
   vse_2: 2 # VVLoose
   vsmu_1: 1 # VLoose
   vsmu_2: 1 # VLoose
-  triggers: ['trg_doubletau', 'trg_doubletau']
+  triggers: ['trg_doubletau', 'trg_doubletauandjet']
 
 # Variables that will be kept in dataframes
 Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
