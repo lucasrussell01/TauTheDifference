@@ -82,6 +82,9 @@ def process_samples(cfg, era):
         # Apply weights
         df['weight'] *= process_factor # update central weight
 
+        if len(df[df['weight'] < 0]) > 0:
+            print("Warning! Negative weights detected... removing")
+            df = df[df['weight'] > 0]
         # Apply Selections
         n_before_cuts = len(df)
         df = cuts(df, opposite_sign, cfg['Selection'])
