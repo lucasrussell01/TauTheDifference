@@ -4,6 +4,51 @@ import numpy as np
 import yaml
 from Split import train_eval_split_shards, split_data
 
+
+
+def create_even_dataset(path, df, train_frac=0.7):
+    # -> save the files to train the EVEN Model (WARNING: these have ODD event numbers)
+    print('\n Creating datasets for EVEN model training and validation:')
+
+    # only events with an ODD event number should only be used to train and tune the EVEN model
+    df = df[df['event'] % 2 == 1]
+
+    # Find number of events to use for training
+    n_train = int(len(df)*train_frac)
+    df_train = df[:n_train] # training dataframe
+    df_train.to_parquet(os.path.join(path, 'ShuffleMerge_EVENmodel_TRAIN.parquet'))
+    print(f"Saved {len(df_train)} events to 'ShuffleMerge_EVENmodel_TRAIN.parquet'")
+
+    # Save training datafram
+    val_df = df[n_train:] # validation dataframe
+    val_df.to_parquet(os.path.join(path, 'ShuffleMerge_EVENmodel_VAL.parquet'))
+    print(f"Saved {len(val_df)} events to 'ShuffleMerge_EVENmodel_VAL.parquet")
+    print('---------------------------------------------------------------')
+
+    return True
+
+def create_odd_dataset(path, df, train_frac=0.7):
+    # -> save the files to train the ODD Model (WARNING: these have EVEN event numbers)
+    print('\n Creating datasets for ODD model training and validation:')
+
+    # only events with an EVEN event number should only be used to train and tune the ODD model
+    df = df[df['event'] % 2 == 0]
+
+    # Find number of events to use for training
+    n_train = int(len(df)*train_frac)
+    df_train = df[:n_train] # training dataframe
+    df_train.to_parquet(os.path.join(path, 'ShuffleMerge_ODDmodel_TRAIN.parquet'))
+    print(f"Saved {len(df_train)} events to 'ShuffleMerge_ODDmodel_TRAIN.parquet'")
+
+    # Save training datafram
+    val_df = df[n_train:] # validation dataframe
+    val_df.to_parquet(os.path.join(path, 'ShuffleMerge_ODDmodel_VAL.parquet'))
+    print(f"Saved {len(val_df)} events to 'ShuffleMerge_ODDmodel_VAL.parquet")
+    print('---------------------------------------------------------------')
+
+    return True
+
+
 # Shuffle and merge files that have been pre-processed
 
 def shuffle_merge(cfg, save_shards=False):
@@ -19,23 +64,18 @@ def shuffle_merge(cfg, save_shards=False):
     merged_df = merged_df.sample(frac=1).reset_index(drop=True) # shuffle df
     # Apply normalisation for class balancing
     merged_df = normalise(merged_df)
-    # Save merged dataframe
+    # Save total dataframe
     if not os.path.exists(cfg['Setup']['output']):
         os.makedirs(cfg['Setup']['output'])
     merged_df.to_parquet(os.path.join(cfg['Setup']['output'], "ShuffleMerge_ALL.parquet"), engine = "pyarrow")
-    # Separate into even and odd event numbers (to avoid applying model to training events in analysis)
-    for p, r in zip(['even', 'odd'], [0, 1]):
-        print("Creating shuffled and merged files for ", p, " events")
-        # Even or odd event numbers
-        df_split = merged_df[merged_df['event'] % 2 == r]
-        if not os.path.exists(os.path.join(cfg['Setup']['output'], p)):
-            os.makedirs(os.path.join(cfg['Setup']['output'], p))
-        print(f"Saving outputs to: {os.path.join(cfg['Setup']['output'], p)}")
-        df_split.to_parquet(os.path.join(cfg['Setup']['output'], p, "ShuffleMerge_ALL.parquet"), engine = "pyarrow")
-        split_data(os.path.join(cfg['Setup']['output'], p), 0.50, 0.25, 0.25) # split into train, val, eval
-        if save_shards:
-            save_shards_df(df_split, cfg['Setup']['output'])
-            train_eval_split_shards(os.path.join(cfg['Setup']['output'], p, 'shards'), 0.7)
+    # Save dataframes for EVEN model:
+    create_even_dataset(cfg['Setup']['output'], merged_df)
+    # Save dataframes for ODD model:
+    create_odd_dataset(cfg['Setup']['output'], merged_df)
+    # split_data(os.path.join(cfg['Setup']['output'], p), 0.50, 0.25, 0.25) # split into train, val, eval
+    # if save_shards:
+    #     save_shards_df(df_split, cfg['Setup']['output'])
+    #     train_eval_split_shards(os.path.join(cfg['Setup']['output'], p, 'shards'), 0.7)
 
 def normalise(merged_df):
     # Target sum of weights to be N events
