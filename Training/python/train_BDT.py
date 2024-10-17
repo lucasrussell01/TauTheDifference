@@ -1,6 +1,6 @@
 import xgboost as xgb
 from xgboost import XGBClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, roc_auc_score
 import pandas as pd
 import os
 import yaml
@@ -49,6 +49,10 @@ def validation(model, cfg, parity):
     ams = AMS(s_counts, bkg_counts)
     print("AMS Score (bin by bin):", ams)
     print(f"\033[1;32mAMS: {np.sqrt(np.sum(ams**2))} \033[0m")
+    # AUC Score
+    truth = y_higgs.replace({11: 1, 12: 1, 2:0, 0:0}) # binary Higgs vs all
+    auc = roc_auc_score(truth, y_pred_higgs, sample_weight=w_pred_higgs)
+    print("AUC Score:", auc)
     del x, y, w_NN, w_phys
 
 def train_model(cfg, parity):
