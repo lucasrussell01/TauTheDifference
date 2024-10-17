@@ -22,8 +22,9 @@ def AMS(S, B, b0=0):
     ams = np.sqrt(2*((S+B+b0)*np.log(1+S/(B+b0))-S))
     return ams
 
-def val_eval(model, cfg):
-    val_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_VAL.parquet')
+def validation(model, cfg, parity):
+    print(f'\033[1mModel performance: \033[0m')
+    val_path = os.path.join(cfg['Setup']['input_path'], f'ShuffleMerge_{parity}model_VAL.parquet')
     x, y, w_NN, w_phys = load_ds(val_path, cfg['Features']['train'],
                                  cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
     # Get predictions
@@ -47,33 +48,32 @@ def val_eval(model, cfg):
     # AMS Score
     ams = AMS(s_counts, bkg_counts)
     print("AMS Score (bin by bin):", ams)
-    print(f"Overall AMS: {np.sqrt(np.sum(ams**2))}")
+    print(f"\033[1;32mAMS: {np.sqrt(np.sum(ams**2))} \033[0m")
     del x, y, w_NN, w_phys
 
-def train_model(cfg):
-    # Input path
-    train_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_TRAIN.parquet')
+def train_model(cfg, parity):
+    # Input path (depends on even/odd)
+    train_path = os.path.join(cfg['Setup']['input_path'], f'ShuffleMerge_{parity}model_TRAIN.parquet')
 
     # Load training dataset
     x_train, y_train, w_train = load_ds(train_path, cfg['Features']['train'],
                                         cfg['Features']['truth'], cfg['Features']['weight'])
 
     # Model training
-    print("Training XGBClassifier model")
+    print(f"Training XGBClassifier model for \033[1;34m{parity}\033[0m events")
     model = XGBClassifier(**cfg['param'])
     model.fit(x_train, y_train, sample_weight=w_train)
 
     # Save model
-    save_dir = os.path.join(cfg['Setup']['model_outputs'], cfg['Setup']['model_name'])
+    save_dir = os.path.join(cfg['Setup']['model_outputs'], cfg['Setup']['model_name'], parity)
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
-    save_path = os.path.join(save_dir, 'model.json')
+    save_path = os.path.join(save_dir, f'model_{parity}.json')
     model.save_model(save_path)
-    print(f"Training Complete! Model saved to: {save_path} \n")
     # Get Training accuracy
     y_pred_labels = model.predict(x_train)
     accuracy = accuracy_score(y_train, y_pred_labels, sample_weight=w_train)
-    print("Training Accuracy:", accuracy)
+    print(f"Training Complete! (accuracy: {accuracy}) - Model saved to: {save_path}")
     # Save features used:
     with open(os.path.join(save_dir, 'train_cfg.yaml'), 'w') as f:
         yaml.dump(cfg, f)
@@ -85,8 +85,15 @@ def train_model(cfg):
 
 def main():
     cfg = yaml.safe_load(open("../config/BDTconfig.yaml"))
-    model = train_model(cfg)
-    val_eval(model, cfg)
+    # Train the model to be applied on EVEN events
+    model = train_model(cfg, 'EVEN')
+    validation(model, cfg, 'EVEN')
+    print('---------------------------------- \n')
+
+    # Train the model to be applied on ODD events
+    model = train_model(cfg, 'ODD')
+    validation(model, cfg, 'ODD')
+    print('---------------------------------- \n')
 
 if __name__ == "__main__":
     main()
