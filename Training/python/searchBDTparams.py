@@ -15,9 +15,13 @@ def get_args():
     parser.add_argument('--study_name', type=str, help="Name of study (can use to resume)")
     return parser.parse_args()
 
-
-def val_eval(y_pred_proba, x, y, w_phys):
+def validation(model, cfg, parity):
+    # Load validation dataset
+    val_path = os.path.join(cfg['Setup']['input_path'], f'ShuffleMerge_{parity}model_VAL.parquet')
+    x, y, w_NN, w_phys = load_ds(val_path, cfg['Features']['train'],
+                                 cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
     # Get predictions
+    y_pred_proba = model.predict_proba(x) # raw score
     y_pred = y_pred_proba.argmax(axis=1) # predicted label
     # Find events classified as Higgs
     y_pred_higgs = y_pred_proba[:, 1][y_pred==1]   # get raw Higgs scores of events classified as Higgs
@@ -32,14 +36,34 @@ def val_eval(y_pred_proba, x, y, w_phys):
     s_counts = np.histogram(y_pred_higgs[(y_higgs == 1)], bins=bins, weights=w_pred_higgs[(y_higgs == 1)])[0]
     bkg_counts = np.histogram(y_pred_higgs[(y_higgs != 1)], bins=bins, weights=w_pred_higgs[(y_higgs != 1)])[0]
     # AMS Score
-    ams = AMS(s_counts, bkg_counts)
-    ams_tot = np.sqrt(np.sum(ams**2))
-    print("AMS Score (bin by bin):", ams)
-    print(f"Overall AMS: {ams_tot}")
-    return ams_tot
+    ams_bybin = AMS(s_counts, bkg_counts)
+    ams = np.sqrt(np.sum(ams_bybin**2))
+    # print("AMS Score (bin by bin):", ams)
+    print(f"AMS {parity}: {ams}")
+    return ams
+
+
+def train_model(cfg, parity, param):
+    # Input path (depends on even/odd)
+    train_path = os.path.join(cfg['Setup']['input_path'], f'ShuffleMerge_{parity}model_TRAIN.parquet')
+
+    # Load training dataset
+    x_train, y_train, w_train = load_ds(train_path, cfg['Features']['train'],
+                                        cfg['Features']['truth'], cfg['Features']['weight'])
+
+    # Model training
+    print(f"Training XGBClassifier model for \033[1;34m{parity}\033[0m events")
+    model = XGBClassifier(**param)
+    model.fit(x_train, y_train, sample_weight=w_train)
+
+    del x_train, y_train, w_train
+
+    return model
 
 
 def objective(trial):
+
+    # Optimise the sum of the two AMS scores
 
     param = {
         "verbosity": 0,
@@ -55,14 +79,21 @@ def objective(trial):
         "min_child_weight": trial.suggest_int("min_child_weight", 2, 10)
     }
 
-    model = XGBClassifier(**param)
-    model.fit(x_train, y_train, sample_weight=w_train)
+    # Load training config
+    cfg = yaml.safe_load(open("../config/BDTHyperOpt_config.yaml"))
 
-    # Inference on validation dataset:
-    y_pred_val = model.predict_proba(x_val)
-    ams = val_eval(y_pred_val, x_val, y_val, w_val_phys)
+    # Train even model
+    model_even = train_model(cfg, "EVEN", param)
+    ams_even = validation(model_even, cfg, "EVEN")
 
-    return ams
+    # Train odd model
+    model_odd = train_model(cfg, "ODD", param)
+    ams_odd = validation(model_odd, cfg, "ODD")
+
+    if abs(ams_even - ams_odd)/(ams_even + ams_odd) > 0.04: # allow a 4% difference in total AMS ~ 8% in between the two
+        return 0 # effectvely veto this model
+    else:
+        return ams_even + ams_odd
 
 
 def main():
@@ -90,14 +121,13 @@ def main():
 
 
 if __name__ == "__main__":
+    # Configuration of tuning via args
     args = get_args()
-    # Load training and validation datasets
-    cfg = yaml.safe_load(open("../config/BDTconfig.yaml"))
-    train_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_TRAIN.parquet')
-    val_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_VAL.parquet')
-    x_train, y_train, w_train = load_ds(train_path, cfg['Features']['train'],
-                                        cfg['Features']['truth'], cfg['Features']['weight'])
-    x_val, y_val, w_val_NN, w_val_phys = load_ds(val_path, cfg['Features']['train'],
-                                            cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
+    # train_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_TRAIN.parquet')
+    # val_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_VAL.parquet')
+    # x_train, y_train, w_train = load_ds(train_path, cfg['Features']['train'],
+    #                                     cfg['Features']['truth'], cfg['Features']['weight'])
+    # x_val, y_val, w_val_NN, w_val_phys = load_ds(val_path, cfg['Features']['train'],
+    #                                         cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
     main()
 
