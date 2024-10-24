@@ -1,5 +1,7 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/tt'
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/tt' # Medium (Standard Dataset)
+  input_path_tight: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge_tight/tt' # Tight VSjet
+  input_path_vtight: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge_Vtight/tt' # VTight VSjet
 
 Features:
   train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',

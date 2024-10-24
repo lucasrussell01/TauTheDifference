@@ -6,6 +6,12 @@ import os
 import yaml
 import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
+import argparse
+
+def get_args():
+    parser = argparse.ArgumentParser(description="XGBoost Classifier Training")
+    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
+    return parser.parse_args()
 
 def load_ds(path, feat_names, y_name, w_name, eval = False):
     df = pd.read_parquet(path)
@@ -69,10 +75,10 @@ def train_model(cfg, parity):
     model.fit(x_train, y_train, sample_weight=w_train)
 
     # Save model
-    save_dir = os.path.join(cfg['Setup']['model_outputs'], cfg['Setup']['model_name'], parity)
+    save_dir = os.path.join(cfg['Setup']['model_outputs'], cfg['Setup']['model_dir_name'], parity)
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
-    save_path = os.path.join(save_dir, f'model_{parity}.json')
+    save_path = os.path.join(save_dir, f"{cfg['Setup']['model_prefix']}_{parity}.json")
     model.save_model(save_path)
     # Get Training accuracy
     y_pred_labels = model.predict(x_train)
@@ -88,7 +94,20 @@ def train_model(cfg, parity):
 
 
 def main():
-    cfg = yaml.safe_load(open("../config/BDTconfig.yaml"))
+    args = get_args()
+    if args.cut == "tight":
+        print("Training for TIGHT Vsjet cut")
+        cfg = yaml.safe_load(open("../config/BDTconfig_tight.yaml"))
+        cfg['Setup']['model_prefix'] = 'model_tight'
+    elif args.cut == "vtight":
+        print("Training for VTIGHT Vsjet cut")
+        cfg = yaml.safe_load(open("../config/BDTconfig_vtight.yaml"))
+        cfg['Setup']['model_prefix'] = 'model_vtight'
+    else: # use medium by default
+        print("Training for MEDIUM Vsjet cut")
+        cfg = yaml.safe_load(open("../config/BDTconfig.yaml"))
+        cfg['Setup']['model_prefix'] = 'model_medium' # begining of model json name (add parity after)
+
     # Train the model to be applied on EVEN events
     model = train_model(cfg, 'EVEN')
     validation(model, cfg, 'EVEN')

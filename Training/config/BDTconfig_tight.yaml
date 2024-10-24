@@ -1,17 +1,17 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/tt'
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge_tight/tt'
   model_outputs: 'XGB_Models/Full2022/'
-  model_dir_name: 'model_opt'
+  model_dir_name: 'model_opt_tight'
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 779,
-        'max_depth': 3,
-        'learning_rate': 0.1954466912505412,
-        'lambda': 0.0038198318631989495,
-        'min_child_weight': 2,
-        'subsample': 0.9684283731209319,
-        'colsample_bytree': 0.6887211584583737
+        'n_estimators': 482,
+        'lambda': 5.414058926328662e-05,
+        'subsample': 0.8276966054874586,
+        'colsample_bytree': 0.6012900503552493,
+        'learning_rate': 0.09945348069648924,
+        'max_depth': 5,
+        'min_child_weight': 4
       }
 
 
