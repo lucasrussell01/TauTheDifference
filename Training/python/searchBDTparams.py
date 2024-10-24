@@ -102,7 +102,7 @@ def objective(trial):
     if abs(ams_even - ams_odd)/(ams_even + ams_odd) > 0.04: # allow a 4% difference in total AMS ~ 8% in between the two
         return 0 # effectvely veto this model
     else:
-        return ams_even + ams_odd
+        return ams_even + ams_odd # - abs(ams_even - ams_odd)
 
 
 def main():
