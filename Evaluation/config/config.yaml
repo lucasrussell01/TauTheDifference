@@ -1,6 +1,7 @@
-model_name: "model_best100LR"
-model_path: "../../Training/python/XGB_Models/HyperOpt"
+model_name: 'model_opt'
+model_path: "../../Training/python/XGB_Models/Full2022"
 model_type: "BDT"
+model_cut: "Medium"
 # model_path: '../../Training/python/DNN_Models/Testing/'
 # model_name: 'model_test'
 # model_type: 'DNN'

@@ -31,7 +31,7 @@ def eval_model(cfg, parity):
     # Load trained model
     model_dir = os.path.join(cfg['model_path'], cfg['model_name'], parity)
     model = XGBClassifier()
-    model.load_model(os.path.join(model_dir, f'model_{parity}.json'))
+    model.load_model(os.path.join(model_dir, f'{train_cfg["Setup"]["model_prefix"]}_{parity}.json'))
 
     y_pred_eval = model.predict_proba(x_eval)
     y_pred_eval_labels = y_pred_eval.argmax(axis=1)
