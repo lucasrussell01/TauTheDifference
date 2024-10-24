@@ -36,7 +36,7 @@ if args.label is None:
 
 
 # File to draw from
-file = '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge_trg/tt/ShuffleMerge_ALL.parquet'
+file = '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/tt/ShuffleMerge_ALL.parquet'
 
 
 # import merged SM file
@@ -97,7 +97,7 @@ ax.text(0.14, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fon
 # ax.set_yscale('log')
 ax.legend()
 
-fname = f"figs/trg_{args.var}_{args.era}.pdf"
+fname = f"figs/{args.var}_{args.era}_class.pdf"
 plt.savefig(fname)
 
 print(f"Plotted {args.var} to {fname}")
