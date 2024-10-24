@@ -1,2 +1,8 @@
 Analysis/python/*.pdf
 Training/python/*.db
+Analysis/python/figs/
+Analysis/python/tmp/
+Training/python/DNN_Models
+Training/python/XGB_Models
+*/python/__pycache__/
+Training/python/batch_jobs
