@@ -13,11 +13,12 @@ def get_args():
     parser = argparse.ArgumentParser(description="Hyperparameter optimization for XGBoost")
     parser.add_argument('--n_trials', type=int, help="Number of trials to attempt")
     parser.add_argument('--study_name', type=str, help="Name of study (can use to resume)")
+    parser.add_argument('--cut', type=str, help="VSjet cut to be used")
     return parser.parse_args()
 
-def validation(model, cfg, parity):
+def validation(model, cfg, parity, ds_path='input_path'):
     # Load validation dataset
-    val_path = os.path.join(cfg['Setup']['input_path'], f'ShuffleMerge_{parity}model_VAL.parquet')
+    val_path = os.path.join(cfg['Setup'][ds_path], f'ShuffleMerge_{parity}model_VAL.parquet')
     x, y, w_NN, w_phys = load_ds(val_path, cfg['Features']['train'],
                                  cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
     # Get predictions
@@ -43,9 +44,9 @@ def validation(model, cfg, parity):
     return ams
 
 
-def train_model(cfg, parity, param):
+def train_model(cfg, parity, param, ds_path='input_path'):
     # Input path (depends on even/odd)
-    train_path = os.path.join(cfg['Setup']['input_path'], f'ShuffleMerge_{parity}model_TRAIN.parquet')
+    train_path = os.path.join(cfg['Setup'][ds_path], f'ShuffleMerge_{parity}model_TRAIN.parquet')
 
     # Load training dataset
     x_train, y_train, w_train = load_ds(train_path, cfg['Features']['train'],
@@ -82,13 +83,21 @@ def objective(trial):
     # Load training config
     cfg = yaml.safe_load(open("../config/BDTHyperOpt_config.yaml"))
 
+    # Find correct dataset to use (from cut argument)
+    if args.cut=='medium':
+        data_path = 'input_path'
+    elif args.cut=='tight':
+        data_path = 'input_path_tight'
+    elif args.cut=='vtight':
+        data_path = 'input_path_vtight'
+
     # Train even model
-    model_even = train_model(cfg, "EVEN", param)
-    ams_even = validation(model_even, cfg, "EVEN")
+    model_even = train_model(cfg, "EVEN", param, data_path)
+    ams_even = validation(model_even, cfg, "EVEN", data_path)
 
     # Train odd model
-    model_odd = train_model(cfg, "ODD", param)
-    ams_odd = validation(model_odd, cfg, "ODD")
+    model_odd = train_model(cfg, "ODD", param, data_path)
+    ams_odd = validation(model_odd, cfg, "ODD", data_path)
 
     if abs(ams_even - ams_odd)/(ams_even + ams_odd) > 0.04: # allow a 4% difference in total AMS ~ 8% in between the two
         return 0 # effectvely veto this model
@@ -123,11 +132,5 @@ def main():
 if __name__ == "__main__":
     # Configuration of tuning via args
     args = get_args()
-    # train_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_TRAIN.parquet')
-    # val_path = os.path.join(cfg['Setup']['input_path'], 'ShuffleMerge_VAL.parquet')
-    # x_train, y_train, w_train = load_ds(train_path, cfg['Features']['train'],
-    #                                     cfg['Features']['truth'], cfg['Features']['weight'])
-    # x_val, y_val, w_val_NN, w_val_phys = load_ds(val_path, cfg['Features']['train'],
-    #                                         cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
     main()
 
