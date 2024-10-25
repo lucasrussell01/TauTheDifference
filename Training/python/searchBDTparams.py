@@ -102,7 +102,7 @@ def objective(trial):
     if abs(ams_even - ams_odd)/(ams_even + ams_odd) > 0.04: # allow a 4% difference in total AMS ~ 8% in between the two
         return 0 # effectvely veto this model
     else:
-        return ams_even + ams_odd # - abs(ams_even - ams_odd)
+        return ams_even + ams_odd - abs(ams_even - ams_odd)
 
 
 def main():
@@ -113,7 +113,7 @@ def main():
 
         # Optuna study to optimize hyperparameters
         study = optuna.create_study(direction="maximize", study_name=args.study_name,
-                                storage=f"sqlite:///{args.study_name}.db?timeout=10000", load_if_exists=True)
+                                storage=f"sqlite:///hyperlogs/{args.study_name}.db?timeout=10000", load_if_exists=True)
         # Begin search
         study.optimize(objective, n_trials=args.n_trials, n_jobs=-1)
 
