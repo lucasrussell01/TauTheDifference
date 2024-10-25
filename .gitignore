@@ -5,4 +5,5 @@ Analysis/python/tmp/
 Training/python/DNN_Models
 Training/python/XGB_Models
 */python/__pycache__/
+Training/python/hyperlogs
 Training/python/batch_jobs

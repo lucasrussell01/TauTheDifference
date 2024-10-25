@@ -61,7 +61,7 @@ def shuffle_merge(cfg, save_shards=False):
             file_path = os.path.join(cfg['Setup']['skim_output'], sample, era, 'merged_filtered.parquet')
             df = pd.read_parquet(file_path)
             merged_df = pd.concat([merged_df, df])
-    merged_df = merged_df.sample(frac=1).reset_index(drop=True) # shuffle df
+    merged_df = merged_df.sample(frac=1, random_state=1879).reset_index(drop=True) # shuffle df
     # Apply normalisation for class balancing
     merged_df = normalise(merged_df)
     # Save total dataframe
