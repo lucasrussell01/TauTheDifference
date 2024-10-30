@@ -15,7 +15,7 @@ def feature_study(cfg, parity):
     # Load trained model
     model_dir = os.path.join(cfg['model_path'], cfg['model_name'], parity)
     model = XGBClassifier()
-    model.load_model(os.path.join(model_dir, f'model_{parity}.json'))
+    model.load_model(os.path.join(model_dir, f'{train_cfg["Setup"]["model_prefix"]}_{parity}.json'))
 
     # make folder for feature importance plots
     if not os.path.exists(os.path.join(model_dir, 'features')):
