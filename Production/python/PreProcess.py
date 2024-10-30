@@ -8,7 +8,7 @@ import yaml
 # Process HiggsDNA outputs for classifier training
 
 
-def process_weight(x_sec, n_eff, lumi = 8077):
+def process_weight(x_sec, n_eff, lumi):
     # 8077 is 2022 lumi 
     return (x_sec * lumi) / n_eff
 
@@ -102,6 +102,10 @@ def process_samples(cfg, era):
             df['era'] = 1
         elif era == 'Run3_2022EE':
             df['era'] = 2
+        elif era == 'Run3_2023':
+            df['era'] = 3
+        elif era == 'Run3_2023BPix':
+            df['era'] = 4
         else:
             df['era'] = -1
 
