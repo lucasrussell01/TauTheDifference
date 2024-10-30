@@ -83,7 +83,7 @@ samples_tt:
     x_sec: 3.276
     n_eff: 20313722
     process: 'Higgs'
-    filter_eff: 0.3848
+    filter_eff: 0.3847
     lumi: 7980.4
     era: 'Run3_2022'
   'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay':
@@ -92,7 +92,7 @@ samples_tt:
     x_sec: 3.276
     n_eff: 20313722
     process: 'Higgs'
-    filter_eff: 0.3848
+    filter_eff: 0.3847
     lumi: 7980.4
     era: 'Run3_2022'
   'VBFHToTauTau_UncorrelatedDecay_Filtered':
@@ -101,6 +101,6 @@ samples_tt:
     x_sec: 0.2558
     n_eff: 5082505
     process: 'Higgs'
-    filter_eff: 0.4091
+    filter_eff: 0.4095
     lumi: 7980.4
     era: 'Run3_2022'

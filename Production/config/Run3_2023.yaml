@@ -1,115 +1,116 @@
-# ************* Run 3 2022EE *************
+# ************* Run 3 2023 *************
 
 # Samples to use for tau-tau channel
 samples_tt: 
-  'Tau_Run2022E':
+  'Tau_Run2023C_v1':
     data: true
     extrapolation_factor: 1.0
     label: 2
     x_sec: -1
     n_eff: -1
     process: 'QCD'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
-  'Tau_Run2022F':
+    lumi: 17794
+    era: 'Run3_2023'
+  'Tau_Run2023C_v2':
     data: true
     extrapolation_factor: 1.0
     label: 2
     x_sec: -1
     n_eff: -1
     process: 'QCD'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
-  'Tau_Run2022G':
+    lumi: 17794
+    era: 'Run3_2023'
+  'Tau_Run2023C_v3':
     data: true
     extrapolation_factor: 1.0
     label: 2
     x_sec: -1
     n_eff: -1
     process: 'QCD'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
+  'Tau_Run2023C_v4':
+    data: true
+    extrapolation_factor: 1.0
+    label: 2
+    x_sec: -1
+    n_eff: -1
+    process: 'QCD'
+    lumi: 17794
+    era: 'Run3_2023'
   'DYto2L_M-50_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
-    n_eff: 494841164
+    n_eff: 130559088
     process: 'DY'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
-  'DYto2L_M-50_madgraphMLM_ext1':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 494841164
-    process: 'DY'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
   'DYto2L_M-50_1J_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
-    n_eff: 494841164
+    n_eff: 130559088
     process: 'DY'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
   'DYto2L_M-50_2J_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
-    n_eff: 494841164
+    n_eff: 130559088
     process: 'DY'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
   'DYto2L_M-50_3J_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
-    n_eff: 494841164
+    n_eff: 130559088
     process: 'DY'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
   'DYto2L_M-50_4J_madgraphMLM':
     data: false
     label: 0
     x_sec: 6282.6
-    n_eff: 494841164
+    n_eff: 130559088
     process: 'DY'
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
   'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay':
     data: false
     label: 11
     x_sec: 3.276
-    n_eff: 61784877
+    n_eff: 51778511
     process: 'Higgs'
     filter_eff: 0.3847
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
   'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay':
     data: false
     label: 11
     x_sec: 3.276
-    n_eff: 61784877
+    n_eff: 51778511
     process: 'Higgs'
     filter_eff: 0.3847
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
   'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay':
     data: false
     label: 11
     x_sec: 3.276
-    n_eff: 61784877
+    n_eff: 51778511
     process: 'Higgs'
     filter_eff: 0.3847
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
   'VBFHToTauTau_UncorrelatedDecay_Filtered':
     data: false
     label: 12
     x_sec: 0.2558
-    n_eff: 14552639
+    n_eff: 12453012
     process: 'Higgs'
     filter_eff: 0.4095
-    lumi: 26671.7
-    era: 'Run3_2022EE'
+    lumi: 17794
+    era: 'Run3_2023'
