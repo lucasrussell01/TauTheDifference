@@ -13,7 +13,7 @@ def AMS(S, B, b0=0):
 
 def main(cfg, parity):
 
-    lumi = 34.65
+    lumi = 61.90
     # Plotting style
     plt.style.use(hep.style.ROOT)
     purple = (152/255, 152/255, 201/255)

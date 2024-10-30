@@ -8,6 +8,8 @@ import yaml
 
 def plot_roc_curves(cfg, parity):
 
+    lumi = 61.90
+
     plt.style.use(hep.style.ROOT)
     purple = (152/255, 152/255, 201/255)
     yellow = (243/255,170/255,37/255)
@@ -70,9 +72,9 @@ def plot_roc_curves(cfg, parity):
     ax.set_xlabel('Higgs ID Efficiency')
     ax.set_ylabel('Mis-ID Probability')
     ax.legend()
-    ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
+    ax.text(0.6, 1.02, rf"{lumi:.2f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=ax.transAxes)
     ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
-    ax.text(0.16, 1.02, 'Work in Progress', fontsize=16, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
+    ax.text(0.15, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
     plt.savefig(os.path.join(model_dir, 'plots', 'ROC_higgs_vs_all.pdf'))
     plt.close()
 
@@ -88,9 +90,9 @@ def plot_roc_curves(cfg, parity):
     ax.set_xlabel('Higgs ID Efficiency')
     ax.set_ylabel('Mis-ID Probability')
     ax.legend()
-    ax.text(0.7, 1.02, "2022 (13.6 TeV)", fontsize=14, transform=ax.transAxes)
+    ax.text(0.6, 1.02, rf"{lumi:.2f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=ax.transAxes)
     ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
-    ax.text(0.16, 1.02, 'Work in Progress', fontsize=16, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
+    ax.text(0.15, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
     plt.savefig(os.path.join(model_dir, 'plots', 'ROC_higgs_vs_indiv.pdf'))
     plt.close()
 
