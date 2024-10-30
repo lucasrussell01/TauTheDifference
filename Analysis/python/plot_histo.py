@@ -16,10 +16,10 @@ plt.rcParams.update({"font.size": 14})
 
 # example usage: python plot_histo.py --var='m_vis' --label='m$_{vis}$ (GeV)'
 
-lumi_22 = 7.98
-lumi_22EE = 26.67
-lumi_23 = 17.79
-lumi_23BPix = 9.45
+lumi_22 = 7.9804
+lumi_22EE = 26.6717
+lumi_23 = 17.794
+lumi_23BPix = 9.451
 
 def get_args():
     parser = argparse.ArgumentParser(description="Plot histogram for a variable of choice")
@@ -105,7 +105,7 @@ ax.text(0.14, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fon
 # ax.set_yscale('log')
 ax.legend()
 
-fname = f"figs/{args.var}_{args.era}_class.pdf"
+fname = f"figs/{args.var}_{args.era}.pdf"
 plt.savefig(fname)
 
 print(f"Plotted {args.var} to {fname}")
