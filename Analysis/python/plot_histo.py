@@ -18,6 +18,8 @@ plt.rcParams.update({"font.size": 14})
 
 lumi_22 = 7.98
 lumi_22EE = 26.67
+lumi_23 = 17.79
+lumi_23BPix = 9.45
 
 def get_args():
     parser = argparse.ArgumentParser(description="Plot histogram for a variable of choice")
@@ -47,10 +49,16 @@ if args.era == '2022':
 elif args.era == '2022EE':
     merged_df = df[df['era']==2]
     lumi = lumi_22EE
+elif args.era == '2023':
+    merged_df = df[df['era']==3]
+    lumi = lumi_23
+elif args.era == '2023BPix':
+    merged_df = df[df['era']==4]
+    lumi = lumi_23BPix
 else:
     merged_df = df
-    lumi = lumi_22 + lumi_22EE
-    print(f"Using all available eras (full 2022)")
+    lumi = lumi_22 + lumi_22EE + lumi_23 + lumi_23BPix
+    print(f"Using all available eras (full 2022 + 23)")
 
 
 
