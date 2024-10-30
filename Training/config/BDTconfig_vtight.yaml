@@ -5,13 +5,13 @@ Setup:
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 387,
-        'lambda': 2.203405884122426e-05,
-        'subsample': 0.7160170778419747,
-        'colsample_bytree': 0.6839469685236267,
-        'learning_rate': 0.1599237489599659,
+        'n_estimators': 317,
+        'lambda': 0.0033732287412651207,
+        'subsample': 0.8863257372572118,
+        'colsample_bytree': 0.7794403383903754,
+        'learning_rate': 0.14508697791651154,
         'max_depth': 4,
-        'min_child_weight': 9
+        'min_child_weight': 4
       }
 
 

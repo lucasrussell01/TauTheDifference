@@ -5,11 +5,11 @@ Setup:
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 482,
-        'lambda': 5.414058926328662e-05,
-        'subsample': 0.8276966054874586,
-        'colsample_bytree': 0.6012900503552493,
-        'learning_rate': 0.09945348069648924,
+        'n_estimators': 212,
+        'lambda': 4.741313051256045e-06,
+        'subsample': 0.6788577297747206,
+        'colsample_bytree': 0.8217614229417703,
+        'learning_rate': 0.10556415825925626,
         'max_depth': 5,
         'min_child_weight': 4
       }
