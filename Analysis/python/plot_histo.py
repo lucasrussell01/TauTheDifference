@@ -4,6 +4,7 @@ import json
 import mplhep as hep
 import pandas as pd
 import argparse
+import os
 
 plt.style.use(hep.style.ROOT)
 purple = (152/255, 152/255, 201/255)
@@ -38,7 +39,8 @@ if args.label is None:
 
 
 # File to draw from
-file = '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/tt/ShuffleMerge_ALL.parquet'
+base_path = '/vols/cms/lcr119/offline/HiggsCP/data/ProdDev/ShuffleMerge/tt'
+file = os.path.join(base_path, 'ShuffleMerge_ALL.parquet')
 
 
 # import merged SM file
@@ -63,10 +65,10 @@ else:
 
 
 # extract categories
-taus = merged_df.loc[merged_df['class_label'] == 0]
-bkg = merged_df[merged_df['class_label'] == 2]
-ggH = merged_df[merged_df['class_label'] == 11]
-VBF = merged_df[merged_df['class_label'] == 12]
+taus = merged_df.loc[merged_df['process_id'] == 11]
+bkg = merged_df[merged_df['process_id'] == 0]
+ggH = merged_df[merged_df['process_id'] == 100]
+VBF = merged_df[merged_df['process_id'] == 101]
 del merged_df
 
 
@@ -105,7 +107,7 @@ ax.text(0.14, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fon
 # ax.set_yscale('log')
 ax.legend()
 
-fname = f"figs/{args.var}_{args.era}.pdf"
+fname = f"figs/{args.var}_{args.era}_debug.pdf"
 plt.savefig(fname)
 
 print(f"Plotted {args.var} to {fname}")
