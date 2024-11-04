@@ -73,6 +73,7 @@ def process_samples(cfg, era):
     processed_datasets = []
     # Preprocessing for signal background samples (skimming step)
     logger.info(f'Beginning processing for era {era}')
+    print('*'*140)
     # Load configuration for the era, process and channel
     channel = cfg["Setup"]["channel"]
     era_cfg = yaml.safe_load(open(f"../config/{era}.yaml"))
@@ -80,7 +81,7 @@ def process_samples(cfg, era):
     process_cfg = era_cfg['Process'] # For each Process: Datasets, N_eff, x_sec etc
     # Iterate over processes for the channel
     for process, process_options in channel_cfg.items():
-        logger.debug(f"Loading skimmed datasets for {process}")
+        logger.info(f"Loading skimmed datasets for {process}")
         # Iterate over datasets for the proces
         for dataset, dataset_info in process_cfg[process].items():
             print('-'*140)

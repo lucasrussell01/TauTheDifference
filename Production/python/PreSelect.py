@@ -39,6 +39,7 @@ def save_skims(df, cfg, era, sample, gen_match='inc', logger=logger):
 def preselect_samples(cfg, era):
     # Preprocessing for signal background samples (skimming step)
     logger.info(f'Beginning preselection for era {era}')
+    print('*'*140)
     # Load configuration for the era, process and channel
     channel = cfg["Setup"]["channel"]
     era_cfg = yaml.safe_load(open(f"../config/{era}.yaml"))
@@ -47,7 +48,7 @@ def preselect_samples(cfg, era):
     selector = Selector(logger)
     # Iterate over processes for the channel
     for process, process_options in channel_cfg.items():
-        logger.debug(f"Process {process} was requested")
+        logger.info(f"Process {process} was requested")
         # Iterate over datasets for the process
         for dataset, dataset_info in process_cfg[process].items():
             print('-'*140)
@@ -57,6 +58,7 @@ def preselect_samples(cfg, era):
                                 channel, dataset, 'nominal/merged.parquet')
             df = pd.read_parquet(dataset_file)
             # Apply general selections and trigger matching
+            df = selector.check_sign_weights(df) # drop negative weights (affect training)
             # MuTau Channel Selections
             if channel == 'mt':
                 df = selector.select_id_mt(df, cfg['Selection'])

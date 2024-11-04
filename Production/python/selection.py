@@ -97,3 +97,10 @@ class Selector():
         self.logger.debug("CP reweighting applied (negative weights dropped)")
         return df
 
+    def check_sign_weights(self, df):
+        neg_weights = df[df['weight'] < 0]
+        if len(neg_weights) > 0:
+            self.logger.warning(f"{len(neg_weights)} negative weights found - removing affected events")
+            df = df[df['weight'] > 0]
+        return df
+

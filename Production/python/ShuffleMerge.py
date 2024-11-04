@@ -74,6 +74,9 @@ def shuffle_merge(cfg, save_shards=False):
         for file_path in datasets:
             logger.info(f"Adding [{file_path.split('/')[-2]+file_path.split('/')[-1]}] from {era}")
             df = pd.read_parquet(file_path)
+            df_dup = df[df.duplicated()]
+            if len(df_dup) > 0:
+                logger.warning(f"Found {len(df_dup)} duplicated events in {file_path.split('/')[-2]}")
             merged_df = pd.concat([merged_df, df])
         print("="*140)
     # Shuffle the dataframe
@@ -83,6 +86,7 @@ def shuffle_merge(cfg, save_shards=False):
     # Save total dataframe
     output_path = os.path.join(cfg['Setup']['output'], args.channel)
     logger.info(f"Output path is: {output_path}")
+    logger.info(f"Total number of events is: {len(merged_df)}")
     print('-'*140)
     if not os.path.exists(output_path):
         os.makedirs(output_path)
