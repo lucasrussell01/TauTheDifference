@@ -1,6 +1,7 @@
 # ************* Run 3 2023BPix  *************
 
-Luminosity: 9451
+Params:
+  Luminosity: 9451
 
 # Processes to include for the MuTau Channel
 Channel_mt:

@@ -1,6 +1,7 @@
 # ************* Run 3 2022EE *************
 
-Luminosity: 26671.7
+Params:
+  Luminosity: 26671.7
 
 # Processes to include for the MuTau Channel
 Channel_mt:
