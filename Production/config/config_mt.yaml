@@ -1,5 +1,5 @@
 Setup:
-  eras: ['Run3_2022'] #, 'Run3_2022EE', 'Run3_2023', 'Run3_2023BPix'] # Eras to be used
+  eras: ['Run3_2022', 'Run3_2022EE', 'Run3_2023', 'Run3_2023BPix'] # Eras to be used
   channel: 'mt'
   input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/production' # HiggsDNA output
   output: '/vols/cms/lcr119/offline/HiggsCP/data/ProdDev/ShuffleMerge' # ShuffleMerge output

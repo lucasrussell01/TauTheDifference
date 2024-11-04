@@ -1,98 +1,78 @@
 # ************* Run 3 2023BPix  *************
 
-# Samples to use for tau-tau channel
-samples_tt: 
-  'Tau_Run2023D_v1':
-    data: true
-    extrapolation_factor: 1.0
-    label: 2
-    x_sec: -1
-    n_eff: -1
-    process: 'QCD'
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'Tau_Run2023D_v2':
-    data: true
-    extrapolation_factor: 1.0
-    label: 2
-    x_sec: -1
-    n_eff: -1
-    process: 'QCD'
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'DYto2L_M-50_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 69398459
-    process: 'DY'
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'DYto2L_M-50_1J_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 69398459
-    process: 'DY'
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'DYto2L_M-50_2J_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 69398459
-    process: 'DY'
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'DYto2L_M-50_3J_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 69398459
-    process: 'DY'
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'DYto2L_M-50_4J_madgraphMLM':
-    data: false
-    label: 0
-    x_sec: 6282.6
-    n_eff: 69398459
-    process: 'DY'
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay':
-    data: false
-    label: 11
-    x_sec: 3.276
-    n_eff: 26842817
-    process: 'Higgs'
-    filter_eff: 0.3847
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay':
-    data: false
-    label: 11
-    x_sec: 3.276
-    n_eff: 26842817
-    process: 'Higgs'
-    filter_eff: 0.3847
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay':
-    data: false
-    label: 11
-    x_sec: 3.276
-    n_eff: 26842817
-    process: 'Higgs'
-    filter_eff: 0.3847
-    lumi: 9451
-    era: 'Run3_2023BPix'
-  'VBFHToTauTau_UncorrelatedDecay_Filtered':
-    data: false
-    label: 12
-    x_sec: 0.2558
-    n_eff: 7048003
-    process: 'Higgs'
-    filter_eff: 0.4095
-    lumi: 9451
-    era: 'Run3_2023BPix'
+Luminosity: 9451
+
+# Processes to include for the MuTau Channel
+Channel_mt:
+  'DY': {gen_match: ['tau', 'lep', 'jet'], label: [0, 2, 2], proc_id: [11, 12, 13]}
+  'ggH': {gen_match: false, label: 1, proc_id: 100}
+  'VBFH': {gen_match: false, label: 1, proc_id: 101}
+  'TTBar': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [21, 23]}
+  'ST': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [31, 33]}
+  'WJets': {gen_match: ['jet'], label: [2], proc_id: [43]}
+  'Diboson': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [51, 53]}
+  'Muon_DATA': {gen_match: false, label: 2, proc_id: 0}
+
+# Processes to include for the TauTau Channel
+Channel_tt:
+  'DY': {gen_match: false, label: 0, proc_id: 11}
+  'ggH': {gen_match: false, label: 1, proc_id: 100}
+  'VBFH': {gen_match: false, label: 1, proc_id: 101}
+  'Tau_DATA': {gen_match: false, label: 2, proc_id: 0}
+
+# Datasets and information for the processes
+Process:
+  # Drell Yan Samples
+  'DY':
+    'DYto2L_M-50_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
+    'DYto2L_M-50_1J_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
+    'DYto2L_M-50_2J_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
+    'DYto2L_M-50_3J_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
+    'DYto2L_M-50_4J_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
+  # Gluon Fusion Higgs Samples
+  'ggH':
+    'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay': {x_sec: 3.276, n_eff: 26842817, filter_eff: 0.3847}
+    'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay': {x_sec: 3.276, n_eff: 26842817, filter_eff: 0.3847}
+    'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay': {x_sec: 3.276, n_eff: 26842817, filter_eff: 0.3847}
+  # Vector Boson Fusion Higgs Samples
+  'VBFH':
+    'VBFHToTauTau_UncorrelatedDecay_Filtered': {x_sec: 0.2558, n_eff: 7048003, filter_eff: 0.4095}
+  # TTBar Samples
+  'TTBar':
+    'TTto2L2Nu': {x_sec: 98.04387875606875, n_eff: 24357456.0}
+    'TTtoLNu2Q': {x_sec: 405.74895682981236, n_eff: 81212938.0}
+    'TTto4Q': {x_sec: 419.8071644141188, n_eff: 52422350.0}
+  # Single Top Samples
+  'ST':
+    'ST_tW_top_2L2Nu': {x_sec: 3.8, n_eff: 2478922.0}
+    'ST_tW_antitop_2L2Nu': {x_sec: 3.8, n_eff: 2487898.0}
+    'ST_tW_top_LNu2Q': {x_sec: 15.8, n_eff: 4943196.0}
+    'ST_tW_antitop_LNu2Q': {x_sec: 15.9, n_eff: 5146462.0}
+  # W+Jets Samples
+  'WJets':
+    'WtoLNu_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
+    'WtoLNu_1J_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
+    'WtoLNu_2J_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
+    'WtoLNu_3J_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
+    'WtoLNu_4J_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
+  # Diboson Samples
+  'Diboson':
+    'WW': {x_sec: 122.27052, n_eff: 16545000.0}
+    'WZ': {x_sec: 41.1474, n_eff: 8379000.0}
+    'ZZ': {x_sec: 19.431, n_eff: 1254000.0}
+  # Tau DATA
+  'Tau_DATA':
+    'Tau_Run2023D_v1': {extrapolation_factor: 1.0}
+    'Tau_Run2023D_v2': {extrapolation_factor: 1.0}
+  # Muon DATA
+  'Muon_DATA':
+    'Muon0_Run2023D_v1 ': {extrapolation_factor: 1.0}
+    'Muon0_Run2023D_v2 ': {extrapolation_factor: 1.0}
+    'Muon1_Run2023D_v1 ': {extrapolation_factor: 1.0}
+    'Muon1_Run2023D_v2 ': {extrapolation_factor: 1.0}
+  # Electron DATA
+  'Electron_DATA':
+    'EGamma0_Run2023D_v1 ': {extrapolation_factor: 1.0}
+    'EGamma0_Run2023D_v2 ': {extrapolation_factor: 1.0}
+    'EGamma1_Run2023D_v1 ': {extrapolation_factor: 1.0}
+    'EGamma1_Run2023D_v2 ': {extrapolation_factor: 1.0}
