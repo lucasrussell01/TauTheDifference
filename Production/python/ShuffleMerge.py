@@ -76,7 +76,8 @@ def shuffle_merge(cfg, save_shards=False):
             df = pd.read_parquet(file_path)
             df_dup = df[df.duplicated()]
             if len(df_dup) > 0:
-                logger.warning(f"Found {len(df_dup)} duplicated events in {file_path.split('/')[-2]}")
+                logger.warning(f"Found {len(df_dup)} duplicated events in {file_path.split('/')[-2]} - REMOVING")
+                df = df.drop_duplicates(keep='first')
             merged_df = pd.concat([merged_df, df])
         print("="*140)
     # Shuffle the dataframe
