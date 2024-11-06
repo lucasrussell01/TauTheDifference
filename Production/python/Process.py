@@ -10,9 +10,10 @@ import argparse
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description="Plot histogram for a variable of choice")
+    parser = argparse.ArgumentParser(description="Process (reweight and label) skimmed HiggsDNA outputs for classifier training")
     parser.add_argument('--channel', type=str, help="Channel to process", required=True)
     parser.add_argument('--debug', action='store_true', help="Enable debug mode")
+    parser.add_argument('--extrapolate', action='store_true', help="Extrapolate QCD")
     return parser.parse_args()
 
 
@@ -23,13 +24,17 @@ logger = get_logger(debug=args.debug)
 # Reweighting and labelling of skimmed ouputs for classifier training
 
 
-def save_skims(df, cfg, era, sample, gen_match='inc', logger=logger):
+def save_skims(df, cfg, era, sample, gen_match='inc', extrapolate=False, logger=logger):
     # Save the dataframe
     channel = cfg["Setup"]["channel"]
-    out_path = os.path.join(cfg['Setup']['proc_output'], era, channel, sample)
+    if extrapolate:
+        out_path = os.path.join(cfg['Setup']['proc_output'], "ExtrapolateQCD", era, channel, sample)
+        file_path = os.path.join(out_path, f"merged_skimmed_GEN{gen_match}_SAMESIGN.parquet")
+    else:
+        out_path = os.path.join(cfg['Setup']['proc_output'], era, channel, sample)
+        file_path = os.path.join(out_path, f"merged_skimmed_GEN{gen_match}.parquet")
     if not os.path.exists(out_path):
         os.makedirs(out_path)
-    file_path = os.path.join(out_path, f"merged_skimmed_GEN{gen_match}.parquet")
     # Save the dataframe
     df.to_parquet(file_path, engine="pyarrow")
     logger.info(f"{len(df)} events saved to {file_path.split(channel+'/')[1]}")
@@ -68,12 +73,14 @@ def reweight_mc(df, xsec, n_eff, lumi):
     return df
 
 
-def process_samples(cfg, era):
+def process_samples(cfg, era, extrapolateQCD=False):
     # List of samples that have been processed (used for ShuffleMerge)
     processed_datasets = []
     # Preprocessing for signal background samples (skimming step)
-    logger.info(f'Beginning processing for era {era}')
+    print('\n')
     print('*'*140)
+    logger.info(f'Beginning processing for era {era}')
+    print('*'*140, '\n')
     # Load configuration for the era, process and channel
     channel = cfg["Setup"]["channel"]
     era_cfg = yaml.safe_load(open(f"../config/{era}.yaml"))
@@ -92,8 +99,13 @@ def process_samples(cfg, era):
                 for index_gen, gen_match in enumerate(process_options['gen_match']): # use index to find correct label
                     logger.debug(f"Gen matching: {gen_match}")
                     # Load the gen matched dataset
-                    dataset_file = os.path.join(cfg['Setup']['skim_output'], era,
-                                    channel, dataset, f'merged_skimmed_GEN{gen_match}.parquet')
+                    if extrapolateQCD:
+                        logger.warning('Loading dataset for QCD extrapolation')
+                        dataset_file = os.path.join(cfg['Setup']['skim_output'], 'ExtrapolateQCD', era,
+                                        channel, dataset, f'merged_skimmed_GEN{gen_match}_SAMESIGN.parquet')
+                    else:
+                        dataset_file = os.path.join(cfg['Setup']['skim_output'], era,
+                                        channel, dataset, f'merged_skimmed_GEN{gen_match}.parquet')
                     logger.debug(f"Loading {dataset_file.split('/')[-1]}")
                     df = pd.read_parquet(dataset_file)
                     # Add labels (class, process, era)
@@ -101,14 +113,19 @@ def process_samples(cfg, era):
                     # Reweight the dataset (can only have MC here anyway since gen matched)
                     df = reweight_mc(df, dataset_info['x_sec'], dataset_info['n_eff'], era_cfg['Params']['Luminosity'])
                     # Save the dataframe
-                    processed_datasets.append(save_skims(df, cfg, era, dataset, gen_match=gen_match))
+                    processed_datasets.append(save_skims(df, cfg, era, dataset, gen_match=gen_match, extrapolate=extrapolateQCD))
             # INCLUSIVE GEN SAMPLES
             else:
                 logger.debug(f"No gen matching requested for {dataset}")
                 logger.debug(f"Label {process_options['label']} and Process ID: {process_options['proc_id']}")
                 # Load the inclusive datset
-                dataset_file = os.path.join(cfg['Setup']['skim_output'], era,
-                                channel, dataset, f'merged_skimmed_GENinc.parquet')
+                if extrapolateQCD:
+                    logger.warning('Loading dataset for QCD extrapolation')
+                    dataset_file = os.path.join(cfg['Setup']['skim_output'], 'ExtrapolateQCD', era,
+                                    channel, dataset, f'merged_skimmed_GENinc_SAMESIGN.parquet')
+                else:
+                    dataset_file = os.path.join(cfg['Setup']['skim_output'], era,
+                                    channel, dataset, f'merged_skimmed_GENinc.parquet')
                 logger.debug(f"Loading {dataset_file.split('/')[-1]}")
                 df = pd.read_parquet(dataset_file)
                 # Add labels (class, process, era)
@@ -122,20 +139,23 @@ def process_samples(cfg, era):
                 else: # Same sign QCD estimate
                     logger.warning('Extrapolation factor needed')
                 # Save the dataframe
-                processed_datasets.append(save_skims(df, cfg, era, dataset, gen_match="inc"))
+                processed_datasets.append(save_skims(df, cfg, era, dataset, gen_match="inc", extrapolate=extrapolateQCD))
+        print('\n')
         print('='*140)
     # Return the list of processed datasets
     return processed_datasets
 
 
 def main():
-    args = get_args()
     # Load configuration for the desired channel
     cfg = yaml.safe_load(open(f"../config/config_{args.channel}.yaml"))
     for era in cfg['Setup']['eras']:
-        processed_ds = process_samples(cfg, era)
+        processed_ds = process_samples(cfg, era, args.extrapolate)
         # Save the list of processed datasets (used for shuffle merge)
-        output_file = os.path.join(cfg['Setup']['proc_output'], era, args.channel, f"processed_datasets.yaml")
+        if args.extrapolate:
+            output_file = os.path.join(cfg['Setup']['proc_output'], "ExtrapolateQCD", era, args.channel, f"dataset_extrapolateQCD.yaml")
+        else:
+            output_file = os.path.join(cfg['Setup']['proc_output'], era, args.channel, f"processed_datasets.yaml")
         yaml.dump(processed_ds, open(output_file, 'w'))
         logger.info(f"Processed datasets written to {output_file}")
 

@@ -10,9 +10,10 @@ import argparse
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description="Plot histogram for a variable of choice")
+    parser = argparse.ArgumentParser(description="Select events of interest from HiggsDNA outputs for classifier training")
     parser.add_argument('--channel', type=str, help="Channel to process", required=True)
     parser.add_argument('--debug', action='store_true', help="Enable debug mode")
+    parser.add_argument('--extrapolate', action='store_true', help="Extrapolate QCD")
     return parser.parse_args()
 
 
@@ -21,25 +22,34 @@ logger = get_logger(debug=args.debug)
 
 # Preselection of HiggsDNA ouputs for classifier training
 
-def save_skims(df, cfg, era, sample, gen_match='inc', logger=logger):
+def save_skims(df, cfg, era, sample, gen_match='inc', extrapolate=False, logger=logger):
     # Drop unwanted features
     df = df[cfg['Features']]
     logger.debug(f"Dropping all features not specified in config")
     # Save the dataframe
     channel = cfg["Setup"]["channel"]
-    out_path = os.path.join(cfg['Setup']['skim_output'], era, channel, sample)
+    if extrapolate:
+        out_path = os.path.join(cfg['Setup']['skim_output'], "ExtrapolateQCD", era, channel, sample)
+        file_path = os.path.join(out_path, f"merged_skimmed_GEN{gen_match}_SAMESIGN.parquet")
+    else:
+        out_path = os.path.join(cfg['Setup']['skim_output'], era, channel, sample)
+        file_path = os.path.join(out_path, f"merged_skimmed_GEN{gen_match}.parquet")
     if not os.path.exists(out_path):
         os.makedirs(out_path)
-    file_path = os.path.join(out_path, f"merged_skimmed_GEN{gen_match}.parquet")
     # Save the dataframe
     df.to_parquet(file_path, engine="pyarrow")
     logger.info(f"{len(df)} events saved to {file_path.split(channel+'/')[1]}")
     return file_path
 
-def preselect_samples(cfg, era):
+def preselect_samples(cfg, era, extrapolateQCD=False):
     # Preprocessing for signal background samples (skimming step)
-    logger.info(f'Beginning preselection for era {era}')
+    print('\n')
     print('*'*140)
+    if extrapolateQCD:
+        logger.warning(f'Beginning preselection for era {era} for QCD extrapolation')
+    else:
+        logger.info(f'Beginning preselection for era {era}')
+    print('*'*140, '\n')
     # Load configuration for the era, process and channel
     channel = cfg["Setup"]["channel"]
     era_cfg = yaml.safe_load(open(f"../config/{era}.yaml"))
@@ -62,19 +72,22 @@ def preselect_samples(cfg, era):
             # MuTau Channel Selections
             if channel == 'mt':
                 df = selector.select_id_mt(df, cfg['Selection'])
-                if process == 'Muon_DATA': # Data-driven QCD
-                    df = selector.select_os(df, False)
-                else:
-                    df = selector.select_os(df, True)
                 df = selector.mutau_trigger_match(df, cfg['Selection']['triggers'])
+            # ETau Channel Selections
+            elif channel == 'et':
+                logger.error("ETau channel not implemented")
+                raise NotImplementedError
             # TauTau Channel Selections
             elif channel == 'tt':
                 df = selector.select_id_tt(df, cfg['Selection'])
-                if process == 'Tau_DATA': # Data-driven QCD
-                    df = selector.select_os(df, False)
-                else:
-                    df = selector.select_os(df, True)
                 df = selector.ditau_trigger_match(df, cfg['Selection']['triggers'])
+            # Pair Sign Selection
+            if ((process == 'Muon_DATA' and channel == 'mt') or (process == 'Tau_DATA' and channel == 'tt')
+                or extrapolateQCD): # Data-driven or QCD estimation
+                logger.warning('Selecting same sign pairs')
+                df = selector.select_os(df, False)
+            else:
+                df = selector.select_os(df, True)
             # Reject negative LHE CP weights
             if 'ProdAndDecay' in dataset:
                 df = selector.cp_weight(df)
@@ -83,16 +96,17 @@ def preselect_samples(cfg, era):
                 for gen_match in process_options['gen_match']:
                     if gen_match == 'tau':
                         df_tau = selector.select_gen_tau(df)
-                        save_skims(df_tau, cfg, era, dataset, gen_match=gen_match)
+                        save_skims(df_tau, cfg, era, dataset, gen_match=gen_match, extrapolate=extrapolateQCD)
                     elif gen_match == 'lep':
                         df_muon = selector.select_gen_lepton(df)
-                        save_skims(df_muon, cfg, era, dataset, gen_match=gen_match)
+                        save_skims(df_muon, cfg, era, dataset, gen_match=gen_match, extrapolate=extrapolateQCD)
                     elif gen_match == 'jet':
                         df_jet = selector.select_gen_jet(df)
-                        save_skims(df_jet, cfg, era, dataset, gen_match=gen_match)
+                        save_skims(df_jet, cfg, era, dataset, gen_match=gen_match, extrapolate=extrapolateQCD)
             else:
                 logger.debug(f"No gen matching requested for {dataset}")
-                save_skims(df, cfg, era, dataset, gen_match="inc") # inclusive
+                save_skims(df, cfg, era, dataset, gen_match="inc", extrapolate=extrapolateQCD) # inclusive
+        print('\n')
         print('='*140)
 
 
@@ -100,7 +114,7 @@ def main():
     # Load configuration for the desired channel
     cfg = yaml.safe_load(open(f"../config/config_{args.channel}.yaml"))
     for era in cfg['Setup']['eras']:
-        preselect_samples(cfg, era)
+        preselect_samples(cfg, era, args.extrapolate)
 
 
 if __name__ == "__main__":
