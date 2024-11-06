@@ -79,9 +79,9 @@ Process:
     'Tau_Run2022G': {extrapolation_factor: 1.0}
   # Muon DATA
   'Muon_DATA':
-    'Muon_Run2022E': {extrapolation_factor: 1.0}
-    'Muon_Run2022F': {extrapolation_factor: 1.0}
-    'Muon_Run2022G': {extrapolation_factor: 1.0}
+    'Muon_Run2022E': {extrapolation_factor: 0.5095641438854074}
+    'Muon_Run2022F': {extrapolation_factor: 0.5095641438854074}
+    'Muon_Run2022G': {extrapolation_factor: 0.5095641438854074}
   # Electron DATA
   'Electron_DATA':
     'EGamma_Run2022E': {extrapolation_factor: 1.0}

@@ -17,7 +17,7 @@ Selection: # Selection to be applied
 
 # Variables that will be kept in dataframes
 Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
-            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt',
+            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt', 'os',
             'met_dphi_1', 'met_dphi_2', 'dphi', 'm_vis', 'pt_vis', 'n_jets',
             'n_bjets', 'mjj', 'jdeta', 'dijetpt', 'jpt_1', 'jpt_2', 'jeta_1',
             'jeta_2', 'rawDeepTau2018v2p5VSjet_1', rawDeepTau2018v2p5VSjet_2,

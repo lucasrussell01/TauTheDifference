@@ -68,22 +68,22 @@ Process:
     'Tau_Run2023C_v4': {extrapolation_factor: 1.0}
   # Muon DATA
   'Muon_DATA':
-    'Muon0_Run2023C_v1 ': {extrapolation_factor: 1.0}
-    'Muon0_Run2023C_v2 ': {extrapolation_factor: 1.0}
-    'Muon0_Run2023C_v3 ': {extrapolation_factor: 1.0}
-    'Muon0_Run2023C_v4 ': {extrapolation_factor: 1.0}
-    'Muon1_Run2023C_v1 ': {extrapolation_factor: 1.0}
-    'Muon1_Run2023C_v2 ': {extrapolation_factor: 1.0}
-    'Muon1_Run2023C_v3 ': {extrapolation_factor: 1.0}
-    'Muon1_Run2023C_v4 ': {extrapolation_factor: 1.0}
+    'Muon0_Run2023C_v1': {extrapolation_factor: 0.6259270808152627}
+    'Muon0_Run2023C_v2': {extrapolation_factor: 0.6259270808152627}
+    'Muon0_Run2023C_v3': {extrapolation_factor: 0.6259270808152627}
+    'Muon0_Run2023C_v4': {extrapolation_factor: 0.6259270808152627}
+    'Muon1_Run2023C_v1': {extrapolation_factor: 0.6259270808152627}
+    'Muon1_Run2023C_v2': {extrapolation_factor: 0.6259270808152627}
+    'Muon1_Run2023C_v3': {extrapolation_factor: 0.6259270808152627}
+    'Muon1_Run2023C_v4': {extrapolation_factor: 0.6259270808152627}
   # Electron DATA
   'Electron_DATA':
-    'EGamma0_Run2023C_v1 ': {extrapolation_factor: 1.0}
-    'EGamma0_Run2023C_v2 ': {extrapolation_factor: 1.0}
-    'EGamma0_Run2023C_v3 ': {extrapolation_factor: 1.0}
-    'EGamma0_Run2023C_v4 ': {extrapolation_factor: 1.0}
-    'EGamma1_Run2023C_v1 ': {extrapolation_factor: 1.0}
-    'EGamma1_Run2023C_v2 ': {extrapolation_factor: 1.0}
-    'EGamma1_Run2023C_v3 ': {extrapolation_factor: 1.0}
-    'EGamma1_Run2023C_v4 ': {extrapolation_factor: 1.0}
+    'EGamma0_Run2023C_v1': {extrapolation_factor: 1.0}
+    'EGamma0_Run2023C_v2': {extrapolation_factor: 1.0}
+    'EGamma0_Run2023C_v3': {extrapolation_factor: 1.0}
+    'EGamma0_Run2023C_v4': {extrapolation_factor: 1.0}
+    'EGamma1_Run2023C_v1': {extrapolation_factor: 1.0}
+    'EGamma1_Run2023C_v2': {extrapolation_factor: 1.0}
+    'EGamma1_Run2023C_v3': {extrapolation_factor: 1.0}
+    'EGamma1_Run2023C_v4': {extrapolation_factor: 1.0}
 
