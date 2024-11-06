@@ -23,7 +23,7 @@ def get_logger(debug):
     else:
         logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    handler.setFormatter(ColoredFormatter('%(levelname)-8s: %(message)-140s [Line %(lineno)d]'))
+    handler.setFormatter(ColoredFormatter('%(levelname)-8s: %(message)-138s [Line %(lineno)d]'))
     logger.addHandler(handler)
     return logger
 
