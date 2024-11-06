@@ -5,14 +5,9 @@ import mplhep as hep
 import pandas as pd
 import argparse
 import os
+from plot_utils import stacked_histogram
 
 plt.style.use(hep.style.ROOT)
-purple = (152/255, 152/255, 201/255)
-yellow = (243/255,170/255,37/255)
-blue = (2/255, 114/255, 187/255)
-green = (159/255, 223/255, 132/255)
-red = (203/255, 68/255, 10/255)
-
 plt.rcParams.update({"font.size": 14})
 
 # example usage: python plot_histo.py --var='m_vis' --label='m$_{vis}$ (GeV)'
@@ -24,7 +19,8 @@ lumi_23BPix = 9.451
 
 def get_args():
     parser = argparse.ArgumentParser(description="Plot histogram for a variable of choice")
-    parser.add_argument('--var', type=str, help="Variable to plot in df")
+    parser.add_argument('--channel', type=str, help="Channel to plot", required=True)
+    parser.add_argument('--var', type=str, help="Variable to plot in df", required=True)
     parser.add_argument('--era', type=str, help="Era to plot", required=False, default='run3')
     parser.add_argument('--xmin', type=float, help="Min x to plot", required=False, default=0)
     parser.add_argument('--xmax', type=float, help="Max x to plot", required=False, default=350)
@@ -37,10 +33,11 @@ args = get_args()
 if args.label is None:
     args.label = args.var
 
+channel = args.channel
 
 # File to draw from
-base_path = '/vols/cms/lcr119/offline/HiggsCP/data/ProdDev/ShuffleMerge/tt'
-file = os.path.join(base_path, 'ShuffleMerge_ALL.parquet')
+base_path = '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge'
+file = os.path.join(base_path, channel, 'ShuffleMerge_ALL.parquet')
 
 
 # import merged SM file
@@ -64,50 +61,80 @@ else:
 
 
 
-# extract categories
-taus = merged_df.loc[merged_df['process_id'] == 11]
-bkg = merged_df[merged_df['process_id'] == 0]
-ggH = merged_df[merged_df['process_id'] == 100]
-VBF = merged_df[merged_df['process_id'] == 101]
-del merged_df
-
-
-bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1)
-bin_size = np.diff(bins)[0]
-bin_centre = bins[:-1]+ np.diff(bins)/2
-step_edges = np.append(bins,2*bins[-1]-bins[-2]) # for outline
-
-# calculate counts
-tau_hist = np.histogram(taus[args.var], bins=bins, weights=taus['weight'])[0]
-bkg_hist = np.histogram(bkg[args.var], bins=bins, weights=bkg['weight'])[0]
-# create figure
 fig, ax = plt.subplots(figsize = (6,6))
-# histograms of non signal
-ax.bar(bin_centre, tau_hist, width = bin_size, color = yellow, label = r"$Z\to\tau\tau$")
-ax.bar(bin_centre, bkg_hist, width = bin_size, color = green, bottom = tau_hist, label = r"jet $\to \tau_h$ [QCD]")
-# step outlines of the above
-taus_step = np.append(np.insert(tau_hist,0,0.0),0.0)
-bkg_step = np.append(np.insert(bkg_hist,0,0.0),0.0) + taus_step
-ax.step(step_edges, taus_step, color='black', linewidth = 0.5)
-ax.step(step_edges, bkg_step, color='black', linewidth = 0.5)
-# outline histos of signal processes (reweighted)
-ax.hist(ggH[args.var], bins=bins, weights=ggH['weight'], histtype="step", color = red, linewidth = 2, label = r"ggH$\to\tau\tau$")
-ax.hist(VBF[args.var], bins=bins, weights=VBF['weight'], histtype="step", color = blue, linewidth = 2, label = r"qqH$\to\tau\tau$")
-# labels etc
-ax.set_xlabel(rf"{args.label}")
-ax.set_ylabel(f"Weighted Events/{bin_size} GeV")
+
+if channel == 'tt':
+
+    # Initialise plotting class
+    bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1)
+    histo = stacked_histogram(args.var, ax, bins)
+    # extract categories from dataframe
+    # Genuine
+    taus = merged_df.loc[merged_df['process_id'] == 11]
+    # Fake
+    bkg = merged_df[merged_df['process_id'] == 0]
+    # Signal
+    ggH = merged_df[merged_df['process_id'] == 100]
+    VBF = merged_df[merged_df['process_id'] == 101]
+    del merged_df
+    # Add background processes
+    histo.add_bkg(taus, "DY")
+    histo.add_bkg(bkg, "Jet_Fakes")
+    # Add signal processes
+    histo.add_signal(ggH, "ggH")
+    histo.add_signal(VBF, "VBF")
+
+elif channel == 'mt':
+
+    # Initialise plotting class
+    bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1) # wider binning
+    histo = stacked_histogram(args.var, ax, bins)
+
+    # extract categories
+    # genuine taus
+    DY_tau = merged_df.loc[merged_df['process_id'] == 11]
+    other_tau = merged_df.loc[(merged_df['process_id'] == 21) | (merged_df['process_id'] == 31) | (merged_df['process_id'] == 51)] # TT, ST, VV
+    # lepton fakes
+    DY_lep = merged_df.loc[merged_df['process_id'] == 12]
+    # jet fakes
+    EW = merged_df.loc[(merged_df['process_id'] == 43) | (merged_df['process_id'] == 53)]
+    QCD = merged_df.loc[merged_df['process_id'] == 0]
+    Top_jet = merged_df.loc[(merged_df['process_id'] == 23) | (merged_df['process_id'] == 33)]
+    other_jet = merged_df.loc[merged_df['process_id'] == 13]
+    # signal
+    ggH = merged_df[merged_df['process_id'] == 100]
+    VBF = merged_df[merged_df['process_id'] == 101]
+    del merged_df
+
+    # Add fake processes
+    histo.add_bkg(Top_jet, "Top_jet")
+    histo.add_bkg(QCD, "QCD")
+    histo.add_bkg(EW, "EW")
+    histo.add_bkg(other_jet, "OtherFake")
+    histo.add_bkg(DY_lep, "DY_lep")
+    # genuine backgrounds
+    histo.add_bkg(DY_tau, "DY")
+    histo.add_bkg(other_tau, "OtherGenuine")
+    # Add signal processes
+    histo.add_signal(ggH, "ggH")
+    histo.add_signal(VBF, "VBF")
+
+
+# Get the axes
+ax = histo.get_ax(xlabel=args.label, lumi=lumi, unit='GeV')
+# Set the limits
 ax.set_xlim(args.xmin, args.xmax)
 if args.ymax is not None:
-    ax.set_ylim(0, args.ymax)
+    ax.set_ylim(-100, args.ymax)
 else:
-    ax.set_ylim(0, 1.1*max(tau_hist+bkg_hist))
-ax.text(0.6, 1.02, fr"{(lumi):.2f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=ax.transAxes)
-ax.text(0.01, 1.02, 'CMS', fontsize=18, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
-ax.text(0.14, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
-# ax.set_yscale('log')
-ax.legend()
-
-fname = f"figs/{args.var}_{args.era}_debug.pdf"
+    ax.set_ylim(-1e-3*histo.get_max(), 1.1*histo.get_max())
+# Figure Saving
+fname = f"figs/{args.var}_{args.era}_{channel}.pdf"
+plt.tight_layout()
 plt.savefig(fname)
-
 print(f"Plotted {args.var} to {fname}")
+
+
+
+
+
