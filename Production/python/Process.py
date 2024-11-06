@@ -137,7 +137,8 @@ def process_samples(cfg, era, extrapolateQCD=False):
                     if 'Filtered' in dataset:
                         df = apply_filter(df, dataset_info['filter_eff'])
                 else: # Same sign QCD estimate
-                    logger.warning('Extrapolation factor needed')
+                    logger.warning(f'Adding QCD factor of {dataset_info["extrapolation_factor"]}')
+                    df['weight'] *= dataset_info['extrapolation_factor']
                 # Save the dataframe
                 processed_datasets.append(save_skims(df, cfg, era, dataset, gen_match="inc", extrapolate=extrapolateQCD))
         print('\n')
