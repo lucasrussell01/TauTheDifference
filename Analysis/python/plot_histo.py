@@ -27,6 +27,7 @@ def get_args():
     parser.add_argument('--ymax', type=float, help="Max y to plot", required=False)
     parser.add_argument('--nbins', type=int, help="Number of bins", required=False, default=70)
     parser.add_argument('--label', type=str, help="Label name for the variable", required=False)
+    parser.add_argument('--weight', type=str, help="name of weight column to use", required=False, default='weight')
     return parser.parse_args()
 
 args = get_args()
@@ -107,17 +108,17 @@ elif channel == 'mt':
     del merged_df
 
     # Add fake processes
-    histo.add_bkg(Top_jet, "Top_jet")
-    histo.add_bkg(QCD, "QCD")
-    histo.add_bkg(EW, "EW")
-    histo.add_bkg(other_jet, "OtherFake")
-    histo.add_bkg(DY_lep, "DY_lep")
+    histo.add_bkg(Top_jet, "Top_jet", weight=args.weight)
+    histo.add_bkg(QCD, "QCD", weight=args.weight)
+    histo.add_bkg(EW, "EW", weight=args.weight)
+    histo.add_bkg(other_jet, "OtherFake", weight=args.weight)
+    histo.add_bkg(DY_lep, "DY_lep", weight=args.weight)
     # genuine backgrounds
-    histo.add_bkg(DY_tau, "DY")
-    histo.add_bkg(other_tau, "OtherGenuine")
+    histo.add_bkg(DY_tau, "DY", weight=args.weight)
+    histo.add_bkg(other_tau, "OtherGenuine", weight=args.weight)
     # Add signal processes
-    histo.add_signal(ggH, "ggH")
-    histo.add_signal(VBF, "VBF")
+    histo.add_signal(ggH, "ggH", weight=args.weight)
+    histo.add_signal(VBF, "VBF", weight=args.weight)
 
 
 # Get the axes
@@ -129,7 +130,7 @@ if args.ymax is not None:
 else:
     ax.set_ylim(-1e-3*histo.get_max(), 1.1*histo.get_max())
 # Figure Saving
-fname = f"figs/{args.var}_{args.era}_{channel}.pdf"
+fname = f"figs/{args.var}_{args.era}_{channel}_{args.weight}.pdf"
 plt.tight_layout()
 plt.savefig(fname)
 print(f"Plotted {args.var} to {fname}")
