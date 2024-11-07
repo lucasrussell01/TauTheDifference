@@ -1,7 +1,21 @@
-model_name: 'model_test'
-model_path: "../../Training/python/XGB_Models/EarlyRun3"
-model_type: "BDT"
-model_cut: "Medium"
-# model_path: '../../Training/python/DNN_Models/Testing/'
-# model_name: 'model_test'
-# model_type: 'DNN'
+# TauTau Channel Models
+tt_medium:
+  model_name: 'model_opt_medium'
+  model_path: "../../Training/python/XGB_Models/EarlyRun3/tt"
+  model_type: "BDT"
+  model_cut: "Medium"
+tt_tight:
+  model_name: 'model_opt_tight'
+  model_path: "../../Training/python/XGB_Models/EarlyRun3/tt"
+  model_type: "BDT"
+  model_cut: "Tight"
+tt_vtight:
+  model_name: 'model_opt_vtight'
+  model_path: "../../Training/python/XGB_Models/EarlyRun3/tt"
+  model_type: "BDT"
+  model_cut: "VTight"
+# MuTau Channel Models
+mt:
+  model_name: 'model_test'
+  model_path: "../../Training/python/XGB_Models/EarlyRun3/mt"
+  model_type: "BDT"
