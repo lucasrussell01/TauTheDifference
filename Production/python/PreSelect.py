@@ -75,14 +75,15 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
                 df = selector.mutau_trigger_match(df, cfg['Selection']['triggers'])
             # ETau Channel Selections
             elif channel == 'et':
-                logger.error("ETau channel not implemented")
-                raise NotImplementedError
+                df = selector.select_id_et(df, cfg['Selection'])
+                df = selector.etau_trigger_match(df, cfg['Selection']['triggers'])
             # TauTau Channel Selections
             elif channel == 'tt':
                 df = selector.select_id_tt(df, cfg['Selection'])
                 df = selector.ditau_trigger_match(df, cfg['Selection']['triggers'])
             # Pair Sign Selection
             if ((process == 'Muon_DATA' and channel == 'mt') or (process == 'Tau_DATA' and channel == 'tt')
+                or (process == "Electron_DATA" and channel == 'et')
                 or extrapolateQCD): # Data-driven or QCD estimation
                 logger.warning('Selecting same sign pairs')
                 df = selector.select_os(df, False)

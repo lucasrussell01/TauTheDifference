@@ -22,7 +22,9 @@ def get_extrapolation_factor(n_data, n_mc, channel):
     n_scale = n_data - n_mc # expected number of events to scale to
     logger.debug(f'Number of events to scale to: {n_scale}')
     if channel == 'mt':
-        n_scale *= 1.12 # factor for muons
+        n_scale *= 1.12 # factor for mt
+    if channel == 'et':
+        n_scale *= 1.13 # factor for et
     factor = n_scale/n_data # fraction of events that should be kept (reweighted)
     logger.info(f"Calculated factor to estimate QCD for {channel}: {factor} ({n_data}->{n_scale:.1f} events)")
     return factor
@@ -37,7 +39,7 @@ def expected_events(cfg, era):
     data_events = 0 # tracks number of same sign data events
     mc_events = 0 # tracks number of same sign MC events
     # Processes of interest
-    data_processes = ['Muon_DATA', 'Tau_DATA']
+    data_processes = ['Electron_DATA', 'Muon_DATA', 'Tau_DATA']
     mc_processes = ['DY', 'TTBar', 'ST', 'WJets', 'Diboson']
     # Iterate over processes for the channel
     for process, process_options in channel_cfg.items():
