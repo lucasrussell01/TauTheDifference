@@ -85,7 +85,7 @@ if channel == 'tt':
     histo.add_signal(ggH, "ggH")
     histo.add_signal(VBF, "VBF")
 
-elif channel == 'mt':
+elif channel == 'mt' or channel == 'et':
 
     # Initialise plotting class
     bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1) # wider binning
