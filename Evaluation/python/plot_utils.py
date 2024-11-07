@@ -96,7 +96,7 @@ class stacked_histogram:
         self.ax.step(self.step_edges, self.bottom_step, color='black', linewidth = 2, label = 'Total Background')
         return self.ax
 
-    def get_ax(self, xlabel=None, lumi= 60.90):
+    def get_ax(self, xlabel=None, lumi= 60.90, ncol=1, fontsmall=True):
         # Axes
         if xlabel is not None:
             self.ax.set_xlabel(rf"{xlabel}")
@@ -108,7 +108,10 @@ class stacked_histogram:
         self.ax.text(0.01, 1.02, 'CMS', fontsize=18, transform=self.ax.transAxes, fontweight='bold', fontfamily='sans-serif')
         self.ax.text(0.14, 1.02, 'Work in Progress', fontsize=14, transform=self.ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
         # legend
-        self.ax.legend(frameon=1, framealpha=1)
+        if fontsmall:
+            self.ax.legend(frameon=1, framealpha=1, loc='upper left', ncol=ncol, fontsize=10)
+        else:
+            self.ax.legend(frameon=1, framealpha=1, loc='upper left', ncol=ncol, fontsize=14)
         return self.ax
 
     def get_counts(self):
