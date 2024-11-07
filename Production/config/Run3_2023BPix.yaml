@@ -14,6 +14,17 @@ Channel_mt:
   'Diboson': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [51, 53]}
   'Muon_DATA': {gen_match: false, label: 2, proc_id: 0}
 
+# Processes to include for the ETau Channel
+Channel_et:
+  'DY': {gen_match: ['tau', 'lep', 'jet'], label: [0, 2, 2], proc_id: [11, 12, 13]}
+  'ggH': {gen_match: false, label: 1, proc_id: 100}
+  'VBFH': {gen_match: false, label: 1, proc_id: 101}
+  'TTBar': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [21, 23]}
+  'ST': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [31, 33]}
+  'WJets': {gen_match: ['jet'], label: [2], proc_id: [43]}
+  'Diboson': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [51, 53]}
+  'Electron_DATA': {gen_match: false, label: 2, proc_id: 0}
+
 # Processes to include for the TauTau Channel
 Channel_tt:
   'DY': {gen_match: false, label: 0, proc_id: 11}
@@ -73,7 +84,7 @@ Process:
     'Muon1_Run2023D_v2': {extrapolation_factor: 0.6493702443550202}
   # Electron DATA
   'Electron_DATA':
-    'EGamma0_Run2023D_v1': {extrapolation_factor: 1.0}
-    'EGamma0_Run2023D_v2': {extrapolation_factor: 1.0}
-    'EGamma1_Run2023D_v1': {extrapolation_factor: 1.0}
-    'EGamma1_Run2023D_v2': {extrapolation_factor: 1.0}
+    'EGamma0_Run2023D_v1': {extrapolation_factor: 0.6864528410950286}
+    'EGamma0_Run2023D_v2': {extrapolation_factor: 0.6864528410950286}
+    'EGamma1_Run2023D_v1': {extrapolation_factor: 0.6864528410950286}
+    'EGamma1_Run2023D_v2': {extrapolation_factor: 0.6864528410950286}
