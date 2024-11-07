@@ -122,13 +122,13 @@ elif channel == 'mt':
 
 
 # Get the axes
-ax = histo.get_ax(xlabel=args.label, lumi=lumi, unit='GeV')
+ax = histo.get_ax(xlabel=args.label, lumi=lumi, unit='GeV', channel=channel)
 # Set the limits
 ax.set_xlim(args.xmin, args.xmax)
 if args.ymax is not None:
     ax.set_ylim(-100, args.ymax)
 else:
-    ax.set_ylim(-1e-3*histo.get_max(), 1.1*histo.get_max())
+    ax.set_ylim(-1e-3*histo.get_max(), 1.15*histo.get_max())
 # Figure Saving
 fname = f"figs/{args.var}_{args.era}_{channel}_{args.weight}.pdf"
 plt.tight_layout()

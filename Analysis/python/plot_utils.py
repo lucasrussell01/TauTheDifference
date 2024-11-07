@@ -84,7 +84,7 @@ class stacked_histogram:
                      color = self.signal_process_info[process_name]['color'], linewidth = 2, label = self.signal_process_info[process_name]['label'])
         return self.ax
 
-    def get_ax(self, xlabel=None, lumi= 60.90, unit='GeV'):
+    def get_ax(self, xlabel=None, lumi= 60.90, unit='GeV', channel='tt'):
         # Axes
         if xlabel is not None:
             self.ax.set_xlabel(rf"{xlabel} ({unit})")
@@ -95,6 +95,14 @@ class stacked_histogram:
         self.ax.text(0.6, 1.02, fr"{(lumi):.2f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=self.ax.transAxes)
         self.ax.text(0.01, 1.02, 'CMS', fontsize=18, transform=self.ax.transAxes, fontweight='bold', fontfamily='sans-serif')
         self.ax.text(0.14, 1.02, 'Work in Progress', fontsize=14, transform=self.ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
+        if channel == 'tt':
+            channel_label = r'$\tau_h\tau_h$'
+        elif channel == 'mt':
+            channel_label = r'$\mu\tau_h$'
+        elif channel == 'et':
+            channel_label = r'$e\tau_h$'
+        self.ax.text(0.05, 0.925, channel_label, fontsize=14, transform=self.ax.transAxes)
+
         # legend
         self.ax.legend(frameon=1, framealpha=1)
         return self.ax
