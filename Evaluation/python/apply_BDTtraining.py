@@ -4,6 +4,14 @@ from sklearn.metrics import accuracy_score
 import pandas as pd
 import os
 import yaml
+import argparse
+
+def get_args():
+    parser = argparse.ArgumentParser(description="XGBoost Classifier Evaluation")
+    parser.add_argument('--channel', type=str, help="Channel to train", required=True)
+    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
+    return parser.parse_args()
+
 
 def eval_model(cfg, parity):
     # parity is EVEN or ODD - the event parity the model is applied to
@@ -21,8 +29,8 @@ def eval_model(cfg, parity):
     # Load evaluation dataset
     eval_df = pd.read_parquet(input_path)
     x_eval = eval_df[feature_cfg['train']]
-    y_eval_raw = eval_df[feature_cfg['truth']] # keep separate higgs labels
-    y_eval = y_eval_raw.replace({11: 1, 12: 1})
+    proc_id = eval_df['process_id'] # store identity
+    y_eval = eval_df['class_label'] # class label
     w_eval = eval_df[feature_cfg['weight']] #  NN weight
     w_plot = eval_df['weight'] # NOT the NN weight (normalisation removed)
 
@@ -41,14 +49,14 @@ def eval_model(cfg, parity):
 
     # store predictions as a new df
     df_res = pd.DataFrame()
-    df_res['class_label'] = y_eval_raw
+    df_res['process_id'] = proc_id # identify different components for plotting...
+    df_res['class_label'] = y_eval # class
     df_res['pred_0'] = y_pred_eval[:, 0]
     df_res['pred_1'] = y_pred_eval[:, 1]
     df_res['pred_2'] = y_pred_eval[:, 2]
     df_res['pred_label'] = y_pred_eval_labels # max proba label
     df_res['weight'] = w_plot
     df_res['NN_weight'] = w_eval
-    df_res['unit_weight'] = 1 # unit weight
     df_res.to_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 
     print(f"Evaluation of {model_dir.split('/')[-1]} complete!")
@@ -58,6 +66,22 @@ def eval_model(cfg, parity):
         os.makedirs(os.path.join(model_dir, 'plots'))
 
 if __name__ == "__main__":
+    args = get_args()
     cfg = yaml.safe_load(open("../config/config.yaml"))
+    # Load the correct config for the channel (and vsjet cut)
+    if args.channel == 'tt': # Fully hadronic has different vsjet cuts
+        if args.cut == "tight":
+            print("Evaluating for tt channel (TIGHT Vsjet cut)")
+            cfg = cfg['tt_tight']
+        elif args.cut == "vtight":
+            print("Evaluating for tt channel (VTIGHT Vsjet cut)")
+            cfg = cfg['tt_vtight']
+        else: # use medium by default
+            print("Evaluating for tt channel (MEDIUM Vsjet cut)")
+            cfg = cfg['tt_medium']
+    elif args.channel == 'mt':
+        print("Evaluating for MuTau channel")
+        cfg = cfg['mt']
+    # Evaluate models
     eval_model(cfg, 'EVEN')
     eval_model(cfg, 'ODD')
