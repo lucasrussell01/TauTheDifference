@@ -1,7 +1,7 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/tt'
-  model_outputs: 'XGB_Models/EarlyRun3/'
-  model_dir_name: 'model_opt_medium'
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/mt'
+  model_outputs: 'XGB_Models/EarlyRun3/mt'
+  model_dir_name: 'model_test'
 
 param: {
         'objective': 'multi:softmax',
@@ -13,10 +13,6 @@ param: {
         'max_depth': 5,
         'min_child_weight': 9
       }
-
-
-
-
 
 Features:
   train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',

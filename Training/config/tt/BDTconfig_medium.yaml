@@ -1,22 +1,18 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge_tight/tt'
-  model_outputs: 'XGB_Models/EarlyRun3/'
-  model_dir_name: 'model_opt_tight'
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/tt'
+  model_outputs: 'XGB_Models/EarlyRun3/tt'
+  model_dir_name: 'model_opt_medium'
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 661,
-        'lambda': 0.1412650013482672,
-        'subsample': 0.6163346049164129,
-        'colsample_bytree': 0.8433665616684342,
-        'learning_rate': 0.0627106185884069,
+        'n_estimators': 580,
+        'lambda': 1.8138461548263592e-05,
+        'subsample': 0.9735064495412468,
+        'colsample_bytree': 0.5485619386911114,
+        'learning_rate': 0.07539115398690703,
         'max_depth': 5,
-        'min_child_weight': 4
+        'min_child_weight': 9
       }
-
-
-
-
 
 Features:
   train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
