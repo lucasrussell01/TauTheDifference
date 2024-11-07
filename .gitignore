@@ -6,4 +6,6 @@ Training/python/DNN_Models
 Training/python/XGB_Models
 */python/__pycache__/
 Training/python/hyperlogs
-Training/python/batch_jobs
+Training/python/batch_jobs/*.sh
+Training/python/batch_jobs/*.sub
+Training/python/batch_jobs/logs

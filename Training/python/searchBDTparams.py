@@ -11,9 +11,10 @@ import argparse
 
 def get_args():
     parser = argparse.ArgumentParser(description="Hyperparameter optimization for XGBoost")
+    parser.add_argument('--channel', type=str, help="Channel to optimise", required=True)
     parser.add_argument('--n_trials', type=int, help="Number of trials to attempt")
     parser.add_argument('--study_name', type=str, help="Name of study (can use to resume)")
-    parser.add_argument('--cut', type=str, help="VSjet cut to be used")
+    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
     return parser.parse_args()
 
 def validation(model, cfg, parity, ds_path='input_path'):
@@ -80,16 +81,22 @@ def objective(trial):
         "min_child_weight": trial.suggest_int("min_child_weight", 2, 10)
     }
 
-    # Load training config
-    cfg = yaml.safe_load(open("../config/BDTHyperOpt_config.yaml"))
 
-    # Find correct dataset to use (from cut argument)
-    if args.cut=='medium':
+
+    # Find correct dataset to use (from channel and cut argument)
+    if args.channel == 'tt':
+        # Load training config
+        cfg = yaml.safe_load(open("../config/tt/BDTHyperOpt_config.yaml"))
+        if args.cut=='medium':
+            data_path = 'input_path'
+        elif args.cut=='tight':
+            data_path = 'input_path_tight'
+        elif args.cut=='vtight':
+            data_path = 'input_path_vtight'
+    elif args.channel == 'mt':
+        cfg = yaml.safe_load(open("../config/mt/BDTHyperOpt_config.yaml"))
         data_path = 'input_path'
-    elif args.cut=='tight':
-        data_path = 'input_path_tight'
-    elif args.cut=='vtight':
-        data_path = 'input_path_vtight'
+
 
     # Train even model
     model_even = train_model(cfg, "EVEN", param, data_path)
@@ -115,7 +122,7 @@ def main():
         study = optuna.create_study(direction="maximize", study_name=args.study_name,
                                 storage=f"sqlite:///hyperlogs/{args.study_name}.db?timeout=10000", load_if_exists=True)
         # Begin search
-        study.optimize(objective, n_trials=args.n_trials, n_jobs=-1)
+        study.optimize(objective, n_trials=args.n_trials, n_jobs=4)
 
         # Summary
         print("Number of finished trials: ", len(study.trials))
