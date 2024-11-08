@@ -13,7 +13,8 @@ def get_args():
     parser = argparse.ArgumentParser(description="Process (reweight and label) skimmed HiggsDNA outputs for classifier training")
     parser.add_argument('--channel', type=str, help="Channel to process", required=True)
     parser.add_argument('--debug', action='store_true', help="Enable debug mode")
-    parser.add_argument('--extrapolate', action='store_true', help="Extrapolate QCD")
+    parser.add_argument('--extrapolate', action='store_true', help="Extrapolate QCD (calculation)")
+    parser.add_argument('--nosubtraction', action='store_true', help="Do NOT apply QCD extrapolation factor")
     return parser.parse_args()
 
 
@@ -73,7 +74,7 @@ def reweight_mc(df, xsec, n_eff, lumi):
     return df
 
 
-def process_samples(cfg, era, extrapolateQCD=False):
+def process_samples(cfg, era, extrapolateQCD=False, nosubtraction=False):
     # List of samples that have been processed (used for ShuffleMerge)
     processed_datasets = []
     # Preprocessing for signal background samples (skimming step)
@@ -136,7 +137,7 @@ def process_samples(cfg, era, extrapolateQCD=False):
                     # Apply filter efficiency
                     if 'Filtered' in dataset:
                         df = apply_filter(df, dataset_info['filter_eff'])
-                elif not extrapolateQCD: # Same sign QCD estimate
+                elif (not extrapolateQCD) and (not nosubtraction): # Same sign QCD estimate
                     logger.warning(f'Adding QCD factor of {dataset_info["extrapolation_factor"]}')
                     df['weight'] *= dataset_info['extrapolation_factor']
                 # Save the dataframe
@@ -151,7 +152,7 @@ def main():
     # Load configuration for the desired channel
     cfg = yaml.safe_load(open(f"../config/config_{args.channel}.yaml"))
     for era in cfg['Setup']['eras']:
-        processed_ds = process_samples(cfg, era, args.extrapolate)
+        processed_ds = process_samples(cfg, era, extrapolateQCD=args.extrapolate, nosubtraction=args.nosubtraction)
         # Save the list of processed datasets (used for shuffle merge)
         if args.extrapolate:
             output_file = os.path.join(cfg['Setup']['proc_output'], "ExtrapolateQCD", era, args.channel, f"dataset_extrapolateQCD.yaml")
