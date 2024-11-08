@@ -62,12 +62,14 @@ def expected_events(cfg, era):
                 df = pd.read_parquet(dataset_file)
                 logger.debug(f"Sum of weights is {df['weight'].sum()}")
                 data_events += df['weight'].sum()
-            else: # gen matches to jets
-                dataset_file = os.path.join(cfg['Setup']['proc_output'], 'ExtrapolateQCD', era,
-                                        channel, dataset, f'merged_skimmed_GENjet_SAMESIGN.parquet')
-                df = pd.read_parquet(dataset_file)
-                logger.debug(f"Sum of weights is {df['weight'].sum()}")
-                mc_events += df['weight'].sum()
+            else: # gen matches to jets, lep or tau
+                if process_options['gen_match']:
+                    for gen_match in process_options['gen_match']:
+                        dataset_file = os.path.join(cfg['Setup']['proc_output'], 'ExtrapolateQCD', era,
+                                                channel, dataset, f'merged_skimmed_GEN{gen_match}_SAMESIGN.parquet')
+                        df = pd.read_parquet(dataset_file)
+                        logger.debug(f"Sum of weights (gen {gen_match}) is {df['weight'].sum()}")
+                        mc_events += df['weight'].sum()
         print('\n')
         print('='*140)
     # Calculate the expected number of events
