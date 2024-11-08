@@ -5,25 +5,46 @@ class Selector():
     def __init__(self, logger):
         self.logger = logger
 
-    def select_gen_tau(self, df):
+    def select_gen_tau_semilep(self, df):
         n_bef = len(df)
         df = df[(df['genPartFlav_1'] == 15) & (df['genPartFlav_2'] == 5)] # tau->mu decay and hadronic tau
         n_after = len(df)
-        self.logger.debug(f"Tau Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
+        self.logger.debug(f"SemiLeptonic Channel Tau Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
         return df
 
-    def select_gen_lepton(self, df):
+    def select_gen_lepton_semilep(self, df):
         n_bef = len(df)
-        df = df[(df['genPartFlav_1'] != 15) & (df['genPartFlav_2'] != 5) & (df['genPartFlav_2'] != 0)] # both prompt muons
+        df = df[(df['genPartFlav_1'] != 15) & (df['genPartFlav_2'] != 5) & (df['genPartFlav_2'] != 0)] # both prompt electrons/muons
         n_after = len(df)
-        self.logger.debug(f"Muon Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
+        self.logger.debug(f"SemiLeptonic Channel Muon Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
         return df
 
-    def select_gen_jet(self, df):
+    def select_gen_jet_semilep(self, df):
         n_bef = len(df)
         df = df[df['genPartFlav_2'] == 0] # hadronic tau is a jet fake
         n_after = len(df)
-        self.logger.debug(f"Jet Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
+        self.logger.debug(f"SemiLeptonic Channel Jet Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
+        return df
+
+    def select_gen_tau_hadronic(self, df):
+        n_bef = len(df)
+        df = df[(df['genPartFlav_1'] == 5) & (df['genPartFlav_2'] == 5)] # tau->mu decay and hadronic tau
+        n_after = len(df)
+        self.logger.debug(f"Hadronic Channel Tau Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
+        return df
+
+    def select_gen_lepton_hadronic(self, df):
+        n_bef = len(df)
+        df = df[(df['genPartFlav_1'] != 5) & (df['genPartFlav_2'] != 5) & (df['genPartFlav_1'] != 0) & (df['genPartFlav_2'] != 0)]
+        n_after = len(df)
+        self.logger.debug(f"Hadronic Channel Muon Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
+        return df
+
+    def select_gen_jet_hadronic(self, df):
+        n_bef = len(df)
+        df = df[(df['genPartFlav_1'] == 0) | (df['genPartFlav_2'] == 0)] # either hadronic tau is a jet fake
+        n_after = len(df)
+        self.logger.debug(f"Hadronic Channel Jet Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
         return df
 
     def select_id_tt(self, df, sel_cfg):

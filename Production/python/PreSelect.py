@@ -95,14 +95,26 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
             # We may want to select one or more gen particles from a dataset
             if process_options['gen_match']:
                 for gen_match in process_options['gen_match']:
+                    # Tau Lepton Gen Matching
                     if gen_match == 'tau':
-                        df_tau = selector.select_gen_tau(df)
+                        if channel == 'tt':
+                            df_tau = selector.select_gen_tau_hadronic(df)
+                        elif channel == 'et' or channel == 'mt':
+                            df_tau = selector.select_gen_tau_semilep(df)
                         save_skims(df_tau, cfg, era, dataset, gen_match=gen_match, extrapolate=extrapolateQCD)
+                    # Prompt Lepton Gen Matching
                     elif gen_match == 'lep':
-                        df_muon = selector.select_gen_lepton(df)
-                        save_skims(df_muon, cfg, era, dataset, gen_match=gen_match, extrapolate=extrapolateQCD)
+                        if channel == 'tt':
+                            df_lep = selector.select_gen_lepton_hadronic(df)
+                        elif channel == 'et' or channel == 'mt':
+                            df_lep = selector.select_gen_lepton_semilep(df)
+                        save_skims(df_lep, cfg, era, dataset, gen_match=gen_match, extrapolate=extrapolateQCD)
+                    # Jet Gen Matching
                     elif gen_match == 'jet':
-                        df_jet = selector.select_gen_jet(df)
+                        if channel == 'tt':
+                            df_jet = selector.select_gen_jet_hadronic(df)
+                        elif channel == 'et' or channel == 'mt':
+                            df_jet = selector.select_gen_jet_semilep(df)
                         save_skims(df_jet, cfg, era, dataset, gen_match=gen_match, extrapolate=extrapolateQCD)
             else:
                 logger.debug(f"No gen matching requested for {dataset}")
