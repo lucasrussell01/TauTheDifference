@@ -136,7 +136,7 @@ def process_samples(cfg, era, extrapolateQCD=False):
                     # Apply filter efficiency
                     if 'Filtered' in dataset:
                         df = apply_filter(df, dataset_info['filter_eff'])
-                else: # Same sign QCD estimate
+                elif not extrapolateQCD: # Same sign QCD estimate
                     logger.warning(f'Adding QCD factor of {dataset_info["extrapolation_factor"]}')
                     df['weight'] *= dataset_info['extrapolation_factor']
                 # Save the dataframe
