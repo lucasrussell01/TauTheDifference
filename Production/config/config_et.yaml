@@ -19,6 +19,6 @@ Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
             'met_dphi_1', 'met_dphi_2', 'dphi', 'm_vis', 'pt_vis', 'n_jets',
             'n_bjets', 'mjj', 'jdeta', 'dijetpt', 'jpt_1', 'jpt_2', 'jeta_1',
             'jeta_2', rawDeepTau2018v2p5VSjet_2,
-            #'FastMTT_Mass', #'svfitMass', 'svfitMass_err', # Mass info
+            'FastMTT_Mass', #'svfitMass', 'svfitMass_err', # Mass info
             'weight', # Classifier info
             'run', 'lumi', 'event'] #, 'era'] # Run info
