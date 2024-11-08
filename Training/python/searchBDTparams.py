@@ -13,6 +13,7 @@ def get_args():
     parser = argparse.ArgumentParser(description="Hyperparameter optimization for XGBoost")
     parser.add_argument('--channel', type=str, help="Channel to optimise", required=True)
     parser.add_argument('--n_trials', type=int, help="Number of trials to attempt")
+    parser.add_argument('--n_cores', type=int, help="Number of cores to use")
     parser.add_argument('--study_name', type=str, help="Name of study (can use to resume)")
     parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
     return parser.parse_args()
@@ -122,7 +123,7 @@ def main():
         study = optuna.create_study(direction="maximize", study_name=args.study_name,
                                 storage=f"sqlite:///hyperlogs/{args.study_name}.db?timeout=10000", load_if_exists=True)
         # Begin search
-        study.optimize(objective, n_trials=args.n_trials, n_jobs=4)
+        study.optimize(objective, n_trials=args.n_trials, n_jobs=args.n_cores)
 
         # Summary
         print("Number of finished trials: ", len(study.trials))
@@ -139,5 +140,7 @@ def main():
 if __name__ == "__main__":
     # Configuration of tuning via args
     args = get_args()
+    if args.n_cores is None:
+        args.n_cores = -1
     main()
 
