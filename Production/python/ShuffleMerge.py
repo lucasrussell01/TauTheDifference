@@ -109,6 +109,9 @@ def normalise(merged_df):
     w_sum_signal = merged_df.loc[merged_df['class_label'] == 1, 'weight'].sum()
     w_sum_bkg = merged_df.loc[merged_df['class_label'] == 2, 'weight'].sum()
     w_sum_cat = [w_sum_taus, w_sum_signal, w_sum_bkg]
+    logger.debug(f"Sum of original weights for Genuine Taus [label 0]: {w_sum_taus:.2f}")
+    logger.debug(f"Sum of original weights for Signal [label 1]: {w_sum_signal:.2f}")
+    logger.debug(f"Sum of original weights for Fakes [label 2]: {w_sum_bkg:.2f}")
     # Calculate normalisation weights
     w_cat = [w_sum_target/w for w in w_sum_cat]
     logger.debug(f"Sum of original weights for Genuine Taus [label 0]: {w_sum_cat[0]:.2f} -> assigned category weight {w_cat[0]}")
