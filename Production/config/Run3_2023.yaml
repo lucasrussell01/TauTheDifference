@@ -82,12 +82,24 @@ Process:
     'WW': {x_sec: 122.27052, n_eff: 33507000.0}
     'WZ': {x_sec: 41.1474, n_eff: 16770000.0}
     'ZZ': {x_sec: 19.431, n_eff: 2517000.0}
-  # Tau DATA
+  # Tau DATA (nominal cut - mediun)
   'Tau_DATA':
     'Tau_Run2023C_v1': {extrapolation_factor: 0.9831255858119907}
     'Tau_Run2023C_v2': {extrapolation_factor: 0.9831255858119907}
     'Tau_Run2023C_v3': {extrapolation_factor: 0.9831255858119907}
     'Tau_Run2023C_v4': {extrapolation_factor: 0.9831255858119907}
+  # Tau DATA (tight)
+  'Tau_DATA_tight':
+    'Tau_Run2023C_v1': {extrapolation_factor: 0.9784997982174782}
+    'Tau_Run2023C_v2': {extrapolation_factor: 0.9784997982174782}
+    'Tau_Run2023C_v3': {extrapolation_factor: 0.9784997982174782}
+    'Tau_Run2023C_v4': {extrapolation_factor: 0.9784997982174782}
+  # Tau DATA (vtight)
+  'Tau_DATA_vtight':
+    'Tau_Run2023C_v1': {extrapolation_factor: 0.9708573187343692}
+    'Tau_Run2023C_v2': {extrapolation_factor: 0.9708573187343692}
+    'Tau_Run2023C_v3': {extrapolation_factor: 0.9708573187343692}
+    'Tau_Run2023C_v4': {extrapolation_factor: 0.9708573187343692}
   # Muon DATA
   'Muon_DATA':
     'Muon0_Run2023C_v1': {extrapolation_factor: 0.6144995181579057}

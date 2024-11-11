@@ -94,11 +94,21 @@ Process:
     'WW': {x_sec: 122.27052, n_eff: 53112080}
     'WZ': {x_sec: 41.1474, n_eff: 27003640}
     'ZZ': {x_sec: 19.431, n_eff: 4043040}
-  # Tau DATA
+  # Tau DATA (nominal cut - medium)
   'Tau_DATA':
     'Tau_Run2022E': {extrapolation_factor: 0.9755580653000544}
     'Tau_Run2022F': {extrapolation_factor: 0.9755580653000544}
     'Tau_Run2022G': {extrapolation_factor: 0.9755580653000544}
+  # Tau DATA (tight)
+  'Tau_DATA_tight':
+    'Tau_Run2022E': {extrapolation_factor: 0.9677481063019725}
+    'Tau_Run2022F': {extrapolation_factor: 0.9677481063019725}
+    'Tau_Run2022G': {extrapolation_factor: 0.9677481063019725}
+  # Tau DATA (vtight)
+  'Tau_DATA_vtight':
+    'Tau_Run2022E': {extrapolation_factor: 0.9565604196565903}
+    'Tau_Run2022F': {extrapolation_factor: 0.9565604196565903}
+    'Tau_Run2022G': {extrapolation_factor: 0.9565604196565903}
   # Muon DATA
   'Muon_DATA':
     'Muon_Run2022E': {extrapolation_factor: 0.497242238789759}

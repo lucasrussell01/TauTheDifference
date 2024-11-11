@@ -94,10 +94,18 @@ Process:
     'WW': {x_sec: 122.27052, n_eff: 15405496}
     'WZ': {x_sec: 41.1474, n_eff: 7527043}
     'ZZ': {x_sec: 19.431, n_eff: 1181750}
-  # Tau DATA
+  # Tau DATA (nominal - medium)
   'Tau_DATA':
     'Tau_Run2022C': {extrapolation_factor: 0.9681171669582582}
     'Tau_Run2022D': {extrapolation_factor: 0.9681171669582582}
+  # Tau DATA (for tight)
+  'Tau_DATA_tight':
+    'Tau_Run2022C': {extrapolation_factor: 0.955358597276066}
+    'Tau_Run2022D': {extrapolation_factor: 0.955358597276066}
+  # Tau DATA (for vtight)
+  'Tau_DATA_vtight':
+    'Tau_Run2022C': {extrapolation_factor: 0.9378522468441466}
+    'Tau_Run2022D': {extrapolation_factor: 0.9378522468441466}
   # Muon DATA
   'Muon_DATA':
     'SingleMuon_Run2022C': {extrapolation_factor: 0.47023413011534365}
