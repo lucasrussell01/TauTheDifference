@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 class Selector():
 
@@ -126,9 +127,24 @@ class Selector():
 
     def cp_weight(self, df):
         cp_weight = 0.5*(df['LHEReweightingWeight_SM'] + df['LHEReweightingWeight_PS'])
+        # update central weight
         df['weight'] *= cp_weight
+        df['cpweight'] = cp_weight
+
+        # check for large values
+        big_cp_weights = df[df['cpweight'] > 10]
+        if len(big_cp_weights) > 0:
+            self.logger.warning(f"{len(big_cp_weights)} large CP weights found - removing affected events")
+            df = df[df['cpweight'] < 10]
+            if np.max(big_cp_weights['cpweight']) > 1000:
+                self.logger.warning(f"Very large CP weight identified: {np.max(big_cp_weights['cpweight'])}")
+
         # drop negative weights - combi can be negative (rarely)
-        df = df[df['weight'] > 0]
+        neg_weights = df[df['weight'] < 0]
+        if len(neg_weights) > 0:
+            self.logger.warning(f"{len(neg_weights)} negative CP weights found - removing affected events")
+            df = df[df['weight'] > 0]
+
         self.logger.debug("CP reweighting applied (negative weights dropped)")
         return df
 
