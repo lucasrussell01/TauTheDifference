@@ -20,6 +20,7 @@ class stacked_histogram:
         self.step_edges = np.append(bins,2*bins[-1]-bins[-2]) # for outline
         self.bottom_bar = 0 # where to plot from (stacking MC contributions)
         self.bottom_step = 0 # where to plot from (outline)
+        self.max = 0 # maximum value of the histograms
         # colour palette
         self.colours = {
             'yellow': (243/255,170/255,37/255),
@@ -45,7 +46,7 @@ class stacked_histogram:
             "DY_lep": {'color': self.colours['blue'], 'label': r'$Z\to \ell\ell$'},
             # Jet Processes
             "WJets": {'color': self.colours['red'], 'label': 'W+jets'},
-            "QCD": {'color': self.colours['pink'], 'label': r'QCD multijet '},
+            "QCD": {'color': self.colours['pink'], 'label': r'Same Sign Data'},
             "Top_jet": {'color': self.colours['purple'], 'label': r'$t\bar{t}$/single $t$ '},
             "DY_jet": {'color': self.colours['dark_green'], 'label': r'$Z\to \tau\tau$ (jet $\to \tau_h$)'},
             "VV_jet": {'color': self.colours['brown'], 'label': r'Diboson (jet $\to \tau_h$)'},
@@ -76,12 +77,16 @@ class stacked_histogram:
         # Update the bottom for the next process
         self.bottom_bar += counts
         self.bottom_step += steps
+        if self.max < np.max(self.bottom_bar):
+            self.max = np.max(self.bottom_bar)
         return self.ax
 
     def add_signal(self, df, process_name, weight='weight'):
         # This function adds signal to the histogram
-        self.ax.hist(df[self.var_name], bins=self.bins, weights=df[weight], histtype="step",
+        counts, _, __ = self.ax.hist(df[self.var_name], bins=self.bins, weights=df[weight], histtype="step",
                      color = self.signal_process_info[process_name]['color'], linewidth = 2, label = self.signal_process_info[process_name]['label'])
+        if self.max < np.max(counts):
+            self.max = np.max(counts)
         return self.ax
 
     def get_ax(self, xlabel=None, lumi= 60.90, unit='GeV', channel='tt'):
@@ -109,5 +114,5 @@ class stacked_histogram:
 
 
     def get_max(self):
-        return np.max(self.bottom_bar) # return the maximum value of the stacked histogram
+        return self.max # return the maximum value of the stacked histogram
 
