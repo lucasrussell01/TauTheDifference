@@ -7,7 +7,13 @@ import sklearn.metrics as metrics
 from sklearn.metrics import confusion_matrix
 import seaborn as sn
 import yaml
+import argparse
 
+def get_args():
+    parser = argparse.ArgumentParser(description="XGBoost Classifier Evaluation")
+    parser.add_argument('--channel', type=str, help="Channel to train", required=True)
+    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
+    return parser.parse_args()
 
 def plot_confusion_matrix(cfg, parity):
 
@@ -66,11 +72,30 @@ def plot_confusion_matrix(cfg, parity):
     ax.text(0.15, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
     plt.savefig(os.path.join(model_dir, 'plots', 'Purity_CM.pdf'))
 
-    print("Confusion matrices produced for ")
+    print("Confusion matrices produced")
 
 
 if __name__ == "__main__":
+    args = get_args()
     cfg = yaml.safe_load(open("../config/config.yaml"))
+    # Load the correct config for the channel (and vsjet cut)
+    if args.channel == 'tt': # Fully hadronic has different vsjet cuts
+        if args.cut == "tight":
+            print("Plotting for tt channel (TIGHT Vsjet cut)")
+            cfg = cfg['tt_tight']
+        elif args.cut == "vtight":
+            print("Plotting for tt channel (VTIGHT Vsjet cut)")
+            cfg = cfg['tt_vtight']
+        else: # use medium by default
+            print("Plotting for tt channel (MEDIUM Vsjet cut)")
+            cfg = cfg['tt_medium']
+    elif args.channel == 'mt':
+        print("Plotting for MuTau channel")
+        cfg = cfg['mt']
+    elif args.channel == 'et':
+        print("Plotting for ETau channel")
+        cfg = cfg['et']
+
+
     plot_confusion_matrix(cfg, 'EVEN')
     plot_confusion_matrix(cfg, 'ODD')
-    print("Evaluation complete!")

@@ -5,6 +5,17 @@ import mplhep as hep
 import numpy as np
 import yaml
 
+
+import argparse
+
+def get_args():
+    parser = argparse.ArgumentParser(description="XGBoost Classifier Evaluation")
+    parser.add_argument('--channel', type=str, help="Channel to train", required=True)
+    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
+    return parser.parse_args()
+
+
+
 def main(cfg, parity):
 
     lumi = 61.90
@@ -85,7 +96,26 @@ def main(cfg, parity):
         plt.savefig(os.path.join(model_dir, 'plots', f"{cat_name}_score.pdf"))
 
 if __name__ == "__main__":
+    args = get_args()
     cfg = yaml.safe_load(open("../config/config.yaml"))
+    # Load the correct config for the channel (and vsjet cut)
+    if args.channel == 'tt': # Fully hadronic has different vsjet cuts
+        if args.cut == "tight":
+            print("Plotting for tt channel (TIGHT Vsjet cut)")
+            cfg = cfg['tt_tight']
+        elif args.cut == "vtight":
+            print("Plotting for tt channel (VTIGHT Vsjet cut)")
+            cfg = cfg['tt_vtight']
+        else: # use medium by default
+            print("Plotting for tt channel (MEDIUM Vsjet cut)")
+            cfg = cfg['tt_medium']
+    elif args.channel == 'mt':
+        print("Plotting for MuTau channel")
+        cfg = cfg['mt']
+    elif args.channel == 'et':
+        print("Plotting for ETau channel")
+        cfg = cfg['et']
+
     main(cfg, "ODD")
     main(cfg, "EVEN")
 
