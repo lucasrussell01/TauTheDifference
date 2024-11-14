@@ -96,27 +96,27 @@ Process:
     'ZZ': {x_sec: 19.431, n_eff: 4043040}
   # Tau DATA (nominal cut - medium)
   'Tau_DATA':
-    'Tau_Run2022E': {extrapolation_factor: 0.9755580653000544}
-    'Tau_Run2022F': {extrapolation_factor: 0.9755580653000544}
-    'Tau_Run2022G': {extrapolation_factor: 0.9755580653000544}
+    'Tau_Run2022E': {extrapolation_factor: 1.1 }  #  0.9755580653000544}
+    'Tau_Run2022F': {extrapolation_factor: 1.1 }  #  0.9755580653000544}
+    'Tau_Run2022G': {extrapolation_factor: 1.1 }  #  0.9755580653000544}
   # Tau DATA (tight)
   'Tau_DATA_tight':
-    'Tau_Run2022E': {extrapolation_factor: 0.9677481063019725}
-    'Tau_Run2022F': {extrapolation_factor: 0.9677481063019725}
-    'Tau_Run2022G': {extrapolation_factor: 0.9677481063019725}
+    'Tau_Run2022E': {extrapolation_factor: 1.1 }  #  0.9677481063019725}
+    'Tau_Run2022F': {extrapolation_factor: 1.1 }  #  0.9677481063019725}
+    'Tau_Run2022G': {extrapolation_factor: 1.1 }  #  0.9677481063019725}
   # Tau DATA (vtight)
   'Tau_DATA_vtight':
-    'Tau_Run2022E': {extrapolation_factor: 0.9565604196565903}
-    'Tau_Run2022F': {extrapolation_factor: 0.9565604196565903}
-    'Tau_Run2022G': {extrapolation_factor: 0.9565604196565903}
+    'Tau_Run2022E': {extrapolation_factor: 1.1 }  #  0.9565604196565903}
+    'Tau_Run2022F': {extrapolation_factor: 1.1 }  #  0.9565604196565903}
+    'Tau_Run2022G': {extrapolation_factor: 1.1 }  #  0.9565604196565903}
   # Muon DATA
   'Muon_DATA':
-    'Muon_Run2022E': {extrapolation_factor: 0.497242238789759}
-    'Muon_Run2022F': {extrapolation_factor: 0.497242238789759}
-    'Muon_Run2022G': {extrapolation_factor: 0.497242238789759}
+    'Muon_Run2022E': {extrapolation_factor: 1.1 }  #  0.497242238789759}
+    'Muon_Run2022F': {extrapolation_factor: 1.1 }  #  0.497242238789759}
+    'Muon_Run2022G': {extrapolation_factor: 1.1 }  #  0.497242238789759}
   # Electron DATA
   'Electron_DATA':
-    'EGamma_Run2022E': {extrapolation_factor: 0.6221881992257056}
-    'EGamma_Run2022F': {extrapolation_factor: 0.6221881992257056}
-    'EGamma_Run2022G': {extrapolation_factor: 0.6221881992257056}
+    'EGamma_Run2022E': {extrapolation_factor: 1.1 }  #  0.6221881992257056}
+    'EGamma_Run2022F': {extrapolation_factor: 1.1 }  #  0.6221881992257056}
+    'EGamma_Run2022G': {extrapolation_factor: 1.1 }  #  0.6221881992257056}
 
