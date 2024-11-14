@@ -5,20 +5,22 @@ Setup:
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 580,
-        'lambda': 1.8138461548263592e-05,
-        'subsample': 0.9735064495412468,
-        'colsample_bytree': 0.5485619386911114,
-        'learning_rate': 0.07539115398690703,
-        'max_depth': 5,
-        'min_child_weight': 9
+        'n_estimators': 283,
+        'lambda': 0.06657131112566837,
+        'subsample': 0.7428150366090029,
+        'colsample_bytree': 0.5427881225663449,
+        'learning_rate': 0.08875949781591855,
+        'max_depth': 6,
+        'min_child_weight': 2
       }
 
 Features:
-  train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
-            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt',
-            'met_dphi_1', 'met_dphi_2', 'dphi', 'm_vis', 'pt_vis', 'n_jets',
-            'n_bjets', 'mjj', 'jdeta', 'dijetpt', 'jpt_1', 'jpt_2', 'jeta_1',
-            'jeta_2', 'FastMTT_Mass']
+  train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', # individual 4-vectors
+          'met_pt','met_dphi_1', 'met_dphi_2', # met information
+          'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_Mass', # pair quantities
+          'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
+          'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', # individual jets
+          'mjj', 'jdeta', 'dijetpt', # dijet quantities
+          'n_jets', 'n_bjets'] # global jet information
   weight: 'class_weight'
   truth: 'class_label'
