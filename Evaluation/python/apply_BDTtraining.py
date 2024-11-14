@@ -82,6 +82,9 @@ if __name__ == "__main__":
     elif args.channel == 'mt':
         print("Evaluating for MuTau channel")
         cfg = cfg['mt']
+    elif args.channel == 'et':
+        print("Evaluating for ETau channel")
+        cfg = cfg['et']
     # Evaluate models
     eval_model(cfg, 'EVEN')
     eval_model(cfg, 'ODD')
