@@ -155,3 +155,11 @@ class Selector():
             df = df[df['weight'] > 0]
         return df
 
+    def mt_cut(self, df):
+        # cut mT < 70 GeV
+        cut = 70
+        n_bef = len(df)
+        df = df[df['mt_1'] < cut]
+        n_after = len(df)
+        self.logger.info(f"Applied mT < {cut}: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
+        return df

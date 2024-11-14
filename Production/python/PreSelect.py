@@ -73,10 +73,12 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
             if channel == 'mt':
                 df = selector.select_id_mt(df, cfg['Selection'])
                 df = selector.mutau_trigger_match(df, cfg['Selection']['triggers'])
+                df = selector.mt_cut(df)
             # ETau Channel Selections
             elif channel == 'et':
                 df = selector.select_id_et(df, cfg['Selection'])
                 df = selector.etau_trigger_match(df, cfg['Selection']['triggers'])
+                df = selector.mt_cut(df)
             # TauTau Channel Selections
             elif channel == 'tt':
                 df = selector.select_id_tt(df, cfg['Selection'])
