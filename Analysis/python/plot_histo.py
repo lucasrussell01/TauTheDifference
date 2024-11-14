@@ -64,28 +64,29 @@ else:
 
 fig, ax = plt.subplots(figsize = (6,6))
 
-if channel == 'tt':
+# UNCOMMENT IF WANT SIMPLE TT ESTIMATES (NO OTHER FAKE PROCESSES)
+# if channel == 'tt':
 
-    # Initialise plotting class
-    bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1)
-    histo = stacked_histogram(args.var, ax, bins)
-    # extract categories from dataframe
-    # Genuine
-    taus = merged_df.loc[merged_df['process_id'] == 11]
-    # Fake
-    bkg = merged_df[merged_df['process_id'] == 0]
-    # Signal
-    ggH = merged_df[merged_df['process_id'] == 100]
-    VBF = merged_df[merged_df['process_id'] == 101]
-    del merged_df
-    # Add background processes
-    histo.add_bkg(taus, "DY")
-    histo.add_bkg(bkg, "Jet_Fakes")
-    # Add signal processes
-    histo.add_signal(ggH, "ggH")
-    histo.add_signal(VBF, "VBF")
+#     # Initialise plotting class
+#     bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1)
+#     histo = stacked_histogram(args.var, ax, bins)
+#     # extract categories from dataframe
+#     # Genuine
+#     taus = merged_df.loc[merged_df['process_id'] == 11]
+#     # Fake
+#     bkg = merged_df[merged_df['process_id'] == 0]
+#     # Signal
+#     ggH = merged_df[merged_df['process_id'] == 100]
+#     VBF = merged_df[merged_df['process_id'] == 101]
+#     del merged_df
+#     # Add background processes
+#     histo.add_bkg(bkg, "Jet_Fakes")
+#     histo.add_bkg(taus, "DY")
+#     # Add signal processes
+#     histo.add_signal(ggH, "ggH")
+#     histo.add_signal(VBF, "VBF")
 
-elif channel == 'mt' or channel == 'et':
+if channel == 'mt' or channel == 'et' or channel == 'tt':
 
     # Initialise plotting class
     bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1) # wider binning
@@ -119,7 +120,6 @@ elif channel == 'mt' or channel == 'et':
     # Add signal processes
     histo.add_signal(ggH, "ggH", weight=args.weight)
     histo.add_signal(VBF, "VBF", weight=args.weight)
-
 
 # Get the axes
 ax = histo.get_ax(xlabel=args.label, lumi=lumi, unit='GeV', channel=channel)
