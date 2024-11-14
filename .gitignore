@@ -9,3 +9,5 @@ Training/python/hyperlogs
 Training/python/batch_jobs/*.sh
 Training/python/batch_jobs/*.sub
 Training/python/batch_jobs/logs
+Training/python/batch_jobs/.bash_history
+Training/python/batch_jobs/oldscripts
