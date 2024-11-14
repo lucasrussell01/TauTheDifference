@@ -16,6 +16,11 @@ tt_vtight:
   model_cut: "VTight"
 # MuTau Channel Models
 mt:
-  model_name: 'model_test'
+  model_name: 'model_mutau'
   model_path: "../../Training/python/XGB_Models/EarlyRun3/mt"
+  model_type: "BDT"
+# ETau Channel Models
+et:
+  model_name: 'model_etau'
+  model_path: "../../Training/python/XGB_Models/EarlyRun3/et"
   model_type: "BDT"
