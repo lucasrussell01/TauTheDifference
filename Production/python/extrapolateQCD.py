@@ -38,6 +38,11 @@ def expected_events(cfg, era):
     # Event numbers
     data_events = 0 # tracks number of same sign data events
     mc_events = 0 # tracks number of same sign MC events
+    w_events = 0
+    vv_events = 0
+    dy_events = 0
+    tt_events = 0
+    st_events = 0
     # Processes of interest
     data_processes = ['Electron_DATA', 'Muon_DATA', 'Tau_DATA']
     mc_processes = ['DY', 'TTBar', 'ST', 'WJets', 'Diboson']
@@ -70,9 +75,22 @@ def expected_events(cfg, era):
                         df = pd.read_parquet(dataset_file)
                         logger.debug(f"Sum of weights (gen {gen_match}) is {df['weight'].sum()}")
                         mc_events += df['weight'].sum()
+                        if process=='DY':
+                            dy_events += df['weight'].sum()
+                        elif process=='TTBar':
+                            tt_events += df['weight'].sum()
+                        elif process=='ST':
+                            st_events += df['weight'].sum()
+                        elif process=='WJets':
+                            w_events += df['weight'].sum()
+                        elif process=='Diboson':
+                            vv_events += df['weight'].sum()
+
         print('\n')
         print('='*140)
     # Calculate the expected number of events
+    logger.info(f"SS Data events: {data_events} --- Total SS MC events: {mc_events}")
+    logger.info(f"Breakdown - WJets: {w_events}, TTBar: {tt_events}, ST: {st_events}, DY: {dy_events}, VV: {vv_events}")
     factor = get_extrapolation_factor(data_events, mc_events, channel)
     return factor
 
