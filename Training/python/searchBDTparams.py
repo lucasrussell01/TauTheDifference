@@ -16,15 +16,12 @@ def get_args():
     parser.add_argument('--n_cores', type=int, help="Number of cores to use")
     parser.add_argument('--study_name', type=str, help="Name of study (can use to resume)")
     parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
+    parser.add_argument('--gpu', action='store_true', help="Use GPU for training")
     return parser.parse_args()
 
-def validation(model, cfg, parity, ds_path='input_path'):
-    # Load validation dataset
-    val_path = os.path.join(cfg['Setup'][ds_path], f'ShuffleMerge_{parity}model_VAL.parquet')
-    x, y, w_NN, w_phys = load_ds(val_path, cfg['Features']['train'],
-                                 cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
+def validation(model, x, y, w_NN, w_phys, parity):
     # Get predictions
-    y_pred_proba = model.predict_proba(x) # raw score
+    y_pred_proba = model.predict_proba(x) # raw score
     y_pred = y_pred_proba.argmax(axis=1) # predicted label
     # Find events classified as Higgs
     y_pred_higgs = y_pred_proba[:, 1][y_pred==1]   # get raw Higgs scores of events classified as Higgs
@@ -46,20 +43,12 @@ def validation(model, cfg, parity, ds_path='input_path'):
     return ams
 
 
-def train_model(cfg, parity, param, ds_path='input_path'):
-    # Input path (depends on even/odd)
-    train_path = os.path.join(cfg['Setup'][ds_path], f'ShuffleMerge_{parity}model_TRAIN.parquet')
-
-    # Load training dataset
-    x_train, y_train, w_train = load_ds(train_path, cfg['Features']['train'],
-                                        cfg['Features']['truth'], cfg['Features']['weight'])
-
+def train_model(x_train, y_train, w_train, parity, param):
     # Model training
     print(f"Training XGBClassifier model for \033[1;34m{parity}\033[0m events")
     model = XGBClassifier(**param)
-    model.fit(x_train, y_train, sample_weight=w_train)
 
-    del x_train, y_train, w_train
+    model.fit(x_train, y_train, sample_weight=w_train)
 
     return model
 
@@ -82,30 +71,28 @@ def objective(trial):
         "min_child_weight": trial.suggest_int("min_child_weight", 2, 10)
     }
 
+    if args.gpu:
+        # enable gpu training
+        param['device'] = 'cuda'
+
+        # Train even model
+        model_even = train_model(x_train_gpu_EVEN, y_train_gpu_EVEN, w_train_gpu_EVEN, "EVEN", param)
+        ams_even = validation(model_even, x_val_gpu_EVEN, y_val_EVEN, w_NN_val_EVEN, w_phys_val_EVEN, "EVEN")
+
+        # Train odd model
+        model_odd = train_model(x_train_gpu_ODD, y_train_gpu_ODD, w_train_gpu_ODD, "ODD", param)
+        ams_odd = validation(model_even, x_val_gpu_ODD, y_val_ODD, w_NN_val_ODD, w_phys_val_ODD, "ODD")
+
+    else:
+        # Train even model
+        model_even = train_model(x_train_EVEN, y_train_EVEN, w_train_EVEN, "EVEN", param)
+        ams_even = validation(model_even, x_val_EVEN, y_val_EVEN, w_NN_val_EVEN, w_phys_val_EVEN, "EVEN")
+
+        # Train odd model
+        model_odd = train_model(x_train_ODD, y_train_ODD, w_train_ODD, "ODD", param)
+        ams_odd = validation(model_even, x_val_ODD, y_val_ODD, w_NN_val_ODD, w_phys_val_ODD, "ODD")
 
 
-    # Find correct dataset to use (from channel and cut argument)
-    if args.channel == 'tt':
-        # Load training config
-        cfg = yaml.safe_load(open("../config/tt/BDTHyperOpt_config.yaml"))
-        if args.cut=='medium':
-            data_path = 'input_path'
-        elif args.cut=='tight':
-            data_path = 'input_path_tight'
-        elif args.cut=='vtight':
-            data_path = 'input_path_vtight'
-    elif args.channel == 'mt':
-        cfg = yaml.safe_load(open("../config/mt/BDTHyperOpt_config.yaml"))
-        data_path = 'input_path'
-
-
-    # Train even model
-    model_even = train_model(cfg, "EVEN", param, data_path)
-    ams_even = validation(model_even, cfg, "EVEN", data_path)
-
-    # Train odd model
-    model_odd = train_model(cfg, "ODD", param, data_path)
-    ams_odd = validation(model_odd, cfg, "ODD", data_path)
 
     if abs(ams_even - ams_odd)/(ams_even + ams_odd) > 0.04: # allow a 4% difference in total AMS ~ 8% in between the two
         return 0 # effectvely veto this model
@@ -114,6 +101,7 @@ def objective(trial):
 
 
 def main():
+
 
     print(f"Optimizing hyperparameters for XGBoost model with {args.n_trials} trials")
 
@@ -140,7 +128,56 @@ def main():
 if __name__ == "__main__":
     # Configuration of tuning via args
     args = get_args()
+    if args.gpu:
+        import cupy as cp
     if args.n_cores is None:
         args.n_cores = -1
+
+    print("Loading config and datasets")
+    # Find correct dataset to use and load config
+    if args.channel == 'tt':
+        cfg = yaml.safe_load(open("../config/tt/BDTHyperOpt_config.yaml"))
+        if args.cut=='medium':
+            data_path = 'input_path'
+        elif args.cut=='tight':
+            data_path = 'input_path_tight'
+        elif args.cut=='vtight':
+            data_path = 'input_path_vtight'
+    elif args.channel == 'mt':
+        cfg = yaml.safe_load(open("../config/mt/BDTHyperOpt_config.yaml"))
+        data_path = 'input_path'
+    elif args.channel == 'et':
+        cfg = yaml.safe_load(open("../config/et/BDTHyperOpt_config.yaml"))
+        data_path = 'input_path'
+
+    # Load datasets
+    # EVEN MODEL
+    x_train_EVEN, y_train_EVEN, w_train_EVEN = load_ds(os.path.join(cfg['Setup'][data_path], f'ShuffleMerge_EVENmodel_TRAIN.parquet'),
+                                                       cfg['Features']['train'], cfg['Features']['truth'], cfg['Features']['weight'])
+    x_val_EVEN, y_val_EVEN, w_NN_val_EVEN, w_phys_val_EVEN = load_ds(os.path.join(cfg['Setup'][data_path], 'ShuffleMerge_EVENmodel_VAL.parquet'),
+                                                                    cfg['Features']['train'], cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
+    # ODD MODEL
+    x_train_ODD, y_train_ODD, w_train_ODD = load_ds(os.path.join(cfg['Setup'][data_path], f'ShuffleMerge_ODDmodel_TRAIN.parquet'),
+                                                       cfg['Features']['train'], cfg['Features']['truth'], cfg['Features']['weight'])
+    x_val_ODD, y_val_ODD, w_NN_val_ODD, w_phys_val_ODD = load_ds(os.path.join(cfg['Setup'][data_path], 'ShuffleMerge_ODDmodel_VAL.parquet'),
+                                                                    cfg['Features']['train'], cfg['Features']['truth'], cfg['Features']['weight'], eval=True)
+
+    if args.gpu:
+        print(f"Storing datasets on GPU")
+        # Store datasets on gpu
+        x_train_gpu_EVEN = cp.array(x_train_EVEN)
+        y_train_gpu_EVEN = cp.array(y_train_EVEN)
+        w_train_gpu_EVEN = cp.array(w_train_EVEN)
+        x_train_gpu_ODD = cp.array(x_train_ODD)
+        y_train_gpu_ODD = cp.array(y_train_ODD)
+        w_train_gpu_ODD = cp.array(w_train_ODD)
+        x_val_gpu_EVEN = cp.array(x_val_EVEN)
+        x_val_gpu_ODD = cp.array(x_val_ODD)
+        del x_train_EVEN, y_train_EVEN, w_train_EVEN, x_train_ODD, y_train_ODD, w_train_ODD, x_val_EVEN, x_val_ODD
+
+
+
+
+
     main()
 
