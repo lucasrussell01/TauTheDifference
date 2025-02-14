@@ -53,7 +53,7 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
     # Load configuration for the era, process and channel
     channel = cfg["Setup"]["channel"]
     era_cfg = yaml.safe_load(open(f"../config/{era}.yaml"))
-    channel_cfg = era_cfg[f'Channel_{channel}'] # Processes and Gen matching
+    channel_cfg = cfg[f'Datasets'] # Processes and Gen matching
     process_cfg = era_cfg['Process'] # For each Process: Datasets, N_eff, x_sec etc
     selector = Selector(logger)
     # Iterate over processes for the channel
@@ -68,7 +68,8 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
                                 channel, dataset, 'nominal/merged.parquet')
             df = pd.read_parquet(dataset_file)
             # Apply general selections and trigger matching
-            df = selector.check_sign_weights(df) # drop negative weights (affect training)
+            # 29/01 Now drop at point of training
+            # df = selector.check_sign_weights(df) # drop negative weights (affect training)
             # MuTau Channel Selections
             if channel == 'mt':
                 df = selector.select_id_mt(df, cfg['Selection'])
@@ -91,9 +92,11 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
                 df = selector.select_os(df, False)
             else:
                 df = selector.select_os(df, True)
-            # Reject negative LHE CP weights
+            # LHE CP reweighting
             if 'ProdAndDecay' in dataset:
                 df = selector.cp_weight(df)
+            # Check weights for large values:
+            # df = selector.check_weights(df)
             # We may want to select one or more gen particles from a dataset
             if process_options['gen_match']:
                 for gen_match in process_options['gen_match']:
