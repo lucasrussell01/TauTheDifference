@@ -15,7 +15,6 @@ def get_args():
     parser.add_argument('--debug', action='store_true', help="Enable debug mode")
     parser.add_argument('--extrapolate', action='store_true', help="Extrapolate QCD (calculation)")
     parser.add_argument('--nosubtraction', action='store_true', help="Do NOT apply QCD extrapolation factor")
-    parser.add_argument('--cut', type=str, help="Use alternate extrapolation factors (eg tighter vsjet cuts - tt only)", required=False)
     return parser.parse_args()
 
 
@@ -75,7 +74,7 @@ def reweight_mc(df, xsec, n_eff, lumi):
     return df
 
 
-def process_samples(cfg, era, extrapolateQCD=False, nosubtraction=False, cut=None):
+def process_samples(cfg, era, extrapolateQCD=False, nosubtraction=False):
     # List of samples that have been processed (used for ShuffleMerge)
     processed_datasets = []
     # Preprocessing for signal background samples (skimming step)
@@ -86,21 +85,11 @@ def process_samples(cfg, era, extrapolateQCD=False, nosubtraction=False, cut=Non
     # Load configuration for the era, process and channel
     channel = cfg["Setup"]["channel"]
     era_cfg = yaml.safe_load(open(f"../config/{era}.yaml"))
-    channel_cfg = era_cfg[f'Channel_{channel}'] # Processes and Gen matching
+    channel_cfg = cfg[f'Datasets'] # Processes and Gen matching
     process_cfg = era_cfg['Process'] # For each Process: Datasets, N_eff, x_sec etc
     # Iterate over processes for the channel
     for process, process_options in channel_cfg.items():
         logger.info(f"Loading skimmed datasets for {process}")
-        # Replace process name to get correct extrapolation factors if alternate vsjet ut
-        if process == 'Tau_DATA':
-            if cut == 'tight':
-                process = 'Tau_DATA_tight'
-                logger.warning(f'REPLACING: Using {process} for tight vsjet cut')
-            elif cut == 'vtight':
-                process = 'Tau_DATA_vtight'
-                logger.warning(f'REPLACING: Using {process} for vtight vsjet cut')
-            else:
-                logger.warning(f'Using {process} for nominal vsjet cut')
         # Iterate over datasets for the proces
         for dataset, dataset_info in process_cfg[process].items():
             print('-'*140)
@@ -163,7 +152,7 @@ def main():
     # Load configuration for the desired channel
     cfg = yaml.safe_load(open(f"../config/config_{args.channel}.yaml"))
     for era in cfg['Setup']['eras']:
-        processed_ds = process_samples(cfg, era, extrapolateQCD=args.extrapolate, nosubtraction=args.nosubtraction, cut=args.cut)
+        processed_ds = process_samples(cfg, era, extrapolateQCD=args.extrapolate, nosubtraction=args.nosubtraction)
         # Save the list of processed datasets (used for shuffle merge)
         if args.extrapolate:
             output_file = os.path.join(cfg['Setup']['proc_output'], "ExtrapolateQCD", era, args.channel, f"dataset_extrapolateQCD.yaml")
