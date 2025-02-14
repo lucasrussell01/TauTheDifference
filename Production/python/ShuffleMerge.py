@@ -67,12 +67,13 @@ def shuffle_merge(cfg, save_shards=False):
     # Merge all files into one dataframe
     merged_df = pd.DataFrame()
     for era in cfg['Setup']['eras']:
+        logger.info(f"Loading era: {era}")
         era_cfg = yaml.safe_load(open(f"../config/{era}.yaml"))
         # Load list of processed samples
         proc_list = os.path.join(cfg['Setup']['proc_output'], era, cfg['Setup']['channel'], f"processed_datasets.yaml")
         datasets = yaml.safe_load(open(proc_list))
         for file_path in datasets:
-            logger.info(f"Adding [{file_path.split('/')[-2]+file_path.split('/')[-1]}] from {era}")
+            logger.debug(f"Adding [{file_path.split('/')[-2]+file_path.split('/')[-1]}] from {era}")
             df = pd.read_parquet(file_path)
             df_dup = df[df.duplicated()]
             if len(df_dup) > 0:
@@ -104,10 +105,11 @@ def normalise(merged_df):
     # Target sum of weights to be N events
     w_sum_target = len(merged_df)/3
     logger.debug(f"\nTotal number of events is {len(merged_df)} so targetting sum of class weights to be {w_sum_target:.1f} for each category\n")
+    # Use only positive weights for class normalisation
     # Sum existing physics weights accross each category
-    w_sum_taus = merged_df.loc[merged_df['class_label'] == 0, 'weight'].sum()
-    w_sum_signal = merged_df.loc[merged_df['class_label'] == 1, 'weight'].sum()
-    w_sum_bkg = merged_df.loc[merged_df['class_label'] == 2, 'weight'].sum()
+    w_sum_taus = merged_df.loc[(merged_df['class_label'] == 0) & (merged_df['weight'] > 0), 'weight'].sum()
+    w_sum_signal = merged_df.loc[(merged_df['class_label'] == 1) & (merged_df['weight'] > 0), 'weight'].sum()
+    w_sum_bkg = merged_df.loc[(merged_df['class_label'] == 2) & (merged_df['weight'] > 0), 'weight'].sum()
     w_sum_cat = [w_sum_taus, w_sum_signal, w_sum_bkg]
     logger.debug(f"Sum of original weights for Genuine Taus [label 0]: {w_sum_taus:.2f}")
     logger.debug(f"Sum of original weights for Signal [label 1]: {w_sum_signal:.2f}")
