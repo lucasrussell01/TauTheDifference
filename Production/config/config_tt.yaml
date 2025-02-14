@@ -1,25 +1,37 @@
 Setup:
   eras: ['Run3_2022', 'Run3_2022EE', 'Run3_2023', 'Run3_2023BPix'] # Eras to be used
   channel: 'tt'
-  input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/production' # HiggsDNA output
-  output: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge' # ShuffleMerge output
-  skim_output: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/PreSelected' # Output for selected (and gen matched) events
-  proc_output: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/Weighted' # Temporary output for weighted/labelled events
+  input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/production_v2' # HiggsDNA output
+  output: '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/ShuffleMerge' # ShuffleMerge output
+  skim_output: '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/PreSelected' # Output for selected (and gen matched) events
+  proc_output: '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/Weighted' # Temporary output for weighted/labelled events
+
+Datasets:
+  'DY': {gen_match: ['tau', 'lep', 'jet'], label: [0, 2, 2], proc_id: [11, 12, 13]}
+  'ggH': {gen_match: false, label: 1, proc_id: 100}
+  'VBFH': {gen_match: false, label: 1, proc_id: 101}
+  'VH': {gen_match: false, label: 1, proc_id: 102}
+  'TTBar': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [21, 23]}
+  'ST': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [31, 33]}
+  'WJets': {gen_match: ['jet'], label: [2], proc_id: [43]}
+  'Diboson': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [51, 53]}
+  'Tau_DATA': {gen_match: false, label: 2, proc_id: 0}
 
 Selection: # Selection to be applied
-  vsjet_1: 5 # Medium
-  vsjet_2: 5 # Medium
+  vsjet_1: 7 # VTight
+  vsjet_2: 7 # VTight
   vse_1: 2 # VVLoose
   vse_2: 2 # VVLoose
-  vsmu_1: 1 # VLoose
-  vsmu_2: 1 # VLoose
+  vsmu_1: 4 # Tight
+  vsmu_2: 4 # Tight
   triggers: ['trg_doubletau', 'trg_doubletauandjet']
 
-# Variables that will be kept in dataframes
-Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', 'dR', 'pt_tt',
-            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'met_pt', 'os',
-            'met_dphi_1', 'met_dphi_2', 'dphi', 'm_vis', 'pt_vis', 'n_jets',
-            'n_bjets', 'mjj', 'jdeta', 'dijetpt', 'jpt_1', 'jpt_2', 'jeta_1',
-            'jeta_2', 'rawDeepTau2018v2p5VSjet_1', rawDeepTau2018v2p5VSjet_2,
-            'FastMTT_Mass', #'svfitMass', 'svfitMass_err', # Mass info
+# # Variables that will be kept in dataframes
+Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', # individual 4-vectors
+            'met_pt','met_dphi_1', 'met_dphi_2', # met information
+            'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
+            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
+            'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', # individual jets
+            'mjj', 'jdeta', 'dijetpt', # dijet quantities
+            'n_jets', 'n_bjets', # global jet information
             'weight', 'run', 'lumi', 'event'] # Run info
