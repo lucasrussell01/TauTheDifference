@@ -1,109 +1,142 @@
-# ************* Run 3 2023BPix  *************
-
 Params:
   Luminosity: 9451
-
-# Processes to include for the MuTau Channel
-Channel_mt:
-  'DY': {gen_match: ['tau', 'lep', 'jet'], label: [0, 2, 2], proc_id: [11, 12, 13]}
-  'ggH': {gen_match: false, label: 1, proc_id: 100}
-  'VBFH': {gen_match: false, label: 1, proc_id: 101}
-  'TTBar': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [21, 23]}
-  'ST': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [31, 33]}
-  'WJets': {gen_match: ['jet'], label: [2], proc_id: [43]}
-  'Diboson': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [51, 53]}
-  'Muon_DATA': {gen_match: false, label: 2, proc_id: 0}
-
-# Processes to include for the ETau Channel
-Channel_et:
-  'DY': {gen_match: ['tau', 'lep', 'jet'], label: [0, 2, 2], proc_id: [11, 12, 13]}
-  'ggH': {gen_match: false, label: 1, proc_id: 100}
-  'VBFH': {gen_match: false, label: 1, proc_id: 101}
-  'TTBar': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [21, 23]}
-  'ST': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [31, 33]}
-  'WJets': {gen_match: ['jet'], label: [2], proc_id: [43]}
-  'Diboson': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [51, 53]}
-  'Electron_DATA': {gen_match: false, label: 2, proc_id: 0}
-
-# Processes to include for the TauTau Channel (Simple Estimate)
-# Channel_tt:
-#   'DY': {gen_match: false, label: 0, proc_id: 11}
-#   'ggH': {gen_match: false, label: 1, proc_id: 100}
-#   'VBFH': {gen_match: false, label: 1, proc_id: 101}
-#   'Tau_DATA': {gen_match: false, label: 2, proc_id: 0}
-
-# Processes to include for the TauTau Channel (Full QCD Estimate)
-Channel_tt:
-  'DY': {gen_match: ['tau', 'lep', 'jet'], label: [0, 2, 2], proc_id: [11, 12, 13]}
-  'ggH': {gen_match: false, label: 1, proc_id: 100}
-  'VBFH': {gen_match: false, label: 1, proc_id: 101}
-  'TTBar': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [21, 23]}
-  'ST': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [31, 33]}
-  'WJets': {gen_match: ['jet'], label: [2], proc_id: [43]}
-  'Diboson': {gen_match: ['tau', 'jet'], label: [0, 2], proc_id: [51, 53]}
-  'Tau_DATA': {gen_match: false, label: 2, proc_id: 0}
-
-# Datasets and information for the processes
 Process:
-  # Drell Yan Samples
-  'DY':
-    'DYto2L_M-50_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
-    'DYto2L_M-50_1J_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
-    'DYto2L_M-50_2J_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
-    'DYto2L_M-50_3J_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
-    'DYto2L_M-50_4J_madgraphMLM': {x_sec: 6282.6, n_eff: 69398459}
-  # Gluon Fusion Higgs Samples
-  'ggH':
-    'GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay': {x_sec: 3.276, n_eff: 26842817, filter_eff: 0.3847}
-    'GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay': {x_sec: 3.276, n_eff: 26842817, filter_eff: 0.3847}
-    'GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay': {x_sec: 3.276, n_eff: 26842817, filter_eff: 0.3847}
-  # Vector Boson Fusion Higgs Samples
-  'VBFH':
-    'VBFHToTauTau_UncorrelatedDecay_Filtered': {x_sec: 0.2558, n_eff: 7048003, filter_eff: 0.4095}
-  # TTBar Samples
-  'TTBar':
-    'TTto2L2Nu': {x_sec: 98.04387875606875, n_eff: 24357456.0}
-    'TTtoLNu2Q': {x_sec: 405.74895682981236, n_eff: 81212938.0}
-    'TTto4Q': {x_sec: 419.8071644141188, n_eff: 52422350.0}
-  # Single Top Samples
-  'ST':
-    'ST_tW_top_2L2Nu': {x_sec: 3.8, n_eff: 2478922.0}
-    'ST_tW_antitop_2L2Nu': {x_sec: 3.8, n_eff: 2487898.0}
-    'ST_tW_top_LNu2Q': {x_sec: 15.8, n_eff: 4943196.0}
-    'ST_tW_antitop_LNu2Q': {x_sec: 15.9, n_eff: 5146462.0}
-  # W+Jets Samples
-  'WJets':
-    'WtoLNu_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
-    'WtoLNu_1J_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
-    'WtoLNu_2J_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
-    'WtoLNu_3J_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
-    'WtoLNu_4J_madgraphMLM': {x_sec: 63425.1, n_eff: 94639090.0}
-  # Diboson Samples
-  'Diboson':
-    'WW': {x_sec: 122.27052, n_eff: 16545000.0}
-    'WZ': {x_sec: 41.1474, n_eff: 8379000.0}
-    'ZZ': {x_sec: 19.431, n_eff: 1254000.0}
-  # Tau DATA (nominal - medium cut)
-  'Tau_DATA':
-    'Tau_Run2023D_v1': {extrapolation_factor: 1.1 }  #  0.9832165663936918}
-    'Tau_Run2023D_v2': {extrapolation_factor: 1.1 }  #  0.9832165663936918}
-  # Tau DATA (tight)
-  'Tau_DATA_tight':
-    'Tau_Run2023D_v1': {extrapolation_factor: 1.1 }  #  0.9766613038648019}
-    'Tau_Run2023D_v2': {extrapolation_factor: 1.1 }  #  0.9766613038648019}
-  # Tau DATA (vtight)
-  'Tau_DATA_vtight':
-    'Tau_Run2023D_v1': {extrapolation_factor: 1.1 }  #  0.9683217612131935}
-    'Tau_Run2023D_v2': {extrapolation_factor: 1.1 }  #  0.9683217612131935}
-  # Muon DATA
-  'Muon_DATA':
-    'Muon0_Run2023D_v1': {extrapolation_factor: 1.1 }  #  0.6386136931584117}
-    'Muon0_Run2023D_v2': {extrapolation_factor: 1.1 }  #  0.6386136931584117}
-    'Muon1_Run2023D_v1': {extrapolation_factor: 1.1 }  #  0.6386136931584117}
-    'Muon1_Run2023D_v2': {extrapolation_factor: 1.1 }  #  0.6386136931584117}
-  # Electron DATA
-  'Electron_DATA':
-    'EGamma0_Run2023D_v1': {extrapolation_factor: 1.1 }  #  0.6770785748423452}
-    'EGamma0_Run2023D_v2': {extrapolation_factor: 1.1 }  #  0.6770785748423452}
-    'EGamma1_Run2023D_v1': {extrapolation_factor: 1.1 }  #  0.6770785748423452}
-    'EGamma1_Run2023D_v2': {extrapolation_factor: 1.1 }  #  0.6770785748423452}
+  DY:
+    DYto2L_M_50_1J_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 69398459.0
+      x_sec: 6282.6
+    DYto2L_M_50_2J_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 69398459.0
+      x_sec: 6282.6
+    DYto2L_M_50_3J_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 69398459.0
+      x_sec: 6282.6
+    DYto2L_M_50_4J_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 69398459.0
+      x_sec: 6282.6
+    DYto2L_M_50_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 69398459.0
+      x_sec: 6282.6
+  Diboson:
+    WW:
+      filter_eff: 1.0
+      n_eff: 16545000
+      x_sec: 122.27052
+    WZ:
+      filter_eff: 1.0
+      n_eff: 8379000
+      x_sec: 41.1474
+    ZZ:
+      filter_eff: 1.0
+      n_eff: 1254000
+      x_sec: 19.431
+  Electron_DATA:
+    EGamma0_Run2023D_v1:
+      extrapolation_factor: 1.1
+    EGamma0_Run2023D_v2:
+      extrapolation_factor: 1.1
+    EGamma1_Run2023D_v1:
+      extrapolation_factor: 1.1
+    EGamma1_Run2023D_v2:
+      extrapolation_factor: 1.1
+  Muon_DATA:
+    Muon0_Run2023D_v1:
+      extrapolation_factor: 1.1
+    Muon0_Run2023D_v2:
+      extrapolation_factor: 1.1
+    Muon1_Run2023D_v1:
+      extrapolation_factor: 1.1
+    Muon1_Run2023D_v2:
+      extrapolation_factor: 1.1
+  ST:
+    ST_tW_antitop_2L2Nu:
+      filter_eff: 1.0
+      n_eff: 2487898.0
+      x_sec: 3.8
+    ST_tW_antitop_LNu2Q:
+      filter_eff: 1.0
+      n_eff: 5146462.0
+      x_sec: 15.9
+    ST_tW_top_2L2Nu:
+      filter_eff: 1.0
+      n_eff: 2478922.0
+      x_sec: 3.8
+    ST_tW_top_LNu2Q:
+      filter_eff: 1.0
+      n_eff: 4943196.0
+      x_sec: 15.8
+  TTBar:
+    TTto2L2Nu:
+      filter_eff: 1.0
+      n_eff: 24357456.0
+      x_sec: 98.04387875606875
+    TTto4Q:
+      filter_eff: 1.0
+      n_eff: 52422350.0
+      x_sec: 419.8071644141188
+    TTtoLNu2Q:
+      filter_eff: 1.0
+      n_eff: 76050494.0
+      x_sec: 405.74895682981236
+  Tau_DATA:
+    Tau_Run2023D_v1:
+      extrapolation_factor: 1.1
+    Tau_Run2023D_v2:
+      extrapolation_factor: 1.1
+  VBFH:
+    VBFHToTauTau_UncorrelatedDecay_Filtered:
+      filter_eff: 0.4091
+      n_eff: 7048003
+      x_sec: 0.2558
+  VH:
+    WminusHToTauTau_UncorrelatedDecay_Filtered:
+      filter_eff: 0.3944
+      n_eff: 718725
+      x_sec: 0.03561
+    WplusHToTauTau_UncorrelatedDecay_Filtered:
+      filter_eff: 0.3743
+      n_eff: 952493
+      x_sec: 0.05575
+    ZHToTauTau_UncorrelatedDecay_Filtered:
+      filter_eff: 0.3933
+      n_eff: 1007812
+      x_sec: 0.0592
+  WJets:
+    WtoLNu_1J_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 94639090.0
+      x_sec: 63425.09999999999
+    WtoLNu_2J_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 94639090.0
+      x_sec: 63425.09999999999
+    WtoLNu_3J_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 94639090.0
+      x_sec: 63425.09999999999
+    WtoLNu_4J_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 94639090.0
+      x_sec: 63425.09999999999
+    WtoLNu_madgraphMLM:
+      filter_eff: 1.0
+      n_eff: 94639090.0
+      x_sec: 63425.09999999999
+  ggH:
+    GluGluHTo2Tau_UncorrelatedDecay_CPodd_Filtered_ProdAndDecay:
+      filter_eff: 0.3848
+      n_eff: 26842817
+      x_sec: 3.2759
+    GluGluHTo2Tau_UncorrelatedDecay_MM_Filtered_ProdAndDecay:
+      filter_eff: 0.3848
+      n_eff: 26842817
+      x_sec: 3.2759
+    GluGluHTo2Tau_UncorrelatedDecay_SM_Filtered_ProdAndDecay:
+      filter_eff: 0.3847
+      n_eff: 26842817
+      x_sec: 3.2759
