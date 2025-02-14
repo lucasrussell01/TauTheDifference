@@ -10,7 +10,6 @@ def get_args():
     parser.add_argument('--channel', type=str, help="Channel to process", required=True)
     parser.add_argument('--debug', action='store_true', help="Enable debug mode")
     parser.add_argument('--extrapolate', action='store_true', help="Extrapolate QCD")
-    parser.add_argument('--cut', type=str, help="Cut for tt channel", required=False)
     return parser.parse_args()
 
 def run_command(command):
@@ -21,11 +20,11 @@ def run_command(command):
         print(f"Command '{command}' failed with exit code: {e.returncode}")
         raise
 
-def run_production(channel, debug=False, cut=None):
-    # Run standard production (PreSelect, Process, ShuffleMerge)
+def run_production(channel, debug=False):
+    # Run standard production (PreSelet, Process, ShuffleMerge)
     debug_flag = "--debug" if debug else ""
     run_command(f"python ../python/PreSelect.py --channel {channel} {debug_flag}")
-    run_command(f"python ../python/Process.py --channel {channel} {debug_flag} --cut {cut}")
+    run_command(f"python ../python/Process.py --channel {channel} {debug_flag}")
     run_command(f"python ../python/ShuffleMerge.py --channel {channel} {debug_flag}")
 
 def extrapolate_QCD(channel, debug=False):
@@ -41,7 +40,7 @@ def main():
         if args.extrapolate:
             extrapolate_QCD(args.channel, args.debug)
         else:
-            run_production(args.channel, args.debug, args.cut)
+            run_production(args.channel, args.debug)
     except subprocess.CalledProcessError:
         raise RuntimeError("Production failed!")
 
