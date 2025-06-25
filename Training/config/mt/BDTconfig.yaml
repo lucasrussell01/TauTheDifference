@@ -1,23 +1,23 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge/mt'
-  model_outputs: 'XGB_Models/EarlyRun3/mt'
-  model_dir_name: 'model_mutau'
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/ShuffleMerge/mt'
+  model_outputs: 'XGB_Models/production_v2/mt'
+  model_dir_name: 'model_mt'
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 555,
-        'lambda': 0.06588274926043533,
-        'subsample': 0.9329300370925048,
-        'colsample_bytree': 0.6286133448394969,
-        'learning_rate': 0.07428948519985107,
+        'n_estimators': 517,
+        'lambda': 0.0013001691979642042,
+        'subsample': 0.9277940909078621,
+        'colsample_bytree': 0.5770181356594734,
+        'learning_rate': 0.06416736561853177,
         'max_depth': 8,
-        'min_child_weight': 10
+        'min_child_weight': 3
       }
 
 Features:
-  train: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', # individual 4-vectors
+  train: ['pt_1', 'pt_2', 'abs_eta_1',  # individual 4-vectors
           'met_pt','met_dphi_1', 'met_dphi_2', # met information
-          'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_Mass', # pair quantities
+          'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
           'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
           'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', # individual jets
           'mjj', 'jdeta', 'dijetpt', # dijet quantities

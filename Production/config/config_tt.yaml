@@ -1,10 +1,10 @@
 Setup:
   eras: ['Run3_2022', 'Run3_2022EE', 'Run3_2023', 'Run3_2023BPix'] # Eras to be used
   channel: 'tt'
-  input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/production_v2' # HiggsDNA output
-  output: '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/ShuffleMerge' # ShuffleMerge output
-  skim_output: '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/PreSelected' # Output for selected (and gen matched) events
-  proc_output: '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/Weighted' # Temporary output for weighted/labelled events
+  input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/prod_march' # HiggsDNA output
+  output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_march/ShuffleMerge' # ShuffleMerge output
+  skim_output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_march/PreSelected' # Output for selected (and gen matched) events
+  proc_output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_march/Weighted' # Temporary output for weighted/labelled events
 
 Datasets:
   'DY': {gen_match: ['tau', 'lep', 'jet'], label: [0, 2, 2], proc_id: [11, 12, 13]}
@@ -27,7 +27,7 @@ Selection: # Selection to be applied
   triggers: ['trg_doubletau', 'trg_doubletauandjet']
 
 # # Variables that will be kept in dataframes
-Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', # individual 4-vectors
+Features: ['pt_1', 'pt_2', # individual 4-vectors
             'met_pt','met_dphi_1', 'met_dphi_2', # met information
             'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
             'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses

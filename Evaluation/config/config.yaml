@@ -1,26 +1,29 @@
 # TauTau Channel Models
-tt_medium:
-  model_name: 'model_opt_medium'
-  model_path: "../../Training/python/XGB_Models/EarlyRun3/tt"
-  model_type: "BDT"
-  model_cut: "Medium"
-tt_tight:
-  model_name: 'model_opt_tight'
-  model_path: "../../Training/python/XGB_Models/EarlyRun3/tt"
-  model_type: "BDT"
-  model_cut: "Tight"
-tt_vtight:
-  model_name: 'model_opt_vtight'
-  model_path: "../../Training/python/XGB_Models/EarlyRun3/tt"
+tt:
+  model_name: 'model_base_nobjets'
+  model_path: "../../Training/python/XGB_Models/prod_march/tt"
   model_type: "BDT"
   model_cut: "VTight"
 # MuTau Channel Models
 mt:
-  model_name: 'model_mutau'
-  model_path: "../../Training/python/XGB_Models/EarlyRun3/mt"
+  model_name: 'model_mt'
+  model_path: "../../Training/python/XGB_Models/production_v2/mt"
   model_type: "BDT"
 # ETau Channel Models
 et:
-  model_name: 'model_etau'
-  model_path: "../../Training/python/XGB_Models/EarlyRun3/et"
+  model_name: 'model_et'
+  model_path: "../../Training/python/XGB_Models/production_v2/et"
   model_type: "BDT"
+
+
+
+# tt_medium:
+#   model_name: 'model_opt_medium'
+#   model_path: "../../Training/python/XGB_Models/EarlyRun3/tt"
+#   model_type: "BDT"
+#   model_cut: "Medium"
+# tt_tight:
+#   model_name: 'model_opt_tight'
+#   model_path: "../../Training/python/XGB_Models/EarlyRun3/tt"
+#   model_type: "BDT"
+#   model_cut: "Tight"

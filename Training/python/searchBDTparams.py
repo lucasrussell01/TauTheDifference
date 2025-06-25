@@ -13,9 +13,8 @@ def get_args():
     parser = argparse.ArgumentParser(description="Hyperparameter optimization for XGBoost")
     parser.add_argument('--channel', type=str, help="Channel to optimise", required=True)
     parser.add_argument('--n_trials', type=int, help="Number of trials to attempt")
-    parser.add_argument('--n_cores', type=int, help="Number of cores to use")
+    parser.add_argument('--n_jobs', type=int, help="Number of cores to use")
     parser.add_argument('--study_name', type=str, help="Name of study (can use to resume)")
-    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
     parser.add_argument('--gpu', action='store_true', help="Use GPU for training")
     return parser.parse_args()
 
@@ -94,7 +93,7 @@ def objective(trial):
 
 
 
-    if abs(ams_even - ams_odd)/(ams_even + ams_odd) > 0.04: # allow a 4% difference in total AMS ~ 8% in between the two
+    if abs(ams_even - ams_odd)/(ams_even + ams_odd) > 0.02: # allow a 4% difference in total AMS ~ 8% in between the two
         return 0 # effectvely veto this model
     else:
         return ams_even + ams_odd - abs(ams_even - ams_odd)
@@ -111,7 +110,7 @@ def main():
         study = optuna.create_study(direction="maximize", study_name=args.study_name,
                                 storage=f"sqlite:///hyperlogs/{args.study_name}.db?timeout=10000", load_if_exists=True)
         # Begin search
-        study.optimize(objective, n_trials=args.n_trials, n_jobs=args.n_cores)
+        study.optimize(objective, n_trials=args.n_trials, n_jobs=args.n_jobs)
 
         # Summary
         print("Number of finished trials: ", len(study.trials))
@@ -130,19 +129,14 @@ if __name__ == "__main__":
     args = get_args()
     if args.gpu:
         import cupy as cp
-    if args.n_cores is None:
-        args.n_cores = -1
+    if args.n_jobs is None:
+        args.n_jobs = -1
 
     print("Loading config and datasets")
     # Find correct dataset to use and load config
     if args.channel == 'tt':
         cfg = yaml.safe_load(open("../config/tt/BDTHyperOpt_config.yaml"))
-        if args.cut=='medium':
-            data_path = 'input_path'
-        elif args.cut=='tight':
-            data_path = 'input_path_tight'
-        elif args.cut=='vtight':
-            data_path = 'input_path_vtight'
+        data_path = 'input_path'
     elif args.channel == 'mt':
         cfg = yaml.safe_load(open("../config/mt/BDTHyperOpt_config.yaml"))
         data_path = 'input_path'

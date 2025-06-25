@@ -28,6 +28,7 @@ def get_args():
     parser.add_argument('--nbins', type=int, help="Number of bins", required=False, default=70)
     parser.add_argument('--label', type=str, help="Label name for the variable", required=False)
     parser.add_argument('--weight', type=str, help="name of weight column to use", required=False, default='weight')
+    parser.add_argument('--signal', action='store_true', help="Signal Only")
     return parser.parse_args()
 
 args = get_args()
@@ -37,7 +38,7 @@ if args.label is None:
 channel = args.channel
 
 # File to draw from
-base_path = '/vols/cms/lcr119/offline/HiggsCP/data/earlyrun3/ShuffleMerge'
+base_path = '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/ShuffleMerge'
 file = os.path.join(base_path, channel, 'ShuffleMerge_ALL.parquet')
 
 
@@ -106,23 +107,31 @@ if channel == 'mt' or channel == 'et' or channel == 'tt':
     # signal
     ggH = merged_df[merged_df['process_id'] == 100]
     VBF = merged_df[merged_df['process_id'] == 101]
+    VH = merged_df[merged_df['process_id'] == 102]
     del merged_df
 
-    # Add fake processes
-    histo.add_bkg(Top_jet, "Top_jet", weight=args.weight)
-    histo.add_bkg(QCD, "QCD", weight=args.weight)
-    histo.add_bkg(EW, "EW", weight=args.weight)
-    histo.add_bkg(other_jet, "OtherFake", weight=args.weight)
-    histo.add_bkg(DY_lep, "DY_lep", weight=args.weight)
-    # genuine backgrounds
-    histo.add_bkg(DY_tau, "DY", weight=args.weight)
-    histo.add_bkg(other_tau, "OtherGenuine", weight=args.weight)
+    if not args.signal: # not just signal
+        # Add fake processes
+        histo.add_bkg(Top_jet, "Top_jet", weight=args.weight)
+        histo.add_bkg(QCD, "QCD", weight=args.weight)
+        histo.add_bkg(EW, "EW", weight=args.weight)
+        histo.add_bkg(other_jet, "OtherFake", weight=args.weight)
+        histo.add_bkg(DY_lep, "DY_lep", weight=args.weight)
+        # genuine backgrounds
+        histo.add_bkg(DY_tau, "DY", weight=args.weight)
+        histo.add_bkg(other_tau, "OtherGenuine", weight=args.weight)
+
     # Add signal processes
     histo.add_signal(ggH, "ggH", weight=args.weight)
     histo.add_signal(VBF, "VBF", weight=args.weight)
+    histo.add_signal(VH, "VH", weight=args.weight)
 
+    # plot a cut
+    # ax.axvline(x=0, color='red', linestyle='--', label='default cut')
+
+print(f'boooo {args.label}')
 # Get the axes
-ax = histo.get_ax(xlabel=args.label, lumi=lumi, unit='GeV', channel=channel)
+ax = histo.get_ax(xlabel=args.label, lumi=lumi, unit='', channel=channel)
 # Set the limits
 ax.set_xlim(args.xmin, args.xmax)
 if args.ymax is not None:
@@ -130,7 +139,10 @@ if args.ymax is not None:
 else:
     ax.set_ylim(-1e-3*histo.get_max(), 1.15*histo.get_max())
 # Figure Saving
-fname = f"figs/{args.var}_{args.era}_{channel}_{args.weight}.pdf"
+if not args.signal:
+    fname = f"prod_march/{args.era}_{channel}_{args.var}_{args.weight}.pdf"
+else:
+    fname = f"prod_march/SIGNAL_{args.era}_{channel}_{args.var}_{args.weight}.pdf"
 plt.tight_layout()
 plt.savefig(fname)
 print(f"Plotted {args.var} to {fname}")

@@ -11,7 +11,6 @@ import argparse
 def get_args():
     parser = argparse.ArgumentParser(description="XGBoost Classifier Evaluation")
     parser.add_argument('--channel', type=str, help="Channel to train", required=True)
-    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
     return parser.parse_args()
 
 # Plotting style
@@ -115,6 +114,7 @@ def plot_score(cfg, parity, channel):
     # signal
     ggH = pred_df[pred_df['process_id'] == 100]
     VBF = pred_df[pred_df['process_id'] == 101]
+    VH = pred_df[pred_df['process_id'] == 102]
     # All Higgs for binning
     higgs = pred_df[(pred_df['process_id'] == 100) | (pred_df['process_id'] == 101)]
 
@@ -143,6 +143,7 @@ def plot_score(cfg, parity, channel):
     # Add signal processes
     histo.add_signal(ggH, "ggH")
     histo.add_signal(VBF, "VBF")
+    histo.add_signal(VH, "VH")
 
     # Get the axes
     ax = histo.get_ax(xlabel=rf"Higgs {cfg['model_type']} Score", lumi=lumi, ncol=2, fontsmall=True)
@@ -151,6 +152,8 @@ def plot_score(cfg, parity, channel):
     for i in range(1, n_bins):
         ax.axvline(x=bins[i], color='black', linestyle='--', linewidth = 1.3)
 
+    print(f"Weighted counts from different signals:")
+    print(ggH['weight'].sum(), VBF['weight'].sum(), VH['weight'].sum())
     # Get counts for AMS
     sig_counts, bkg_counts = histo.get_counts()
     print(sig_counts, bkg_counts)
@@ -192,16 +195,9 @@ if __name__ == "__main__":
     args = get_args()
     cfg = yaml.safe_load(open("../config/config.yaml"))
     # Load the correct config for the channel (and vsjet cut)
-    if args.channel == 'tt': # Fully hadronic has different vsjet cuts
-        if args.cut == "tight":
-            print("Plotting for tt channel (TIGHT Vsjet cut)")
-            cfg = cfg['tt_tight']
-        elif args.cut == "vtight":
-            print("Plotting for tt channel (VTIGHT Vsjet cut)")
-            cfg = cfg['tt_vtight']
-        else: # use medium by default
-            print("Plotting for tt channel (MEDIUM Vsjet cut)")
-            cfg = cfg['tt_medium']
+    if args.channel == 'tt':
+        print("Plotting for tt channel (VTIGHT Vsjet cut)")
+        cfg = cfg['tt']
         plot_score(cfg, "EVEN", 'tt')
         plot_score(cfg, "ODD", 'tt')
     elif args.channel == 'mt':

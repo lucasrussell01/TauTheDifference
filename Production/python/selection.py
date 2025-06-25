@@ -99,6 +99,7 @@ class Selector():
         if ('trg_doubletau' and 'trg_doubletauandjet') in triggers:
             df = df[((df['trg_doubletau'] == 1) & (df['pt_1'] > 40) & (df['pt_2'] > 40)) |
                     ((df['trg_doubletauandjet'] == 1) & (df['pt_1'] > 35) & (df['pt_2'] > 35) & (df['jpt_1'] > 60))]
+            df = df[(df['eta_1'].abs() < 2.1) & (df['eta_2'].abs() < 2.1)]
         else:
             self.logger.warning("Trigger matching not implemented for channel tt")
         n_after = len(df)
@@ -107,8 +108,10 @@ class Selector():
 
     def mutau_trigger_match(self, df, triggers):
         n_bef = len(df)
-        if ('trg_singlemuon') in triggers:
-            df = df[(df['trg_singlemuon'] == 1) & (df['pt_1'] > 25)]
+        if ('trg_singlemuon' and 'trg_mt_cross') in triggers:
+            df = df[((df['trg_singlemuon'] == 1) & (df['pt_1'] > 26) & (df['eta_1'].abs() < 2.4)) |
+                    ((df['trg_mt_cross'] == 1) & (df['pt_1'] > 21) & (df['pt_1'] <= 26) & (df['pt_2'] > 32)
+                    & (df['eta_1'].abs() < 2.1)  & (df['eta_2'].abs() < 2.1))]
         else:
             self.logger.warning("Trigger matching not implemented for channel mt")
         n_after = len(df)
@@ -118,7 +121,7 @@ class Selector():
     def etau_trigger_match(self, df, triggers):
         n_bef = len(df)
         if ('trg_singleelectron') in triggers:
-            df = df[(df['trg_singleelectron'] == 1) & (df['pt_1'] > 31)]
+            df = df[(df['trg_singleelectron'] == 1) & (df['pt_1'] > 32) & (df['eta_1'].abs() < 2.1)]
         else:
             self.logger.warning("Trigger matching not implemented for channel et")
         n_after = len(df)
@@ -147,14 +150,10 @@ class Selector():
         self.logger.debug("CP reweighting applied")
         return df
 
-
-    # 29/01 WILL NOW BE DONE AT A TRAINING LEVEL
-    # def check_sign_weights(self, df):
-    #     neg_weights = df[df['weight'] < 0]
-    #     if len(neg_weights) > 0:
-    #         self.logger.warning(f"{len(neg_weights)} negative weights found - removing affected events")
-    #         df = df[df['weight'] > 0]
-    #     return df
+    def abs_eta(self, df):
+        df['abs_eta_1'] = df['eta_1'].abs()
+        self.logger.debug("Applied absolute eta_1")
+        return df
 
     def mt_cut(self, df):
         # cut mT < 70 GeV

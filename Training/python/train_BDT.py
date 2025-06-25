@@ -17,13 +17,17 @@ def get_args():
 
 def load_ds(path, feat_names, y_name, w_name, eval = False):
     df = pd.read_parquet(path)
-    x = df[feat_names]
-    y = df[y_name]
-    w = df[w_name]
     if eval:
+        x = df[feat_names]
+        y = df[y_name]
+        w = df[w_name]
         phys_w = df['weight']
         return x, y, w, phys_w
     else:
+        df = df[df['weight']>0] # only positive weights can be used for training
+        x = df[feat_names]
+        y = df[y_name]
+        w = df[w_name]
         return x, y, w
 
 def AMS(S, B, b0=0):
@@ -63,9 +67,9 @@ def validation(model, cfg, parity, gpu=False):
     print("AMS Score (bin by bin):", ams)
     print(f"\033[1;32mAMS: {np.sqrt(np.sum(ams**2))} \033[0m")
     # AUC Score
-    truth = y_higgs.replace({2:0, 0:0}) # binary Higgs vs all
-    auc = roc_auc_score(truth, y_pred_higgs, sample_weight=w_pred_higgs)
-    print("AUC Score:", auc)
+    # truth = y_higgs.replace({2:0, 0:0}) # binary Higgs vs all
+    # auc = roc_auc_score(truth, y_pred_higgs, sample_weight=w_pred_higgs)
+    # print("AUC Score:", auc)
     del x, y, w_NN, w_phys
 
 def train_model(cfg, parity, gpu=False):
@@ -119,14 +123,14 @@ def main():
             print("Training for tt channel (TIGHT Vsjet cut)")
             cfg = yaml.safe_load(open("../config/tt/BDTconfig_tight.yaml"))
             cfg['Setup']['model_prefix'] = 'model_tight'
-        elif args.cut == "vtight":
-            print("Training for tt channel (VTIGHT Vsjet cut)")
-            cfg = yaml.safe_load(open("../config/tt/BDTconfig_vtight.yaml"))
-            cfg['Setup']['model_prefix'] = 'model_vtight'
-        else: # use medium by default
+        elif args.cut == "medium":
             print("Training for tt channel (MEDIUM Vsjet cut)")
             cfg = yaml.safe_load(open("../config/tt/BDTconfig_medium.yaml"))
-            cfg['Setup']['model_prefix'] = 'model_medium' # begining of model json name (add parity after)
+            cfg['Setup']['model_prefix'] = 'model_medium'
+        else: # use VTight by default
+            print("Training for tt channel (VTight Vsjet cut)")
+            cfg = yaml.safe_load(open("../config/tt/BDTconfig.yaml"))
+            cfg['Setup']['model_prefix'] = 'model_vtight' # begining of model json name (add parity after)
     elif args.channel == 'mt':
         print("Training for MuTau channel")
         cfg = yaml.safe_load(open("../config/mt/BDTconfig.yaml"))

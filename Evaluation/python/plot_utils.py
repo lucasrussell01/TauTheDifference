@@ -36,7 +36,9 @@ class stacked_histogram:
             'light_yellow': (247/255, 243/255, 154/255),
             'orange': (206/255, 104/255, 50/255),
             'blue_line': (2/255, 114/255, 187/255),
-            'red_line': (203/255, 68/255, 10/255)
+            'red_line': 'darkblue', #(203/255, 68/255, 10/255),
+            'green_line': (0/255, 153/255, 0/255),
+            'orange_line': "#ff5e02"
         }
         # Dictionary to store process information from genuine and fake backgrounds
         self.bkg_process_info = {
@@ -48,7 +50,7 @@ class stacked_histogram:
             "DY_lep": {'color': self.colours['blue'], 'label': r'$Z\to \ell\ell$'},
             # Jet Processes
             "WJets": {'color': self.colours['red'], 'label': 'W+jets'},
-            "QCD": {'color': self.colours['pink'], 'label': r'QCD multijet '},
+            "QCD": {'color': self.colours['pink'], 'label': r'Same Sign Data'},
             "Top_jet": {'color': self.colours['purple'], 'label': r'$t\bar{t}$/single $t$ '},
             "DY_jet": {'color': self.colours['dark_green'], 'label': r'$Z\to \tau\tau$ (jet $\to \tau_h$)'},
             "VV_jet": {'color': self.colours['brown'], 'label': r'Diboson (jet $\to \tau_h$)'},
@@ -63,7 +65,9 @@ class stacked_histogram:
             # ggH
             "ggH": {'color': self.colours['red_line'], 'label': r'ggH$\to\tau\tau$'},
             # VBF
-            "VBF": {'color': self.colours['blue_line'], 'label': r'qqH$\to\tau\tau$'}
+            "VBF": {'color': self.colours['blue_line'], 'label': r'qqH$\to\tau\tau$'},
+            # VH
+            "VH": {'color': self.colours['green_line'], 'label': r'VH$\to\tau\tau$'}
         }
         self.signal_numbers = np.zeros(len(self.bins)-1) # track N signal events in each bin
         self.bkg_numbers = np.zeros(len(self.bins)-1) # track N bkg events in each bin

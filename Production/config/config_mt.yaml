@@ -22,10 +22,10 @@ Selection: # Selection to be applied
   vsjet_2: 7 # VTight
   vse_2: 2 # VVLoose
   vsmu_2: 4
-  triggers: ['trg_singlemuon']
+  triggers: ['trg_singlemuon', 'trg_mt_cross']
 
 # # Variables that will be kept in dataframes
-Features: ['pt_1', 'pt_2', 'eta_1', 'eta_2', 'phi_1', 'phi_2', # individual 4-vectors
+Features: ['pt_1', 'pt_2', 'abs_eta_1', # individual 4-vectors
             'met_pt','met_dphi_1', 'met_dphi_2', # met information
             'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
             'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses

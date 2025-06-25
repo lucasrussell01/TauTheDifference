@@ -34,7 +34,9 @@ class stacked_histogram:
             'light_yellow': (247/255, 243/255, 154/255),
             'orange': (206/255, 104/255, 50/255),
             'blue_line': (2/255, 114/255, 187/255),
-            'red_line': (203/255, 68/255, 10/255)
+            'red_line': 'darkblue', #(203/255, 68/255, 10/255),
+            'green_line': (0/255, 153/255, 0/255),
+            'orange_line': (255/255, 137/255, 0/255)
         }
         # Dictionary to store process information from genuine and fake backgrounds
         self.bkg_process_info = {
@@ -61,7 +63,9 @@ class stacked_histogram:
             # ggH
             "ggH": {'color': self.colours['red_line'], 'label': r'ggH$\to\tau\tau$'},
             # VBF
-            "VBF": {'color': self.colours['blue_line'], 'label': r'qqH$\to\tau\tau$'}
+            "VBF": {'color': self.colours['blue_line'], 'label': r'qqH$\to\tau\tau$'},
+            # VH
+            "VH": {'color': self.colours['green_line'], 'label': r'VH$\to\tau\tau$'}
         }
         
 
@@ -89,10 +93,11 @@ class stacked_histogram:
             self.max = np.max(counts)
         return self.ax
 
-    def get_ax(self, xlabel=None, lumi= 60.90, unit='GeV', channel='tt'):
+    def get_ax(self, xlabel=None, lumi= 60.90, unit='', channel='tt'):
         # Axes
         if xlabel is not None:
-            self.ax.set_xlabel(rf"{xlabel} ({unit})")
+            print(xlabel)
+            self.ax.set_xlabel(rf"{xlabel}")
         else:
             self.ax.set_xlabel(rf"{self.var_name} ({unit})")
         self.ax.set_ylabel(f"Weighted Events/{self.bin_size:.2f} {unit}")
