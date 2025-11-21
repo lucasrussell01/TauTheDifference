@@ -1,0 +1,11 @@
+
+mt:
+  model_name: 'model_mt'
+  model_path: "../../Training/python/FF_BDTs/version_1/mt"
+  model_type: "BDT"
+et:
+  model_name: 'model_et'
+  model_path: "../../Training/python/FF_BDTs/version_1/et"
+  model_type: "BDT"
+
+
