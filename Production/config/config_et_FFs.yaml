@@ -1,0 +1,33 @@
+Setup:
+  eras: ['Run3_2022', 'Run3_2022EE', 'Run3_2023', 'Run3_2023BPix'] # Eras to be used
+  channel: 'et'
+  input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/cp_observable_updates' # HiggsDNA output
+  output: '/vols/cms/lcr119/offline/HiggsCP/data/FF_BDT/ShuffleMerge' # ShuffleMerge output
+  skim_output: '/vols/cms/lcr119/offline/HiggsCP/data/FF_BDT/PreSelected' # Output for selected (and gen matched) events
+  proc_output: '/vols/cms/lcr119/offline/HiggsCP/data/FF_BDT/Weighted' # Temporary output for weighted/labelled events
+
+Datasets:
+  'DYto2Tau': {gen_match: ['tau'], label: [0], proc_id: [11]}
+  'DYto2L': {gen_match: ['lep'], label: [0], proc_id: [12]}
+  'WJets': {gen_match: false, label: [1], proc_id: [43]}
+  'Diboson': {gen_match: ['notjet'], label: [0], proc_id: [51]}
+  'TTBar': {gen_match: ['notjet'], label: [0], proc_id: [21]}
+  'ST': {gen_match: ['notjet'], label: [0], proc_id: [31]}
+
+
+Selection: # Selection to be applied
+  iso_1: 0.15
+  vsjet_2: 7 # VTight
+  vse_2: 6 # Tight
+  vsmu_2: 4 # Tight
+  triggers: ['trg_singleelectron']
+
+# # Variables that will be kept in dataframes
+Features: ['pt_1', 'pt_2', 'abs_eta_1', # individual 4-vectors
+            'met_pt','met_dphi_1', 'met_dphi_2', # met information
+            'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
+            'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
+            'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', # individual jets
+            'mjj', 'jdeta', 'dijetpt', # dijet quantities
+            'n_jets', 'n_bjets', # global jet information
+            'weight', 'run', 'lumi', 'event'] # Run info

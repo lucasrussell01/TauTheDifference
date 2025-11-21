@@ -1,0 +1,21 @@
+Setup:
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/FF_BDT/ShuffleMerge/mt'
+  model_outputs: 'FF_BDTs/version_1/mt'
+  model_dir_name: 'model_mt'
+
+param: {
+        'objective': 'binary:logistic'
+      }
+
+
+
+Features:
+  train: ['pt_1', 'pt_2', 'abs_eta_1',  # individual 4-vectors
+          'met_pt','met_dphi_1', 'met_dphi_2', # met information
+          'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
+          'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
+          'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', # individual jets
+          'mjj', 'jdeta', 'dijetpt', # dijet quantities
+          'n_jets'] # global jet information
+  weight: 'class_weight'
+  truth: 'class_label'
