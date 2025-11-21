@@ -67,7 +67,7 @@ def eval_model(cfg, parity):
 if __name__ == "__main__":
     args = get_args()
     cfg = yaml.safe_load(open("../config/config.yaml"))
-    # Load the correct config for the channel (and vsjet cut)
+    # Load the correct config for the channel
     if args.channel == 'tt':
         print("Evaluating for TauTau channel")
         cfg = cfg['tt']

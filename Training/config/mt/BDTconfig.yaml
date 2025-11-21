@@ -1,18 +1,20 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/ShuffleMerge/mt'
-  model_outputs: 'XGB_Models/production_v2/mt'
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/prod_oct/ShuffleMerge/mt'
+  model_outputs: 'XGB_Models/prod_oct/mt'
   model_dir_name: 'model_mt'
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 517,
-        'lambda': 0.0013001691979642042,
-        'subsample': 0.9277940909078621,
-        'colsample_bytree': 0.5770181356594734,
-        'learning_rate': 0.06416736561853177,
-        'max_depth': 8,
-        'min_child_weight': 3
+        'n_estimators': 617,
+        'lambda': 5.0809029091112913e-08,
+        'subsample': 0.7531543166015807,
+        'colsample_bytree': 0.7487185638466484,
+        'learning_rate': 0.03959994676839976,
+        'max_depth': 7,
+        'min_child_weight': 7
       }
+
+
 
 Features:
   train: ['pt_1', 'pt_2', 'abs_eta_1',  # individual 4-vectors
@@ -21,6 +23,6 @@ Features:
           'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
           'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', # individual jets
           'mjj', 'jdeta', 'dijetpt', # dijet quantities
-          'n_jets', 'n_bjets'] # global jet information
+          'n_jets'] # global jet information
   weight: 'class_weight'
   truth: 'class_label'

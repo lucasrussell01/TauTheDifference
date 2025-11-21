@@ -11,7 +11,7 @@ import argparse
 def get_args():
     parser = argparse.ArgumentParser(description="XGBoost Classifier Training")
     parser.add_argument('--channel', type=str, help="Channel to train", required=True)
-    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
+    # parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
     parser.add_argument('--gpu', action='store_true', help="Use GPU for training")
     return parser.parse_args()
 
@@ -118,19 +118,10 @@ def train_model(cfg, parity, gpu=False):
 
 def main():
     args = get_args()
-    if args.channel == 'tt': # Fully hadronic has different vsjet cuts
-        if args.cut == "tight":
-            print("Training for tt channel (TIGHT Vsjet cut)")
-            cfg = yaml.safe_load(open("../config/tt/BDTconfig_tight.yaml"))
-            cfg['Setup']['model_prefix'] = 'model_tight'
-        elif args.cut == "medium":
-            print("Training for tt channel (MEDIUM Vsjet cut)")
-            cfg = yaml.safe_load(open("../config/tt/BDTconfig_medium.yaml"))
-            cfg['Setup']['model_prefix'] = 'model_medium'
-        else: # use VTight by default
-            print("Training for tt channel (VTight Vsjet cut)")
-            cfg = yaml.safe_load(open("../config/tt/BDTconfig.yaml"))
-            cfg['Setup']['model_prefix'] = 'model_vtight' # begining of model json name (add parity after)
+    if args.channel == 'tt': # Use VTight VSjet
+        print("Training for tt channel (VTight Vsjet cut)")
+        cfg = yaml.safe_load(open("../config/tt/BDTconfig.yaml"))
+        cfg['Setup']['model_prefix'] = 'model' # begining of model json name (add parity after)
     elif args.channel == 'mt':
         print("Training for MuTau channel")
         cfg = yaml.safe_load(open("../config/mt/BDTconfig.yaml"))

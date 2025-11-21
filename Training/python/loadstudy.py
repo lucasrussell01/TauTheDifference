@@ -34,6 +34,19 @@ def main(study_name):
     for key, value in trial.params.items():
         print(f"    '{key}': {value}")
 
+
+    print('SECOND BEST')
+    completed_trials = [t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE]
+
+    # Sort by objective value (ascending = best first for minimization)
+    sorted_trials = sorted(completed_trials, key=lambda t: t.value, reverse=True)
+
+    # Access the second best
+    for i in range(10):
+        print(f"Top {i+1} trial value: {sorted_trials[i].value}")
+        print(" params:", sorted_trials[i].params)
+
+
 if __name__ == "__main__":
     args = get_args()
     main(args.study_name)

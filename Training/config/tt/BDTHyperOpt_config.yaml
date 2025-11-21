@@ -1,12 +1,12 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/prod_march/ShuffleMerge/tt' #VTight VSjet (Standard Dataset)
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/prod_oct/ShuffleMerge/tt'
 Features:
-  train: ['pt_1', 'pt_2', # individual 4-vectors
+  train: ['pt_1', 'pt_2',  # individual kinematics
           'met_pt','met_dphi_1', 'met_dphi_2', # met information
           'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
           'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
           'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', # individual jets
           'mjj', 'jdeta', 'dijetpt', # dijet quantities
-          'n_jets', 'n_bjets'] # global jet information
+          'n_jets'] # global jet information
   weight: 'class_weight'
   truth: 'class_label'

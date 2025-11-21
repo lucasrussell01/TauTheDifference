@@ -1,13 +1,14 @@
 Setup:
   eras: ['Run3_2022', 'Run3_2022EE', 'Run3_2023', 'Run3_2023BPix'] # Eras to be used
   channel: 'tt'
-  input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/prod_march' # HiggsDNA output
-  output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_march/ShuffleMerge' # ShuffleMerge output
-  skim_output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_march/PreSelected' # Output for selected (and gen matched) events
-  proc_output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_march/Weighted' # Temporary output for weighted/labelled events
+  input: '/vols/cms/lcr119/offline/HiggsCP/HiggsDNA/output/cp_observable_updates' # HiggsDNA output
+  output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_oct/ShuffleMerge' # ShuffleMerge output
+  skim_output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_oct/PreSelected' # Output for selected (and gen matched) events
+  proc_output: '/vols/cms/lcr119/offline/HiggsCP/data/prod_oct/Weighted' # Temporary output for weighted/labelled events
 
 Datasets:
-  'DY': {gen_match: ['tau', 'lep', 'jet'], label: [0, 2, 2], proc_id: [11, 12, 13]}
+  'DYto2L': {gen_match: ['lep', 'jet'], label: [2, 2], proc_id: [12, 13]}
+  'DYto2Tau': {gen_match: ['tau'], label: [0], proc_id: [11]}
   'ggH': {gen_match: false, label: 1, proc_id: 100}
   'VBFH': {gen_match: false, label: 1, proc_id: 101}
   'VH': {gen_match: false, label: 1, proc_id: 102}
@@ -29,7 +30,8 @@ Selection: # Selection to be applied
 # # Variables that will be kept in dataframes
 Features: ['pt_1', 'pt_2', # individual 4-vectors
             'met_pt','met_dphi_1', 'met_dphi_2', # met information
-            'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
+            'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis',  # pair quantities
+            'FastMTT_mass', 'FastMTT_pt', 'FastMTT_pt_1', 'FastMTT_pt_2', # FastMTT
             'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
             'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', # individual jets
             'mjj', 'jdeta', 'dijetpt', # dijet quantities

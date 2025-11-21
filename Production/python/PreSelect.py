@@ -65,7 +65,7 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
             logger.info(f"Processing {dataset}")
             # Load the dataset
             dataset_file = os.path.join(cfg['Setup']['input'], era,
-                                channel, dataset, 'nominal/merged.parquet')
+                                channel, dataset, 'nominal/merged.parquet') # can just read in whole directory instead of merged.parquet')
             df = pd.read_parquet(dataset_file)
             # Apply general selections and trigger matching
             # 29/01 Now drop at point of training
@@ -76,16 +76,19 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
                 df = selector.mutau_trigger_match(df, cfg['Selection']['triggers'])
                 df = selector.mt_cut(df)
                 df = selector.abs_eta(df)
+                df = df[df['m_vis']>40]
             # ETau Channel Selections
             elif channel == 'et':
                 df = selector.select_id_et(df, cfg['Selection'])
                 df = selector.etau_trigger_match(df, cfg['Selection']['triggers'])
                 df = selector.mt_cut(df)
                 df = selector.abs_eta(df)
+                df = df[df['m_vis']>40]
             # TauTau Channel Selections
             elif channel == 'tt':
                 df = selector.select_id_tt(df, cfg['Selection'])
                 df = selector.ditau_trigger_match(df, cfg['Selection']['triggers'])
+                df = df[df['m_vis']>40]
             # Pair Sign Selection
             if ((process == 'Muon_DATA' and channel == 'mt') or (process == 'Tau_DATA' and channel == 'tt')
                 or (process == "Electron_DATA" and channel == 'et')

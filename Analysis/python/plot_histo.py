@@ -25,127 +25,134 @@ def get_args():
     parser.add_argument('--xmin', type=float, help="Min x to plot", required=False, default=0)
     parser.add_argument('--xmax', type=float, help="Max x to plot", required=False, default=350)
     parser.add_argument('--ymax', type=float, help="Max y to plot", required=False)
-    parser.add_argument('--nbins', type=int, help="Number of bins", required=False, default=70)
+    parser.add_argument('--nbins', type=int, help="Number of bins", required=False, default=35)
     parser.add_argument('--label', type=str, help="Label name for the variable", required=False)
     parser.add_argument('--weight', type=str, help="name of weight column to use", required=False, default='weight')
     parser.add_argument('--signal', action='store_true', help="Signal Only")
     return parser.parse_args()
 
 args = get_args()
-if args.label is None:
+
+for var in ['pt_1', 'pt_2', 'abs_eta_1', 'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', 'mt_1', 'mt_2', 'mt_lep', 'mt_tot', 'jpt_1', 'jpt_2', 'jeta_1', 'jeta_2', 'mjj', 'jdeta', 'dijetpt', 'n_jets']:
+    args.var = var
+    print(f"\n Plotting variable: {args.var}", '*'*50)
+
+
     args.label = args.var
 
-channel = args.channel
 
-# File to draw from
-base_path = '/vols/cms/lcr119/offline/HiggsCP/data/production_v2/ShuffleMerge'
-file = os.path.join(base_path, channel, 'ShuffleMerge_ALL.parquet')
+    channel = args.channel
 
-
-# import merged SM file
-df = pd.read_parquet(file)#
-if args.era == '2022':
-    merged_df = df[df['era']==1]
-    lumi = lumi_22
-elif args.era == '2022EE':
-    merged_df = df[df['era']==2]
-    lumi = lumi_22EE
-elif args.era == '2023':
-    merged_df = df[df['era']==3]
-    lumi = lumi_23
-elif args.era == '2023BPix':
-    merged_df = df[df['era']==4]
-    lumi = lumi_23BPix
-else:
-    merged_df = df
-    lumi = lumi_22 + lumi_22EE + lumi_23 + lumi_23BPix
-    print(f"Using all available eras (full 2022 + 23)")
+    dir = 'FF_BDT'
+    # File to draw from
+    base_path = f'/vols/cms/lcr119/offline/HiggsCP/data/{dir}/ShuffleMerge'
+    file = os.path.join(base_path, channel, 'ShuffleMerge_ALL.parquet')
 
 
+    # import merged SM file
+    df = pd.read_parquet(file)#
+    if args.era == '2022':
+        merged_df = df[df['era']==1]
+        lumi = lumi_22
+    elif args.era == '2022EE':
+        merged_df = df[df['era']==2]
+        lumi = lumi_22EE
+    elif args.era == '2023':
+        merged_df = df[df['era']==3]
+        lumi = lumi_23
+    elif args.era == '2023BPix':
+        merged_df = df[df['era']==4]
+        lumi = lumi_23BPix
+    else:
+        merged_df = df
+        lumi = lumi_22 + lumi_22EE + lumi_23 + lumi_23BPix
+        print(f"Using all available eras (full 2022 + 23)")
 
-fig, ax = plt.subplots(figsize = (6,6))
 
-# UNCOMMENT IF WANT SIMPLE TT ESTIMATES (NO OTHER FAKE PROCESSES)
-# if channel == 'tt':
 
-#     # Initialise plotting class
-#     bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1)
-#     histo = stacked_histogram(args.var, ax, bins)
-#     # extract categories from dataframe
-#     # Genuine
-#     taus = merged_df.loc[merged_df['process_id'] == 11]
-#     # Fake
-#     bkg = merged_df[merged_df['process_id'] == 0]
-#     # Signal
-#     ggH = merged_df[merged_df['process_id'] == 100]
-#     VBF = merged_df[merged_df['process_id'] == 101]
-#     del merged_df
-#     # Add background processes
-#     histo.add_bkg(bkg, "Jet_Fakes")
-#     histo.add_bkg(taus, "DY")
-#     # Add signal processes
-#     histo.add_signal(ggH, "ggH")
-#     histo.add_signal(VBF, "VBF")
+    fig, ax = plt.subplots(figsize = (6,6))
 
-if channel == 'mt' or channel == 'et' or channel == 'tt':
+    # UNCOMMENT IF WANT SIMPLE TT ESTIMATES (NO OTHER FAKE PROCESSES)
+    # if channel == 'tt':
 
-    # Initialise plotting class
-    bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1) # wider binning
-    histo = stacked_histogram(args.var, ax, bins)
+    #     # Initialise plotting class
+    #     bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1)
+    #     histo = stacked_histogram(args.var, ax, bins)
+    #     # extract categories from dataframe
+    #     # Genuine
+    #     taus = merged_df.loc[merged_df['process_id'] == 11]
+    #     # Fake
+    #     bkg = merged_df[merged_df['process_id'] == 0]
+    #     # Signal
+    #     ggH = merged_df[merged_df['process_id'] == 100]
+    #     VBF = merged_df[merged_df['process_id'] == 101]
+    #     del merged_df
+    #     # Add background processes
+    #     histo.add_bkg(bkg, "Jet_Fakes")
+    #     histo.add_bkg(taus, "DY")
+    #     # Add signal processes
+    #     histo.add_signal(ggH, "ggH")
+    #     histo.add_signal(VBF, "VBF")
 
-    # extract categories
-    # genuine taus
-    DY_tau = merged_df.loc[merged_df['process_id'] == 11]
-    other_tau = merged_df.loc[(merged_df['process_id'] == 21) | (merged_df['process_id'] == 31) | (merged_df['process_id'] == 51)] # TT, ST, VV
-    # lepton fakes
-    DY_lep = merged_df.loc[merged_df['process_id'] == 12]
-    # jet fakes
-    EW = merged_df.loc[(merged_df['process_id'] == 43) | (merged_df['process_id'] == 53)]
-    QCD = merged_df.loc[merged_df['process_id'] == 0]
-    Top_jet = merged_df.loc[(merged_df['process_id'] == 23) | (merged_df['process_id'] == 33)]
-    other_jet = merged_df.loc[merged_df['process_id'] == 13]
-    # signal
-    ggH = merged_df[merged_df['process_id'] == 100]
-    VBF = merged_df[merged_df['process_id'] == 101]
-    VH = merged_df[merged_df['process_id'] == 102]
-    del merged_df
+    if channel == 'mt' or channel == 'et' or channel == 'tt':
 
-    if not args.signal: # not just signal
-        # Add fake processes
-        histo.add_bkg(Top_jet, "Top_jet", weight=args.weight)
-        histo.add_bkg(QCD, "QCD", weight=args.weight)
-        histo.add_bkg(EW, "EW", weight=args.weight)
-        histo.add_bkg(other_jet, "OtherFake", weight=args.weight)
-        histo.add_bkg(DY_lep, "DY_lep", weight=args.weight)
-        # genuine backgrounds
-        histo.add_bkg(DY_tau, "DY", weight=args.weight)
-        histo.add_bkg(other_tau, "OtherGenuine", weight=args.weight)
+        # Initialise plotting class
+        bins = np.linspace(args.xmin, args.xmax, num=args.nbins+1) # wider binning
+        histo = stacked_histogram(args.var, ax, bins)
 
-    # Add signal processes
-    histo.add_signal(ggH, "ggH", weight=args.weight)
-    histo.add_signal(VBF, "VBF", weight=args.weight)
-    histo.add_signal(VH, "VH", weight=args.weight)
+        # extract categories
+        # genuine taus
+        DY_tau = merged_df.loc[merged_df['process_id'] == 11]
+        other_tau = merged_df.loc[(merged_df['process_id'] == 21) | (merged_df['process_id'] == 31) | (merged_df['process_id'] == 51)] # TT, ST, VV
+        # lepton fakes
+        DY_lep = merged_df.loc[merged_df['process_id'] == 12]
+        # jet fakes
+        EW = merged_df.loc[(merged_df['process_id'] == 43) | (merged_df['process_id'] == 53)]
+        QCD = merged_df.loc[merged_df['process_id'] == 0]
+        Top_jet = merged_df.loc[(merged_df['process_id'] == 23) | (merged_df['process_id'] == 33)]
+        other_jet = merged_df.loc[merged_df['process_id'] == 13]
+        # signal
+        ggH = merged_df[merged_df['process_id'] == 100]
+        VBF = merged_df[merged_df['process_id'] == 101]
+        VH = merged_df[merged_df['process_id'] == 102]
+        del merged_df
 
-    # plot a cut
-    # ax.axvline(x=0, color='red', linestyle='--', label='default cut')
+        if not args.signal: # not just signal
+            # Add fake processes
+            histo.add_bkg(Top_jet, "Top_jet", weight=args.weight)
+            histo.add_bkg(QCD, "QCD", weight=args.weight)
+            histo.add_bkg(EW, "EW", weight=args.weight)
+            histo.add_bkg(other_jet, "OtherFake", weight=args.weight)
+            histo.add_bkg(DY_lep, "DY_lep", weight=args.weight)
+            # genuine backgrounds
+            histo.add_bkg(DY_tau, "DY", weight=args.weight)
+            histo.add_bkg(other_tau, "OtherGenuine", weight=args.weight)
 
-print(f'boooo {args.label}')
-# Get the axes
-ax = histo.get_ax(xlabel=args.label, lumi=lumi, unit='', channel=channel)
-# Set the limits
-ax.set_xlim(args.xmin, args.xmax)
-if args.ymax is not None:
-    ax.set_ylim(-100, args.ymax)
-else:
-    ax.set_ylim(-1e-3*histo.get_max(), 1.15*histo.get_max())
-# Figure Saving
-if not args.signal:
-    fname = f"prod_march/{args.era}_{channel}_{args.var}_{args.weight}.pdf"
-else:
-    fname = f"prod_march/SIGNAL_{args.era}_{channel}_{args.var}_{args.weight}.pdf"
-plt.tight_layout()
-plt.savefig(fname)
-print(f"Plotted {args.var} to {fname}")
+        # Add signal processes
+        histo.add_signal(ggH, "ggH", weight=args.weight)
+        histo.add_signal(VBF, "VBF", weight=args.weight)
+        histo.add_signal(VH, "VH", weight=args.weight)
+
+        # plot a cut
+        # ax.axvline(x=0, color='red', linestyle='--', label='default cut')
+
+    print(f'boooo {args.label}')
+    # Get the axes
+    ax = histo.get_ax(xlabel=args.label, lumi=lumi, unit='', channel=channel)
+    # Set the limits
+    ax.set_xlim(args.xmin, args.xmax)
+    if args.ymax is not None:
+        ax.set_ylim(-100, args.ymax)
+    else:
+        ax.set_ylim(-1e-3*histo.get_max(), 1.15*histo.get_max())
+    # Figure Saving
+    if not args.signal:
+        fname = f"{dir}/{args.era}_{channel}_{args.var}_{args.weight}.pdf"
+    else:
+        fname = f"{dir}/SIGNAL_{args.era}_{channel}_{args.var}_{args.weight}.pdf"
+    plt.tight_layout()
+    plt.savefig(fname)
+    print(f"Plotted {args.var} to {fname}")
 
 
 

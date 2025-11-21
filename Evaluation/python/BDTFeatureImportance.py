@@ -44,7 +44,7 @@ def feature_study(cfg, parity):
         print(f"Plotted {imp_type} feature importance")
 
 if __name__ == "__main__":
-    cfg = yaml.safe_load(open("../config/config.yaml"))
+    cfg = yaml.safe_load(open("../config/config_FFs.yaml"))
     # find correct channel
     args = get_args()
     if args.channel == 'tt':

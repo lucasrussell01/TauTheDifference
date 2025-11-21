@@ -34,6 +34,13 @@ class Selector():
         self.logger.debug(f"Hadronic Channel Tau Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
         return df
 
+    def select_gen_notjet_semilep(self, df):
+        n_bef = len(df)
+        df = df[(df['genPartFlav_2'] != 0)] # tau->mu decay and hadronic tau
+        n_after = len(df)
+        self.logger.debug(f"Hadronic Channel not Jet Gen Matching: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
+        return df
+
     def select_gen_lepton_hadronic(self, df):
         n_bef = len(df)
         df = df[(df['genPartFlav_1'] != 5) & (df['genPartFlav_2'] != 5) & (df['genPartFlav_1'] != 0) & (df['genPartFlav_2'] != 0)]
@@ -94,12 +101,53 @@ class Selector():
         self.logger.debug(f"Opposite sign {os} Selection: {(n_after/n_bef)*100:.2f}% kept- {n_after} events remaining")
         return df
 
+    def select_cp_specific_tt(self, df):
+    #     mask = (
+    # (
+    #     ((df["decayModePNet_1"] == 0) & (df["ip_LengthSig_1"] >= 1.25))
+    #     | ((df["decayMode_1"] == 1) & (df["decayModePNet_1"] == 1) & (df["pion_E_split_1"] > 0.2))
+    #     | ((df["decayModePNet_1"] == 10) & (df["hasRefitSV_1"]))
+    #     | ((df["decayMode_1"] == 1) & (df["decayModePNet_1"] == 2) & (df["pion_E_split_1"] > 0.2))
+    # )
+    # &
+    # (
+    #     ((df["decayModePNet_2"] == 0) & (df["ip_LengthSig_2"] >= 1.25))
+    #     | ((df["decayMode_2"] == 1) & (df["decayModePNet_2"] == 1) & (df["pion_E_split_2"] > 0.2))
+    #     | ((df["decayModePNet_2"] == 10) & (df["hasRefitSV_2"]))
+    #     | ((df["decayMode_2"] == 1) & (df["decayModePNet_2"] == 2) & (df["pion_E_split_2"] > 0.2))
+    # )
+    # )
+    #     df = df[mask]
+        df = df[df['m_vis']>40]
+        return df
+
+    def select_cp_specific_mt(self, df):
+        mask = ((df["ip_LengthSig_1"] > 1.0) &
+        (((df["decayModePNet_2"] == 0) & (df["ip_LengthSig_2"] >= 1.25))
+            | ((df["decayMode_2"] == 1) & (df["decayModePNet_2"] == 1) & (df["pion_E_split_2"] > 0.2))
+            | ((df["decayMode_2"] == 1) & (df["decayModePNet_2"] == 2) & (df["pion_E_split_2"] > 0.2))
+            | ((df["decayModePNet_2"] == 10) & (df["hasRefitSV_2"])))
+        )
+        df = df[mask]
+        df = df[df['m_vis']>40]
+        return df
+
+    def select_cp_specific_et(self, df):
+        mask = ((df["ip_LengthSig_1"] > 1.0) &
+        (((df["decayModePNet_2"] == 0) & (df["ip_LengthSig_2"] >= 1.25))
+            | ((df["decayMode_2"] == 1) & (df["decayModePNet_2"] == 1) & (df["pion_E_split_2"] > 0.2))
+            | ((df["decayMode_2"] == 1) & (df["decayModePNet_2"] == 2) & (df["pion_E_split_2"] > 0.2))
+            | ((df["decayModePNet_2"] == 10) & (df["hasRefitSV_2"])))
+        )
+        df = df[mask]
+        df = df[df['m_vis']>40]
+        return df
+
     def ditau_trigger_match(self, df, triggers):
         n_bef = len(df)
         if ('trg_doubletau' and 'trg_doubletauandjet') in triggers:
             df = df[((df['trg_doubletau'] == 1) & (df['pt_1'] > 40) & (df['pt_2'] > 40)) |
                     ((df['trg_doubletauandjet'] == 1) & (df['pt_1'] > 35) & (df['pt_2'] > 35) & (df['jpt_1'] > 60))]
-            df = df[(df['eta_1'].abs() < 2.1) & (df['eta_2'].abs() < 2.1)]
         else:
             self.logger.warning("Trigger matching not implemented for channel tt")
         n_after = len(df)
@@ -108,10 +156,8 @@ class Selector():
 
     def mutau_trigger_match(self, df, triggers):
         n_bef = len(df)
-        if ('trg_singlemuon' and 'trg_mt_cross') in triggers:
-            df = df[((df['trg_singlemuon'] == 1) & (df['pt_1'] > 26) & (df['eta_1'].abs() < 2.4)) |
-                    ((df['trg_mt_cross'] == 1) & (df['pt_1'] > 21) & (df['pt_1'] <= 26) & (df['pt_2'] > 32)
-                    & (df['eta_1'].abs() < 2.1)  & (df['eta_2'].abs() < 2.1))]
+        if 'trg_singlemuon' in triggers:
+            df = df[((df['trg_singlemuon'] == 1) & (df['pt_1'] > 26) & (df['eta_1'].abs() < 2.4))]
         else:
             self.logger.warning("Trigger matching not implemented for channel mt")
         n_after = len(df)
@@ -121,7 +167,7 @@ class Selector():
     def etau_trigger_match(self, df, triggers):
         n_bef = len(df)
         if ('trg_singleelectron') in triggers:
-            df = df[(df['trg_singleelectron'] == 1) & (df['pt_1'] > 32) & (df['eta_1'].abs() < 2.1)]
+            df = df[(df['trg_singleelectron'] == 1) & (df['pt_1'] > 31) & (df['eta_1'].abs() < 2.1)]
         else:
             self.logger.warning("Trigger matching not implemented for channel et")
         n_after = len(df)

@@ -1,18 +1,18 @@
 # TauTau Channel Models
 tt:
-  model_name: 'model_base_nobjets'
-  model_path: "../../Training/python/XGB_Models/prod_march/tt"
+  model_name: 'model_tt'
+  model_path: "../../Training/python/XGB_Models/prod_oct/tt/"
   model_type: "BDT"
-  model_cut: "VTight"
+  # model_cut: "VTight"
 # MuTau Channel Models
 mt:
   model_name: 'model_mt'
-  model_path: "../../Training/python/XGB_Models/production_v2/mt"
+  model_path: "../../Training/python/XGB_Models/prod_oct/mt"
   model_type: "BDT"
 # ETau Channel Models
 et:
   model_name: 'model_et'
-  model_path: "../../Training/python/XGB_Models/production_v2/et"
+  model_path: "../../Training/python/XGB_Models/prod_oct/et"
   model_type: "BDT"
 
 

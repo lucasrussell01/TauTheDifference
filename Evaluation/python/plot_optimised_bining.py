@@ -175,8 +175,7 @@ $e\tau_h$ channel"""
     elif channel=='tt':
         box_info = rf"""AMS: {np.sqrt(np.sum(sig_AMS**2)):.2f}
 {parity} Events
-$\tau_h\tau_h$ channel
-{cfg["model_cut"]} VSjet"""
+$\tau_h\tau_h$ channel"""
 
     if channel=='tt':
         ax.text(0.75, 0.83, box_info, fontsize=12, transform=ax.transAxes, fontfamily='sans-serif',
@@ -194,9 +193,9 @@ $\tau_h\tau_h$ channel
 if __name__ == "__main__":
     args = get_args()
     cfg = yaml.safe_load(open("../config/config.yaml"))
-    # Load the correct config for the channel (and vsjet cut)
+    # Load the correct config for the channel
     if args.channel == 'tt':
-        print("Plotting for tt channel (VTIGHT Vsjet cut)")
+        print("Plotting for tt channel")
         cfg = cfg['tt']
         plot_score(cfg, "EVEN", 'tt')
         plot_score(cfg, "ODD", 'tt')

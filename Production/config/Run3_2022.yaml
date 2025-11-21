@@ -1,30 +1,39 @@
 Params:
   Luminosity: 7980.4
 Process:
-  DY:
-    DYto2L_M_50_1J_madgraphMLM:
-      filter_eff: 1.0
-      n_eff: 144024010
+  DYto2Tau:
+    DYto2Tau_MLL_50_0J_amcatnloFXFX:
+      n_eff: 31651962
+      filter_efficiency: 1.0
+      x_sec: 1664.6841730883225
+    DYto2Tau_MLL_50_1J_amcatnloFXFX:
+      n_eff: 26576552
+      filter_efficiency: 1.0
+      x_sec: 316.2403378778898
+    DYto2Tau_MLL_50_2J_amcatnloFXFX:
+      n_eff: 32763798
+      filter_efficiency: 1.0
+      x_sec: 116.47203023117962
+  DYto2L:
+    DYto2L_M_50_0J_amcatnloFXFX:
+      n_eff: 115297314
+      filter_efficiency: 1.0
       x_sec: 6282.6
-    DYto2L_M_50_2J_madgraphMLM:
-      filter_eff: 1.0
-      n_eff: 144024010
+    DYto2L_M_50_1J_amcatnloFXFX:
+      n_eff: 115297314
+      filter_efficiency: 1.0
       x_sec: 6282.6
-    DYto2L_M_50_3J_madgraphMLM:
-      filter_eff: 1.0
-      n_eff: 144024010
+    DYto2L_M_50_2J_amcatnloFXFX:
+      n_eff: 115297314
+      filter_efficiency: 1.0
       x_sec: 6282.6
-    DYto2L_M_50_4J_madgraphMLM:
-      filter_eff: 1.0
-      n_eff: 144024010
+    DYto2L_M_50_amcatnloFXFX:
+      n_eff: 115297314
+      filter_efficiency: 1.0
       x_sec: 6282.6
-    DYto2L_M_50_madgraphMLM:
-      filter_eff: 1.0
-      n_eff: 144024010
-      x_sec: 6282.6
-    DYto2L_M_50_madgraphMLM_ext1:
-      filter_eff: 1.0
-      n_eff: 144024010
+    DYto2L_M_50_amcatnloFXFX_ext1:
+      n_eff: 115297314
+      filter_efficiency: 1.0
       x_sec: 6282.6
   Diboson:
     WW:
@@ -41,16 +50,16 @@ Process:
       x_sec: 19.431
   Electron_DATA:
     EGamma_Run2022C:
-      extrapolation_factor: 1.1
+      extrapolation_factor: 1.13
     EGamma_Run2022D:
-      extrapolation_factor: 1.1
+      extrapolation_factor: 1.13
   Muon_DATA:
     Muon_Run2022C:
-      extrapolation_factor: 1.1
+      extrapolation_factor: 1.12
     Muon_Run2022D:
-      extrapolation_factor: 1.1
+      extrapolation_factor: 1.12
     SingleMuon_Run2022C:
-      extrapolation_factor: 1.1
+      extrapolation_factor: 1.12
   ST:
     ST_tW_antitop_2L2Nu:
       filter_eff: 1.0
@@ -101,14 +110,6 @@ Process:
       filter_eff: 1.0
       n_eff: 47500385
       x_sec: 98.04387875606875
-    TTto4Q:
-      filter_eff: 1.0
-      n_eff: 105030029
-      x_sec: 419.8071644141188
-    TTto4Q_ext1:
-      filter_eff: 1.0
-      n_eff: 105030029
-      x_sec: 419.8071644141188
     TTtoLNu2Q:
       filter_eff: 1.0
       n_eff: 155346152
@@ -119,9 +120,9 @@ Process:
       x_sec: 405.74895682981236
   Tau_DATA:
     Tau_Run2022C:
-      extrapolation_factor: 1.1
+      extrapolation_factor: 1.27
     Tau_Run2022D:
-      extrapolation_factor: 1.1
+      extrapolation_factor: 1.27
   VBFH:
     VBFHToTauTau_UncorrelatedDecay_Filtered:
       filter_eff: 0.4091

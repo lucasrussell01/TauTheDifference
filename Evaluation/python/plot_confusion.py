@@ -12,7 +12,6 @@ import argparse
 def get_args():
     parser = argparse.ArgumentParser(description="XGBoost Classifier Evaluation")
     parser.add_argument('--channel', type=str, help="Channel to train", required=True)
-    parser.add_argument('--cut', type=str, help="VSjet cut to be used", required=False)
     return parser.parse_args()
 
 def plot_confusion_matrix(cfg, parity):
@@ -35,7 +34,7 @@ def plot_confusion_matrix(cfg, parity):
     pred_df = pd.read_parquet(os.path.join(model_dir, 'EVAL_predictions.parquet'))
 
     y_pred = pred_df['pred_label'] # take max pred label
-    y_true = pred_df['class_label'].replace({11: 1, 12: 1})
+    y_true = pred_df['class_label']
     weights = pred_df['weight']
 
     labels = ["Tau", "Higgs", "Fake"]
@@ -78,17 +77,9 @@ def plot_confusion_matrix(cfg, parity):
 if __name__ == "__main__":
     args = get_args()
     cfg = yaml.safe_load(open("../config/config.yaml"))
-    # Load the correct config for the channel (and vsjet cut)
-    if args.channel == 'tt': # Fully hadronic has different vsjet cuts
-        if args.cut == "tight":
-            print("Plotting for tt channel (TIGHT Vsjet cut)")
-            cfg = cfg['tt_tight']
-        elif args.cut == "vtight":
-            print("Plotting for tt channel (VTIGHT Vsjet cut)")
-            cfg = cfg['tt_vtight']
-        else: # use medium by default
-            print("Plotting for tt channel (MEDIUM Vsjet cut)")
-            cfg = cfg['tt_medium']
+    # Load the correct config for the channel
+    if args.channel == 'tt':
+        cfg = cfg['tt']
     elif args.channel == 'mt':
         print("Plotting for MuTau channel")
         cfg = cfg['mt']

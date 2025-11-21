@@ -46,6 +46,8 @@ class stacked_histogram:
             "DY_tau": {'color': self.colours['yellow'], 'label': r'$Z\to\tau\tau$ (genuine)'},
             "Top_tau": {'color': self.colours['light_yellow'], 'label': r'$t\bar{t}$/single $t$ (genuine)'},
             "VV_tau": {'color': self.colours['orange'], 'label': r'Diboson (genuine)'},
+            "Top_NJ": {'color': self.colours['light_yellow'], 'label': r'$t\bar{t}$ (non jet)'},
+            "VV_NJ": {'color': self.colours['light_yellow'], 'label': r'Diboson/single $t$ (non jet)'},
             # Lepton Processes
             "DY_lep": {'color': self.colours['blue'], 'label': r'$Z\to \ell\ell$'},
             # Jet Processes
