@@ -18,7 +18,7 @@ plt.style.use(hep.style.ROOT)
 plt.rcParams.update({"font.size": 14})
 
 # Luminosity
-lumi = 61.90
+lumi = 62.4
 
 def AMS(S, B, b0=0):
     ams = np.sqrt(2*((S+B+b0)*np.log(1+S/(B+b0))-S))
@@ -103,11 +103,11 @@ def plot_score(cfg, parity, channel):
     # Split into individual classes (by process ID)
     # genuine taus
     DY_tau = pred_df.loc[pred_df['process_id'] == 11]
-    other_tau = pred_df.loc[(pred_df['process_id'] == 21) | (pred_df['process_id'] == 31) | (pred_df['process_id'] == 51)] # TT, ST, VV
+    other_tau = pred_df.loc[(pred_df['process_id'] == 21) | (pred_df['process_id'] == 31) | (pred_df['process_id'] == 51) | (pred_df['process_id'] == 14)] # TT, ST, VV, EWKZ
     # lepton fakes
-    DY_lep = pred_df.loc[pred_df['process_id'] == 12]
+    DY_lep = pred_df.loc[(pred_df['process_id'] == 12) | (pred_df['process_id'] == 16)] # DY or EWK~
     # jet fakes
-    EW = pred_df.loc[(pred_df['process_id'] == 43) | (pred_df['process_id'] == 53)]
+    EW = pred_df.loc[(pred_df['process_id'] == 43) | (pred_df['process_id'] == 53) | (pred_df['process_id'] == 16)]
     QCD = pred_df.loc[pred_df['process_id'] == 0]
     Top_jet = pred_df.loc[(pred_df['process_id'] == 23) | (pred_df['process_id'] == 33)]
     other_jet = pred_df.loc[pred_df['process_id'] == 13]
@@ -115,8 +115,9 @@ def plot_score(cfg, parity, channel):
     ggH = pred_df[pred_df['process_id'] == 100]
     VBF = pred_df[pred_df['process_id'] == 101]
     VH = pred_df[pred_df['process_id'] == 102]
+    total_sig = pd.concat([ggH, VBF, VH])
     # All Higgs for binning
-    higgs = pred_df[(pred_df['process_id'] == 100) | (pred_df['process_id'] == 101)]
+    higgs = pred_df[(pred_df['process_id'] == 100) | (pred_df['process_id'] == 101) | (pred_df['process_id'] == 102)]
 
     # Split into n bins with equal number of weighted signal
     n_bins = 5
@@ -144,6 +145,7 @@ def plot_score(cfg, parity, channel):
     histo.add_signal(ggH, "ggH")
     histo.add_signal(VBF, "VBF")
     histo.add_signal(VH, "VH")
+    histo.add_signal(total_sig, "total_sig")
 
     # Get the axes
     ax = histo.get_ax(xlabel=rf"Higgs {cfg['model_type']} Score", lumi=lumi, ncol=2, fontsmall=True)

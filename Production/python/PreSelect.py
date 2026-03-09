@@ -59,17 +59,21 @@ def preselect_samples(cfg, era, extrapolateQCD=False):
     # Iterate over processes for the channel
     for process, process_options in channel_cfg.items():
         logger.info(f"Process {process} was requested")
+        if era != 'Run3_2022EE' and process == 'EWKZ':
+            logger.warning(f"Skipping {process} for {era} as unavailable")
+            continue
         # Iterate over datasets for the process
         for dataset, dataset_info in process_cfg[process].items():
             print('-'*140)
             logger.info(f"Processing {dataset}")
             # Load the dataset
             dataset_file = os.path.join(cfg['Setup']['input'], era,
-                                channel, dataset, 'nominal/merged.parquet') # can just read in whole directory instead of merged.parquet')
+                                channel, dataset, 'nominal') # can just read in whole directory instead of merged.parquet')
             df = pd.read_parquet(dataset_file)
             # Apply general selections and trigger matching
             # 29/01 Now drop at point of training
             # df = selector.check_sign_weights(df) # drop negative weights (affect training)
+            df = selector.cap_njets(df) # cap n_jets at 3 to avoid mismodelling
             # MuTau Channel Selections
             if channel == 'mt':
                 df = selector.select_id_mt(df, cfg['Selection'])

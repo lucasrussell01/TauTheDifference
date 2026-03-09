@@ -69,7 +69,9 @@ class stacked_histogram:
             # VBF
             "VBF": {'color': self.colours['blue_line'], 'label': r'qqH$\to\tau\tau$'},
             # VH
-            "VH": {'color': self.colours['green_line'], 'label': r'VH$\to\tau\tau$'}
+            "VH": {'color': self.colours['green_line'], 'label': r'VH$\to\tau\tau$'},
+            # SM Higgs
+            "total_sig": {'color': "red", 'label': r'Total Signal'}
         }
         self.signal_numbers = np.zeros(len(self.bins)-1) # track N signal events in each bin
         self.bkg_numbers = np.zeros(len(self.bins)-1) # track N bkg events in each bin
@@ -94,7 +96,8 @@ class stacked_histogram:
         # This function adds signal to the histogram
         self.ax.hist(df[self.var_name], bins=self.bins, weights=df[weight], histtype="step",
                      color = self.signal_process_info[process_name]['color'], linewidth = 2, label = self.signal_process_info[process_name]['label'])
-        self.signal_numbers += np.histogram(df[self.var_name], bins=self.bins, weights=df[weight])[0]
+        if "total_sig" not in process_name:
+            self.signal_numbers += np.histogram(df[self.var_name], bins=self.bins, weights=df[weight])[0]
         return self.ax
 
     def add_total_bkg(self):
@@ -110,7 +113,7 @@ class stacked_histogram:
             self.ax.set_xlabel(rf"{self.var_name}")
         self.ax.set_ylabel(f"Weighted Events")
         # CMS style
-        self.ax.text(0.6, 1.02, fr"{(lumi):.2f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=self.ax.transAxes)
+        self.ax.text(0.6, 1.02, fr"{(lumi):.1f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=self.ax.transAxes)
         self.ax.text(0.01, 1.02, 'CMS', fontsize=18, transform=self.ax.transAxes, fontweight='bold', fontfamily='sans-serif')
         self.ax.text(0.14, 1.02, 'Work in Progress', fontsize=14, transform=self.ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
         # legend

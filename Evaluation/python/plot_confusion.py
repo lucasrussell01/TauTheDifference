@@ -16,7 +16,7 @@ def get_args():
 
 def plot_confusion_matrix(cfg, parity):
 
-    lumi = 61.90
+    lumi = 62.4
 
     sn.set(font_scale=1.4)
 
@@ -50,7 +50,7 @@ def plot_confusion_matrix(cfg, parity):
     plt.ylabel("True Category")
     plt.xlabel("Predicted Category")
     ax.text(1.02, 0.45, "Efficiency", fontsize=12, transform=ax.transAxes, rotation=90)
-    ax.text(0.6, 1.02, rf"{lumi:.2f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=ax.transAxes)
+    ax.text(0.6, 1.02, rf"{lumi:.1f} fb$^{{-1}}$ (13.6 TeV)", fontsize=14, transform=ax.transAxes)
     ax.text(0.01, 1.02, 'CMS', fontsize=20, transform=ax.transAxes, fontweight='bold', fontfamily='sans-serif')
     ax.text(0.15, 1.02, 'Work in Progress', fontsize=14, transform=ax.transAxes, fontstyle='italic',fontfamily='sans-serif')
     plt.savefig(os.path.join(model_dir, 'plots', 'Efficiency_CM.pdf'))

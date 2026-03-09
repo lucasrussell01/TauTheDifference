@@ -73,6 +73,11 @@ def reweight_mc(df, xsec, n_eff, lumi):
     logger.debug(f"Reweighting to xsec: {xsec}, N_eff: {n_eff}, Luminosity: {lumi}")
     return df
 
+def reweight_ewkz(df):
+    df['weight'] *= 2.34 # account for fact unavailable beyond 22EE
+    logger.debug(f"Applied EWKZ reweighting factor of 2.34")
+    return df
+
 
 def process_samples(cfg, era, extrapolateQCD=False, nosubtraction=False):
     # List of samples that have been processed (used for ShuffleMerge)
@@ -90,6 +95,10 @@ def process_samples(cfg, era, extrapolateQCD=False, nosubtraction=False):
     # Iterate over processes for the channel
     for process, process_options in channel_cfg.items():
         logger.info(f"Loading skimmed datasets for {process}")
+        if process == 'EWKZ':
+            if era != 'Run3_2022EE':
+                logger.warning(f"Skipping {process} for {era} as unavailable")
+                continue
         # Iterate over datasets for the proces
         for dataset, dataset_info in process_cfg[process].items():
             print('-'*140)
@@ -109,6 +118,10 @@ def process_samples(cfg, era, extrapolateQCD=False, nosubtraction=False):
                                         channel, dataset, f'merged_skimmed_GEN{gen_match}.parquet')
                     logger.debug(f"Loading {dataset_file.split('/')[-1]}")
                     df = pd.read_parquet(dataset_file)
+
+                    if process == 'EWKZ': # scale 22EE EWKZ to account for missing in other eras
+                        df = reweight_ewkz(df)
+
                     # Add labels (class, process, era)
                     df = label_df(df, process_options['label'][index_gen], process_options['proc_id'][index_gen], era, gen_match)
                     # Reweight the dataset (can only have MC here anyway since gen matched)

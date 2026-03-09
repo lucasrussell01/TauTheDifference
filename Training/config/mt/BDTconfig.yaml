@@ -1,6 +1,6 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/prod_oct/ShuffleMerge/mt'
-  model_outputs: 'XGB_Models/prod_oct/mt'
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/prod_feb/ShuffleMerge/mt'
+  model_outputs: 'XGB_Models/prod_feb/mt'
   model_dir_name: 'model_mt'
 
 param: {

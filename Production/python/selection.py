@@ -167,7 +167,7 @@ class Selector():
     def etau_trigger_match(self, df, triggers):
         n_bef = len(df)
         if ('trg_singleelectron') in triggers:
-            df = df[(df['trg_singleelectron'] == 1) & (df['pt_1'] > 31) & (df['eta_1'].abs() < 2.1)]
+            df = df[(df['trg_singleelectron'] == 1) & (df['pt_1'] > 32) & (df['eta_1'].abs() < 2.1)]
         else:
             self.logger.warning("Trigger matching not implemented for channel et")
         n_after = len(df)
@@ -199,6 +199,13 @@ class Selector():
     def abs_eta(self, df):
         df['abs_eta_1'] = df['eta_1'].abs()
         self.logger.debug("Applied absolute eta_1")
+        return df
+
+    def cap_njets(self, df):
+        njets = df['n_jets']
+        njets_cap = np.where(njets>3, 3, njets)
+        df['n_jets'] = njets_cap
+        self.logger.debug("Capped number of jets at 3")
         return df
 
     def mt_cut(self, df):

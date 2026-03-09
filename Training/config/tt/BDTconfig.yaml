@@ -1,21 +1,21 @@
 Setup:
-  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/prod_feb/ShuffleMerge/et'
-  model_outputs: 'XGB_Models/prod_feb/et'
-  model_dir_name: 'model_et'
+  input_path: '/vols/cms/lcr119/offline/HiggsCP/data/prod_feb/ShuffleMerge/tt'
+  model_outputs: 'XGB_Models/prod_feb/tt'
+  model_dir_name: 'model_tt'
 
 param: {
         'objective': 'multi:softmax',
-        'n_estimators': 103,
-        'lambda': 2.1067047624069332e-08,
-        'subsample': 0.848272604783627,
-        'colsample_bytree': 0.649327533924659,
-        'learning_rate': 0.11043821766809206,
+        'n_estimators': 205,
+        'lambda': 5.584535832964484e-06,
+        'subsample': 0.8403339927715867,
+        'colsample_bytree': 0.5121890197474144,
+        'learning_rate': 0.0627473964975825,
         'max_depth': 7,
-        'min_child_weight': 4
-        }
+        'min_child_weight': 8
+      }
 
 Features:
-  train: ['pt_1', 'pt_2', 'abs_eta_1',  # individual 4-vectors
+  train: ['pt_1', 'pt_2',  # individual kinematics
           'met_pt','met_dphi_1', 'met_dphi_2', # met information
           'dR', 'dphi', 'pt_tt', 'm_vis', 'pt_vis', 'FastMTT_mass', # pair quantities
           'mt_1', 'mt_2', 'mt_lep', 'mt_tot', # transverse masses
